@@ -7,72 +7,63 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    background: #080810;
-    color: #eeeaf8;
+    background: #080810; color: #eeeaf8;
     font-family: system-ui, sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    min-height: 100vh; display: flex;
+    flex-direction: column; align-items: center;
     padding: 48px 20px 80px;
   }
   header { text-align: center; margin-bottom: 40px; }
-  h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 10px; background: linear-gradient(135deg, #eeeaf8 40%, #7c6fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 10px;
+    background: linear-gradient(135deg, #eeeaf8 40%, #7c6fff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .sub { font-size: 14px; color: #5a5870; }
-  .card { width: 100%; max-width: 720px; background: #0f0f1a; border: 1px solid #1c1c2e; border-radius: 16px; padding: 28px; }
+  .card { width: 100%; max-width: 720px; background: #0f0f1a;
+    border: 1px solid #1c1c2e; border-radius: 16px; padding: 28px; }
   textarea {
     width: 100%; background: #080810; border: 1px solid #1c1c2e;
     border-radius: 10px; padding: 16px; color: #eeeaf8;
     font-family: system-ui, sans-serif; font-size: 14px;
     line-height: 1.7; resize: vertical; min-height: 120px;
-    outline: none; margin-bottom: 14px;
-    transition: border-color .2s;
+    outline: none; margin-bottom: 14px; transition: border-color .2s;
   }
   textarea:focus { border-color: #7c6fff; }
   textarea::placeholder { color: #5a5870; }
   button#genBtn {
-    width: 100%; padding: 15px;
-    background: #7c6fff; color: #fff; border: none;
-    border-radius: 10px; font-size: 15px; font-weight: 700;
+    width: 100%; padding: 15px; background: #7c6fff; color: #fff;
+    border: none; border-radius: 10px; font-size: 15px; font-weight: 700;
     cursor: pointer; transition: opacity .2s;
   }
   button#genBtn:hover { opacity: .88; }
   button#genBtn:disabled { opacity: .4; cursor: not-allowed; }
   .hints { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
   .hint {
-    padding: 5px 13px; background: #080810;
-    border: 1px solid #1c1c2e; border-radius: 999px;
-    font-size: 12px; color: #5a5870; cursor: pointer;
+    padding: 5px 13px; background: #080810; border: 1px solid #1c1c2e;
+    border-radius: 999px; font-size: 12px; color: #5a5870; cursor: pointer;
     transition: border-color .2s, color .2s;
   }
   .hint:hover { border-color: #7c6fff; color: #7c6fff; }
   #statusMsg { margin-top: 12px; font-size: 13px; color: #5a5870; min-height: 20px; }
   #errorMsg { margin-top: 12px; font-size: 13px; color: #ff8888; min-height: 20px; display:none; }
   .output { width: 100%; max-width: 720px; margin-top: 28px; display: none; }
-  .frame {
-    width: 100%; aspect-ratio: 16/9;
-    border: 1px solid #1c1c2e; border-radius: 12px;
-    overflow: hidden; background: #000;
-  }
+  .frame { width: 100%; aspect-ratio: 16/9; border: 1px solid #1c1c2e;
+    border-radius: 12px; overflow: hidden; background: #000; }
   .frame svg { width: 100%; height: 100%; }
-  .skel { width:100%; height:100%; background: linear-gradient(90deg,#0f0f1a 25%,#1c1c2e 50%,#0f0f1a 75%); background-size:200% 100%; animation: sk 1.5s infinite; }
+  .skel { width:100%; height:100%;
+    background: linear-gradient(90deg,#0f0f1a 25%,#1c1c2e 50%,#0f0f1a 75%);
+    background-size:200% 100%; animation: sk 1.5s infinite; }
   @keyframes sk { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-  #dlBtn { display:none; margin-top:10px; padding:8px 18px; background:transparent; border:1px solid #1c1c2e; border-radius:7px; color:#eeeaf8; font-size:12px; cursor:pointer; }
+  #dlBtn { display:none; margin-top:10px; padding:8px 18px; background:transparent;
+    border:1px solid #1c1c2e; border-radius:7px; color:#eeeaf8; font-size:12px; cursor:pointer; }
   #dlBtn:hover { border-color:#7c6fff; color:#7c6fff; }
   .meta { margin-top:8px; font-size:11px; color:#5a5870; }
-  .key-row { display:flex; align-items:center; gap:10px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid #1c1c2e; }
-  .key-row label { font-size:11px; color:#5a5870; white-space:nowrap; letter-spacing:0.1em; text-transform:uppercase; }
-  .key-row input { flex:1; background:#080810; border:1px solid #1c1c2e; border-radius:8px; padding:10px 14px; color:#eeeaf8; font-family:monospace; font-size:12px; outline:none; }
-  .key-row input:focus { border-color:#7c6fff; }
 </style>
 </head>
 <body>
-
 <header>
   <h1>Describe it. See it.</h1>
   <p class="sub">Type anything — Claude designs the full image from your words</p>
 </header>
-
 <div class="card">
   <div class="hints">
     <span class="hint" id="h1">🍽 Restaurant menu</span>
@@ -90,7 +81,6 @@ e.g. Flash sale — 50% off all electronics. Ends midnight. Bold neon style."></
   <div id="statusMsg"></div>
   <div id="errorMsg"></div>
 </div>
-
 <div class="output" id="output">
   <div class="frame" id="frame"></div>
   <button id="dlBtn">↓ Save SVG</button>
@@ -98,7 +88,9 @@ e.g. Flash sale — 50% off all electronics. Ends midnight. Bold neon style."></
 </div>
 
 <script>
-var TEAM_API_KEY = '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';
+// ── Point this to your Render proxy URL after deploying ──
+var PROXY_URL = 'https://ai-image-proxy-gnty.onrender.com';
+
 var lastSvg = null;
 var busy = false;
 
@@ -126,10 +118,7 @@ document.getElementById('dlBtn').onclick = function() {
 };
 
 document.getElementById('genBtn').onclick = function() {
-  console.log('Button clicked');
-  if (busy) { console.log('busy, skipping'); return; }
-
-  var apiKey = TEAM_API_KEY;
+  if (busy) return;
   var desc = document.getElementById('desc').value.trim();
   var errEl = document.getElementById('errorMsg');
   errEl.style.display = 'none';
@@ -153,50 +142,27 @@ document.getElementById('genBtn').onclick = function() {
 
   var t0 = Date.now();
 
-  fetch('https://api.anthropic.com/v1/messages', {
+  fetch(PROXY_URL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 4096,
-      system: 'You are a world-class visual designer and SVG engineer creating high-impact digital display graphics.\n\nOUTPUT RULES — NON-NEGOTIABLE:\n1. Return ONLY the raw SVG. No markdown fences, no explanation, nothing else.\n2. SVG must start with <svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">\n3. NO external resources whatsoever — no xlink:href to images, no font URLs, no src attributes.\n4. Use ONLY these SVG-safe font stacks: font-family="Georgia, serif" or font-family="Arial, sans-serif"\n5. max_tokens is limited — be efficient with code but NEVER sacrifice content.\n\nDESIGN RULES — MAKE IT LOOK REAL AND FULL:\n- FILL THE ENTIRE 1920x1080 CANVAS — no empty white space, no plain backgrounds\n- Use rich backgrounds: dark gradients, textured overlays, geometric patterns, color blocks\n- EVERY piece of text from the description MUST appear as actual <text> elements in the SVG\n- Large bold headline at top (font-size 80-140px)\n- All details, items, prices, dates, names in the body (font-size 30-60px)\n- Decorative elements: lines, shapes, borders, dividers, geometric accents\n- Strong color contrast — text must be clearly readable\n- Footer zone with supporting info\n\nSALE/PROMO LAYOUT:\n- Giant discount % or offer text centered (font-size 150-200px, bold)\n- Product/offer details below in 50-60px\n- Store name at top in 80px\n- Deadline / urgency text at bottom in 40px\n- Bold contrasting colors — dark bg with bright accent (red, yellow, neon)\n- Decorative star bursts, diagonal stripes, or bold borders\n\nMENU LAYOUT:\n- Restaurant name at top center (100px+)\n- Cuisine/tagline below (40px italic)\n- Decorative divider line\n- Items listed: name on left (50px bold) ... price on right (50px)\n- Description below each item (32px, lighter color)\n- Group into sections with section headers (60px)\n- Footer with note (30px)\n\nEVENT LAYOUT:\n- Event name huge at top\n- Date and venue prominent\n- Speaker names and topics in clear list\n- Schedule or agenda if given\n- Brand colors, modern geometric shapes\n\nWEDDING/WELCOME:\n- Names huge and centered\n- Date and venue elegant\n- Schedule of events\n- Floral or ornamental SVG shapes as decoration',
-
-      messages: [{
-        role: 'user',
-        content: 'Create a complete, detailed, visually rich 1920x1080 SVG image for:\n\n' + desc + '\n\nIMPORTANT: Every single detail from the description must appear as visible text in the image. No blank spaces. Fill the entire canvas. Make it look like a professional agency designed this for a real client — bold, complete, impressive, and production-ready.'
-      }]
-    })
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ description: desc })
   })
-  .then(function(res) {
-    console.log('API response status:', res.status);
-    return res.json().then(function(data) {
-      return { status: res.status, data: data };
-    });
-  })
-  .then(function(result) {
-    if (result.status !== 200) {
-      throw new Error((result.data && result.data.error && result.data.error.message) || 'HTTP ' + result.status);
-    }
-    var text = result.data.content[0].text.trim()
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (data.error) throw new Error(data.error);
+    var svg = data.svg.trim()
       .replace(/^```[\w]*\n?/m, '').replace(/\n?```$/m, '').trim();
-    console.log('SVG starts with:', text.substring(0, 40));
-    if (!text.startsWith('<svg')) throw new Error('Did not get a valid SVG back. Try rephrasing.');
-    lastSvg = text;
+    if (!svg.startsWith('<svg')) throw new Error('Invalid SVG returned. Try rephrasing.');
+    lastSvg = svg;
     var elapsed = ((Date.now() - t0) / 1000).toFixed(1);
-    document.getElementById('frame').innerHTML = text;
+    document.getElementById('frame').innerHTML = svg;
     var svgEl = document.getElementById('frame').querySelector('svg');
     if (svgEl) { svgEl.style.width = '100%'; svgEl.style.height = '100%'; }
     document.getElementById('dlBtn').style.display = 'inline-block';
-    document.getElementById('meta').textContent = '⏱ ' + elapsed + 's  |  1920 × 1080  |  claude-sonnet-4';
+    document.getElementById('meta').textContent = '⏱ ' + elapsed + 's  |  1920 × 1080  |  claude-sonnet-4-5';
     document.getElementById('statusMsg').textContent = '✓ Done!';
   })
   .catch(function(err) {
-    console.error('Error:', err);
     document.getElementById('frame').innerHTML = '';
     document.getElementById('errorMsg').textContent = 'Error: ' + err.message;
     document.getElementById('errorMsg').style.display = 'block';
