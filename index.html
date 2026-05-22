@@ -60,6 +60,10 @@
   #dlBtn { display:none; margin-top:10px; padding:8px 18px; background:transparent; border:1px solid #1c1c2e; border-radius:7px; color:#eeeaf8; font-size:12px; cursor:pointer; }
   #dlBtn:hover { border-color:#7c6fff; color:#7c6fff; }
   .meta { margin-top:8px; font-size:11px; color:#5a5870; }
+  .key-row { display:flex; align-items:center; gap:10px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid #1c1c2e; }
+  .key-row label { font-size:11px; color:#5a5870; white-space:nowrap; letter-spacing:0.1em; text-transform:uppercase; }
+  .key-row input { flex:1; background:#080810; border:1px solid #1c1c2e; border-radius:8px; padding:10px 14px; color:#eeeaf8; font-family:monospace; font-size:12px; outline:none; }
+  .key-row input:focus { border-color:#7c6fff; }
 </style>
 </head>
 <body>
@@ -94,7 +98,7 @@ e.g. Flash sale — 50% off all electronics. Ends midnight. Bold neon style."></
 </div>
 
 <script>
-var TEAM_API_KEY = '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';
+var TEAM_API_KEY = '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';
 var lastSvg = null;
 var busy = false;
 
@@ -125,6 +129,7 @@ document.getElementById('genBtn').onclick = function() {
   console.log('Button clicked');
   if (busy) { console.log('busy, skipping'); return; }
 
+  var apiKey = TEAM_API_KEY;
   var desc = document.getElementById('desc').value.trim();
   var errEl = document.getElementById('errorMsg');
   errEl.style.display = 'none';
@@ -152,12 +157,12 @@ document.getElementById('genBtn').onclick = function() {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': TEAM_API_KEY,
+      'x-api-key': apiKey,
       'anthropic-version': '2023-06-01',
       'anthropic-dangerous-direct-browser-access': 'true'
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5',
       max_tokens: 4096,
       system: 'You are a world-class visual designer and SVG engineer creating high-impact digital display graphics.\n\nOUTPUT RULES — NON-NEGOTIABLE:\n1. Return ONLY the raw SVG. No markdown fences, no explanation, nothing else.\n2. SVG must start with <svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">\n3. NO external resources whatsoever — no xlink:href to images, no font URLs, no src attributes.\n4. Use ONLY these SVG-safe font stacks: font-family="Georgia, serif" or font-family="Arial, sans-serif"\n5. max_tokens is limited — be efficient with code but NEVER sacrifice content.\n\nDESIGN RULES — MAKE IT LOOK REAL AND FULL:\n- FILL THE ENTIRE 1920x1080 CANVAS — no empty white space, no plain backgrounds\n- Use rich backgrounds: dark gradients, textured overlays, geometric patterns, color blocks\n- EVERY piece of text from the description MUST appear as actual <text> elements in the SVG\n- Large bold headline at top (font-size 80-140px)\n- All details, items, prices, dates, names in the body (font-size 30-60px)\n- Decorative elements: lines, shapes, borders, dividers, geometric accents\n- Strong color contrast — text must be clearly readable\n- Footer zone with supporting info\n\nSALE/PROMO LAYOUT:\n- Giant discount % or offer text centered (font-size 150-200px, bold)\n- Product/offer details below in 50-60px\n- Store name at top in 80px\n- Deadline / urgency text at bottom in 40px\n- Bold contrasting colors — dark bg with bright accent (red, yellow, neon)\n- Decorative star bursts, diagonal stripes, or bold borders\n\nMENU LAYOUT:\n- Restaurant name at top center (100px+)\n- Cuisine/tagline below (40px italic)\n- Decorative divider line\n- Items listed: name on left (50px bold) ... price on right (50px)\n- Description below each item (32px, lighter color)\n- Group into sections with section headers (60px)\n- Footer with note (30px)\n\nEVENT LAYOUT:\n- Event name huge at top\n- Date and venue prominent\n- Speaker names and topics in clear list\n- Schedule or agenda if given\n- Brand colors, modern geometric shapes\n\nWEDDING/WELCOME:\n- Names huge and centered\n- Date and venue elegant\n- Schedule of events\n- Floral or ornamental SVG shapes as decoration',
 
