@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -88,8 +89,10 @@ e.g. Flash sale — 50% off all electronics. Ends midnight. Bold neon style."></
 </div>
 
 <script>
-// ── Point this to your Render proxy URL after deploying ──
-var PROXY_URL = 'https://login.intelisa.in/api/getAPIKeyForImageGeneration';
+var API_KEY_URL = 'https://login.intelisa.in/api/getAPIKeyForImageGeneration';
+var ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
+var MODEL = 'claude-sonnet-4-5-20251001';
+var cachedKey = null;
 
 var lastSvg = null;
 var busy = false;
@@ -117,11 +120,114 @@ document.getElementById('dlBtn').onclick = function() {
   URL.revokeObjectURL(url);
 };
 
+function getApiKey() {
+  if (cachedKey) return Promise.resolve(cachedKey);
+
+  return fetch(API_KEY_URL, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  })
+  .then(function(res) {
+    if (!res.ok) {
+      return res.text().then(function(body) {
+        throw new Error('HTTP ' + res.status + ' ' + res.statusText + ': ' + body);
+      });
+    }
+    return res.text();
+  })
+  .then(function(key) {
+    key = key.trim();
+    key = key.replace(/^["']+|["']+$/g, '');
+    console.log("api key length=" + key.length);
+    console.log("api key starts with=" + key.substring(0, 10));
+    if (!key) throw new Error('API key not found in response');
+    cachedKey = key;
+    return key;
+  })
+  .catch(function(err) {
+    console.error('[getApiKey] Proxy failed:', err);
+    return promptForKey();
+  });
+}
+
+function promptForKey() {
+  return new Promise(function(resolve, reject) {
+    var overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:999;';
+    overlay.innerHTML = [
+      '<div style="background:#0f0f1a;border:1px solid #1c1c2e;border-radius:16px;padding:28px;width:100%;max-width:440px;margin:20px;">',
+        '<p style="font-size:15px;font-weight:700;margin-bottom:6px;">Enter your API key</p>',
+        '<p style="font-size:12px;color:#5a5870;margin-bottom:16px;">Could not reach the key server. Paste your Anthropic API key to continue.</p>',
+        '<input id="fallbackKey" type="password" placeholder="sk-ant-api03-…" style="width:100%;background:#080810;border:1px solid #1c1c2e;border-radius:10px;padding:12px 16px;color:#eeeaf8;font-size:13px;outline:none;margin-bottom:12px;" autocomplete="off" spellcheck="false"/>',
+        '<div style="display:flex;gap:10px;">',
+          '<button id="fallbackOk" style="flex:1;padding:12px;background:#7c6fff;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">Continue</button>',
+          '<button id="fallbackCancel" style="padding:12px 18px;background:transparent;border:1px solid #1c1c2e;border-radius:10px;color:#5a5870;font-size:14px;cursor:pointer;">Cancel</button>',
+        '</div>',
+        '<p id="fallbackErr" style="font-size:12px;color:#ff8888;margin-top:10px;display:none;"></p>',
+      '</div>'
+    ].join('');
+    document.body.appendChild(overlay);
+    var inp = overlay.querySelector('#fallbackKey');
+    var errP = overlay.querySelector('#fallbackErr');
+    inp.focus();
+    overlay.querySelector('#fallbackOk').onclick = function() {
+      var k = inp.value.trim().replace(/^["']+|["']+$/g, '');
+      if (!k || !k.startsWith('sk-')) {
+        errP.textContent = 'Key looks invalid — should start with "sk-".';
+        errP.style.display = 'block';
+        return;
+      }
+      cachedKey = k;
+      document.body.removeChild(overlay);
+      resolve(k);
+    };
+    overlay.querySelector('#fallbackCancel').onclick = function() {
+      document.body.removeChild(overlay);
+      reject(new Error('API key entry cancelled.'));
+    };
+    inp.onkeydown = function(e) { if (e.key === 'Enter') overlay.querySelector('#fallbackOk').click(); };
+  });
+}
+
+function generateSvg(apiKey, description) {
+  var prompt = 'You are an expert SVG designer. Create a stunning, detailed SVG image (1920x1080, 16:9) based on this description:\n\n' + description + '\n\nRequirements:\n- Output ONLY raw SVG code, no markdown, no explanation\n- Start directly with <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">\n- Make it visually rich, professional, and beautiful\n- Use appropriate fonts, colors, shapes, and layout for the described content\n- All text must be clearly readable and well-positioned\n- Fill the entire canvas with a cohesive design';
+
+  return fetch(ANTHROPIC_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      max_tokens: 8000,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  })
+  .then(function(res) {
+    if (!res.ok) {
+      return res.json().then(function(e) {
+        throw new Error(e.error && e.error.message ? e.error.message : 'Anthropic API error (HTTP ' + res.status + ')');
+      });
+    }
+    return res.json();
+  })
+  .then(function(data) {
+    if (!data.content || !data.content[0] || !data.content[0].text) {
+      throw new Error('Unexpected response format from API');
+    }
+    return data.content[0].text;
+  });
+}
+
 document.getElementById('genBtn').onclick = function() {
   if (busy) return;
   var desc = document.getElementById('desc').value.trim();
   var errEl = document.getElementById('errorMsg');
   errEl.style.display = 'none';
+  errEl.textContent = '';
 
   if (!desc) {
     errEl.textContent = 'Please enter a description first.';
@@ -133,7 +239,7 @@ document.getElementById('genBtn').onclick = function() {
   var btn = document.getElementById('genBtn');
   btn.disabled = true;
   btn.textContent = 'Generating…';
-  document.getElementById('statusMsg').textContent = 'Claude is designing your image…';
+  document.getElementById('statusMsg').textContent = 'Fetching API key…';
   document.getElementById('frame').innerHTML = '<div class="skel"></div>';
   document.getElementById('output').style.display = 'block';
   document.getElementById('dlBtn').style.display = 'none';
@@ -142,37 +248,35 @@ document.getElementById('genBtn').onclick = function() {
 
   var t0 = Date.now();
 
-  fetch(PROXY_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ description: desc })
-  })
-  .then(function(res) { return res.json(); })
-  .then(function(data) {
-    if (data.error) throw new Error(data.error);
-    var svg = data.svg.trim()
-      .replace(/^```[\w]*\n?/m, '').replace(/\n?```$/m, '').trim();
-    if (!svg.startsWith('<svg')) throw new Error('Invalid SVG returned. Try rephrasing.');
-    lastSvg = svg;
-    var elapsed = ((Date.now() - t0) / 1000).toFixed(1);
-    document.getElementById('frame').innerHTML = svg;
-    var svgEl = document.getElementById('frame').querySelector('svg');
-    if (svgEl) { svgEl.style.width = '100%'; svgEl.style.height = '100%'; }
-    document.getElementById('dlBtn').style.display = 'inline-block';
-    document.getElementById('meta').textContent = '⏱ ' + elapsed + 's  |  1920 × 1080  |  claude-sonnet-4-5';
-    document.getElementById('statusMsg').textContent = '✓ Done!';
-  })
-  .catch(function(err) {
-    document.getElementById('frame').innerHTML = '';
-    document.getElementById('errorMsg').textContent = 'Error: ' + err.message;
-    document.getElementById('errorMsg').style.display = 'block';
-    document.getElementById('statusMsg').textContent = '';
-  })
-  .finally(function() {
-    busy = false;
-    btn.disabled = false;
-    btn.textContent = 'Generate Image →';
-  });
+  getApiKey()
+    .then(function(apiKey) {
+      document.getElementById('statusMsg').textContent = 'Claude is designing your image…';
+      return generateSvg(apiKey, desc);
+    })
+    .then(function(rawText) {
+      var svg = rawText.trim()
+        .replace(/^```[\w]*\n?/m, '').replace(/\n?```$/m, '').trim();
+      if (!svg.startsWith('<svg')) throw new Error('Invalid SVG returned. Try rephrasing your description.');
+      lastSvg = svg;
+      var elapsed = ((Date.now() - t0) / 1000).toFixed(1);
+      document.getElementById('frame').innerHTML = svg;
+      var svgEl = document.getElementById('frame').querySelector('svg');
+      if (svgEl) { svgEl.style.width = '100%'; svgEl.style.height = '100%'; }
+      document.getElementById('dlBtn').style.display = 'inline-block';
+      document.getElementById('meta').textContent = '⏱ ' + elapsed + 's  |  1920 × 1080  |  ' + MODEL;
+      document.getElementById('statusMsg').textContent = '✓ Done!';
+    })
+    .catch(function(err) {
+      document.getElementById('frame').innerHTML = '';
+      document.getElementById('errorMsg').textContent = 'Error: ' + err.message;
+      document.getElementById('errorMsg').style.display = 'block';
+      document.getElementById('statusMsg').textContent = '';
+    })
+    .finally(function() {
+      busy = false;
+      btn.disabled = false;
+      btn.textContent = 'Generate Image →';
+    });
 };
 </script>
 </body>
