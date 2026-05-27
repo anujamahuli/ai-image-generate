@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Image Generator</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #080810; color: #eeeaf8;
+    font-family: system-ui, sans-serif;
+    min-height: 100vh; display: flex;
+    flex-direction: column; align-items: center;
+    padding: 48px 20px 80px;
+  }
+  header { text-align: center; margin-bottom: 40px; }
+  h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 10px;
+    background: linear-gradient(135deg, #eeeaf8 40%, #7c6fff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .sub { font-size: 14px; color: #5a5870; }
+  .card { width: 100%; max-width: 720px; background: #0f0f1a;
+    border: 1px solid #1c1c2e; border-radius: 16px; padding: 28px; }
+
+  /* ── Resolution row ── */
+  .res-row { display: flex; gap: 8px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
+  .res-btn {
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 14px; background: #080810; border: 1px solid #1c1c2e;
+    border-radius: 10px; font-size: 12px; color: #5a5870; cursor: pointer;
+    transition: border-color .2s, color .2s;
+  }
+  .res-btn:hover { border-color: #7c6fff; color: #eeeaf8; }
+  .res-btn.active { border-color: #7c6fff; color: #eeeaf8; background: #1a1730; }
+  .res-btn .res-label { font-weight: 600; display: block; }
+  .res-btn .res-size { font-size: 10px; color: #5a5870; display: block; }
+  .res-btn.active .res-size { color: #9b8fff; }
+  .res-divider { width: 1px; height: 28px; background: #1c1c2e; flex-shrink: 0; }
+  .custom-res { display: flex; align-items: center; gap: 6px; }
+  .custom-res input {
+    width: 68px; background: #080810; border: 1px solid #1c1c2e;
+    border-radius: 8px; padding: 7px 10px; color: #eeeaf8;
+    font-size: 12px; outline: none; text-align: center;
+    transition: border-color .2s;
+  }
+  .custom-res input:focus { border-color: #7c6fff; }
+  .custom-res input::placeholder { color: #5a5870; }
+  .custom-res .sep { color: #5a5870; font-size: 13px; font-weight: 700; }
+  .custom-res button {
+    padding: 7px 12px; background: #080810; border: 1px solid #1c1c2e;
+    border-radius: 8px; color: #5a5870; font-size: 11px; font-weight: 600;
+    cursor: pointer; transition: border-color .2s, color .2s; white-space: nowrap;
+  }
+  .custom-res button:hover { border-color: #7c6fff; color: #7c6fff; }
+  .custom-res button.applied { border-color: #7c6fff; color: #7c6fff; background: #1a1730; }
+
+  textarea {
+    width: 100%; background: #080810; border: 1px solid #1c1c2e;
+    border-radius: 10px; padding: 16px; color: #eeeaf8;
+    font-family: system-ui, sans-serif; font-size: 14px;
+    line-height: 1.7; resize: vertical; min-height: 120px;
+    outline: none; margin-bottom: 14px; transition: border-color .2s;
+  }
+  textarea:focus { border-color: #7c6fff; }
+  textarea::placeholder { color: #5a5870; }
+  .hints { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .hint {
+    padding: 5px 13px; background: #080810; border: 1px solid #1c1c2e;
+    border-radius: 999px; font-size: 12px; color: #5a5870; cursor: pointer;
+    transition: border-color .2s, color .2s;
+  }
+  .hint:hover { border-color: #7c6fff; color: #7c6fff; }
+  button#genBtn {
+    width: 100%; padding: 15px; background: #7c6fff; color: #fff;
+    border: none; border-radius: 10px; font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: opacity .2s;
+  }
+  button#genBtn:hover { opacity: .88; }
+  button#genBtn:disabled { opacity: .4; cursor: not-allowed; }
+  #statusMsg { margin-top: 12px; font-size: 13px; color: #5a5870; min-height: 20px; }
+  #errorMsg { margin-top: 12px; font-size: 13px; color: #ff8888; min-height: 20px; display:none; }
+  .output { width: 100%; max-width: 720px; margin-top: 28px; display: none; }
+  .frame { width: 100%; border: 1px solid #1c1c2e;
+    border-radius: 12px; overflow: hidden; background: #000; }
+  .frame svg { width: 100%; height: 100%; }
+  .skel { width:100%; height:100%;
+    background: linear-gradient(90deg,#0f0f1a 25%,#1c1c2e 50%,#0f0f1a 75%);
+    background-size:200% 100%; animation: sk 1.5s infinite; }
+  @keyframes sk { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+  #dlBtn { display:none; margin-top:10px; padding:8px 18px; background:transparent;
+    border:1px solid #1c1c2e; border-radius:7px; color:#eeeaf8; font-size:12px; cursor:pointer; }
+  #dlBtn:hover { border-color:#7c6fff; color:#7c6fff; }
+  .meta { margin-top:8px; font-size:11px; color:#5a5870; }
+
+  /* ── Edit bar ── */
+  .edit-bar { display:none; margin-top:16px; background:#0f0f1a;
+    border:1px solid #1c1c2e; border-radius:12px; padding:16px; }
+  .edit-bar-label { font-size:12px; color:#5a5870; margin-bottom:10px; }
+  .edit-bar-label span { color:#7c6fff; font-weight:600; }
+  .edit-row { display:flex; gap:8px; align-items:flex-end; }
+  .edit-row textarea {
+    flex:1; min-height:44px; max-height:120px; margin-bottom:0;
+    padding:10px 14px; font-size:13px; line-height:1.5; resize:none;
+  }
+  #editBtn { padding:10px 18px; background:#7c6fff; color:#fff;
+    border:none; border-radius:10px; font-size:13px; font-weight:700;
+    cursor:pointer; transition:opacity .2s; white-space:nowrap; flex-shrink:0; }
+  #editBtn:hover { opacity:.88; }
+  #editBtn:disabled { opacity:.4; cursor:not-allowed; }
+  #editStatusMsg { margin-top:8px; font-size:12px; color:#5a5870; min-height:18px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Describe it. See it.</h1>
+  <p class="sub">Type anything — Claude designs the full image from your words</p>
+</header>
+<div class="card">
+
+  <!-- Resolution row -->
+  <div class="res-row">
+    <div class="res-btn active" id="res-landscape" onclick="selectPreset('landscape')">
+      <svg width="20" height="13" viewBox="0 0 20 13"><rect x="1" y="1" width="18" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+      <div><span class="res-label">Landscape</span><span class="res-size">1920 × 1080</span></div>
+    </div>
+    <div class="res-btn" id="res-portrait" onclick="selectPreset('portrait')">
+      <svg width="13" height="20" viewBox="0 0 13 20"><rect x="1" y="1" width="11" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+      <div><span class="res-label">Portrait</span><span class="res-size">1080 × 1920</span></div>
+    </div>
+    <div class="res-btn" id="res-square" onclick="selectPreset('square')">
+      <svg width="16" height="16" viewBox="0 0 16 16"><rect x="1" y="1" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+      <div><span class="res-label">Square</span><span class="res-size">1080 × 1080</span></div>
+    </div>
+    <div class="res-divider"></div>
+    <div class="custom-res">
+      <input type="number" id="customW" placeholder="W" min="100" max="9999"/>
+      <span class="sep">×</span>
+      <input type="number" id="customH" placeholder="H" min="100" max="9999"/>
+      <button id="applyCustom" onclick="applyCustomRes()">Apply</button>
+    </div>
+  </div>
+
+  <div class="hints">
+    <span class="hint" id="h1">🍽 Restaurant menu</span>
+    <span class="hint" id="h2">🏷 Sale banner</span>
+    <span class="hint" id="h3">📅 Event board</span>
+    <span class="hint" id="h4">☕ Café specials</span>
+    <span class="hint" id="h5">💍 Wedding board</span>
+  </div>
+  <textarea id="desc" placeholder="Describe what you want to see...
+
+e.g. Restaurant menu for Casa Milano — Italian cuisine. Margherita Pizza ₹349, Pasta Carbonara ₹399, Tiramisu ₹199. Elegant dark gold style.
+
+e.g. Flash sale — 50% off all electronics. Ends midnight. Bold neon style."></textarea>
+  <button id="genBtn">Generate Image →</button>
+  <div id="statusMsg"></div>
+  <div id="errorMsg"></div>
+</div>
+<div class="output" id="output">
+  <div class="frame" id="frame" style="aspect-ratio:1.7778;"></div>
+  <button id="dlBtn">↓ Save SVG</button>
+  <div class="meta" id="meta"></div>
+  <div class="edit-bar" id="editBar">
+    <div class="edit-bar-label">Want to make changes? <span>Describe what to edit</span> — everything else stays the same.</div>
+    <div class="edit-row">
+      <textarea id="editDesc" placeholder="e.g. Change the background to dark blue… make the title bigger… add a border…"></textarea>
+      <button id="editBtn">Apply Edit →</button>
+    </div>
+    <div id="editStatusMsg"></div>
+  </div>
+</div>
+
+<script>
+var API_KEY_URL = 'https://login.intelisa.in/api/getAPIKeyForImageGeneration';
+var ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
+var MODEL = 'claude-sonnet-4-5';
+var cachedKey = null;
+var lastSvg = null;
+var lastDesc = "";
+var busy = false;
+var selectedW = 1920;
+var selectedH = 1080;
+
+var PRESETS = {
+  landscape: { w: 1920, h: 1080 },
+  portrait:  { w: 1080, h: 1920 },
+  square:    { w: 1080, h: 1080 }
+};
+
+function selectPreset(name) {
+  ['landscape','portrait','square'].forEach(function(n) {
+    document.getElementById('res-' + n).classList.remove('active');
+  });
+  document.getElementById('res-' + name).classList.add('active');
+  selectedW = PRESETS[name].w;
+  selectedH = PRESETS[name].h;
+  document.getElementById('customW').value = '';
+  document.getElementById('customH').value = '';
+  var applyBtn = document.getElementById('applyCustom');
+  applyBtn.classList.remove('applied');
+  applyBtn.textContent = 'Apply';
+  document.getElementById('frame').style.aspectRatio = (selectedW / selectedH).toString();
+}
+
+function applyCustomRes() {
+  var w = parseInt(document.getElementById('customW').value);
+  var h = parseInt(document.getElementById('customH').value);
+  var errEl = document.getElementById('errorMsg');
+  if (!w || !h || w < 100 || h < 100 || w > 9999 || h > 9999) {
+    errEl.textContent = 'Custom resolution must be between 100 and 9999 for both dimensions.';
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+  selectedW = w;
+  selectedH = h;
+  ['landscape','portrait','square'].forEach(function(n) {
+    document.getElementById('res-' + n).classList.remove('active');
+  });
+  var applyBtn = document.getElementById('applyCustom');
+  applyBtn.classList.add('applied');
+  applyBtn.textContent = '✓ ' + w + ' × ' + h;
+  document.getElementById('frame').style.aspectRatio = (w / h).toString();
+}
+
+['customW','customH'].forEach(function(id) {
+  document.getElementById(id).addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') applyCustomRes();
+  });
+  document.getElementById(id).addEventListener('input', function() {
+    var applyBtn = document.getElementById('applyCustom');
+    applyBtn.classList.remove('applied');
+    applyBtn.textContent = 'Apply';
+  });
+});
+
+var HINTS = {
+  h1: 'Restaurant menu for "Casa Milano" — authentic Italian cuisine. Starters: Bruschetta ₹249, Caprese Salad ₹299. Mains: Margherita Pizza ₹349, Pasta Carbonara ₹399, Chicken Parmigiana ₹499. Desserts: Tiramisu ₹199, Panna Cotta ₹179. Luxury dark gold style. Footer: All prices inclusive of taxes.',
+  h2: 'Flash sale banner for MegaDeals electronics store. 50% off all laptops, phones and accessories. Sale ends midnight tonight. Bold neon electric style, dark background, blue and yellow accents.',
+  h3: 'Event board for TechSummit 2026 — Building the Future of AI. Date: June 12-14 2026. Venue: Bombay Exhibition Centre Mumbai. Speakers: Dr Priya Mehta (Google), James Carter (NeuralX). Modern blue white style.',
+  h4: 'Daily specials for The Roastery Cafe. Mango Cold Brew ₹220, Avocado Toast ₹280, Blueberry Cheesecake ₹180, Spanish Latte ₹210. Warm rustic chalkboard style.',
+  h5: 'Wedding reception welcome board for Priya and Arjun. Date: 15 February 2026. Venue: Grand Ballroom, Taj Mahal Palace Mumbai. Cocktail 7pm, Dinner 8:30pm. Floral romantic blush pink gold style.'
+};
+
+document.getElementById('h1').onclick = function(){ document.getElementById('desc').value = HINTS.h1; };
+document.getElementById('h2').onclick = function(){ document.getElementById('desc').value = HINTS.h2; };
+document.getElementById('h3').onclick = function(){ document.getElementById('desc').value = HINTS.h3; };
+document.getElementById('h4').onclick = function(){ document.getElementById('desc').value = HINTS.h4; };
+document.getElementById('h5').onclick = function(){ document.getElementById('desc').value = HINTS.h5; };
+
+document.getElementById('dlBtn').onclick = function() {
+  if (!lastSvg) return;
+  var blob = new Blob([lastSvg], {type:'image/svg+xml'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'image.svg'; a.click();
+  URL.revokeObjectURL(url);
+};
+
+function getApiKey() {
+  if (cachedKey) return Promise.resolve(cachedKey);
+
+  return fetch(API_KEY_URL, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  })
+  .then(function(res) {
+    if (!res.ok) {
+      return res.text().then(function(body) {
+        throw new Error('HTTP ' + res.status + ' ' + res.statusText + ': ' + body);
+      });
+    }
+    return res.text();
+  })
+  .then(function(key) {
+    key = key.trim();
+    key = key.replace(/^["']+|["']+$/g, '');
+    console.log("api key length=" + key.length);
+    console.log("api key starts with=" + key.substring(0, 10));
+    if (!key) throw new Error('API key not found in response');
+    cachedKey = key;
+    return key;
+  })
+  .catch(function(err) {
+    console.error('[getApiKey] Full error:', err);
+    throw err;
+  });
+}
+
+function generateSvg(apiKey, description, w, h) {
+  var prompt = 'You are an expert SVG designer. Create a stunning, detailed SVG image (' + w + 'x' + h + ') based on this description:\n\n' + description + '\n\nRequirements:\n- Output ONLY raw SVG code, no markdown, no explanation\n- Start directly with <svg viewBox="0 0 ' + w + ' ' + h + '" xmlns="http://www.w3.org/2000/svg">\n- Make it visually rich, professional, and beautiful\n- Use appropriate fonts, colors, shapes, and layout for the described content\n- All text must be clearly readable and well-positioned\n- Fill the entire canvas with a cohesive design\n- Optimise the layout for ' + w + 'x' + h + ' dimensions';
+
+  return fetch(ANTHROPIC_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      max_tokens: 8000,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  })
+  .then(function(res) {
+    if (!res.ok) {
+      return res.json().then(function(e) {
+        throw new Error(e.error && e.error.message ? e.error.message : 'Anthropic API error (HTTP ' + res.status + ')');
+      });
+    }
+    return res.json();
+  })
+  .then(function(data) {
+    if (!data.content || !data.content[0] || !data.content[0].text) {
+      throw new Error('Unexpected response format from API');
+    }
+    return data.content[0].text;
+  });
+}
+
+document.getElementById('genBtn').onclick = function() {
+  if (busy) return;
+  var desc = document.getElementById('desc').value.trim();
+  var errEl = document.getElementById('errorMsg');
+  errEl.style.display = 'none';
+  errEl.textContent = '';
+
+  if (!desc) {
+    errEl.textContent = 'Please enter a description first.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  busy = true;
+  lastDesc = desc;
+  var btn = document.getElementById('genBtn');
+  var w = selectedW, h = selectedH;
+  btn.disabled = true;
+  btn.textContent = 'Generating…';
+  document.getElementById('statusMsg').textContent = 'Fetching API key…';
+  document.getElementById('frame').innerHTML = '<div class="skel"></div>';
+  document.getElementById('frame').style.aspectRatio = (w / h).toString();
+  document.getElementById('output').style.display = 'block';
+  document.getElementById('dlBtn').style.display = 'none';
+  document.getElementById('editBar').style.display = 'none';
+  document.getElementById('meta').textContent = '';
+  lastSvg = null;
+
+  var t0 = Date.now();
+
+  getApiKey()
+    .then(function(apiKey) {
+      document.getElementById('statusMsg').textContent = 'Claude is designing your image…';
+      return generateSvg(apiKey, desc, w, h);
+    })
+    .then(function(rawText) {
+      var svg = rawText.trim()
+        .replace(/^```[\w]*\n?/m, '').replace(/\n?```$/m, '').trim();
+      if (!svg.startsWith('<svg')) throw new Error('Invalid SVG returned. Try rephrasing your description.');
+      lastSvg = svg;
+      var elapsed = ((Date.now() - t0) / 1000).toFixed(1);
+      document.getElementById('frame').innerHTML = svg;
+      var svgEl = document.getElementById('frame').querySelector('svg');
+      if (svgEl) { svgEl.style.width = '100%'; svgEl.style.height = '100%'; }
+      document.getElementById('dlBtn').style.display = 'inline-block';
+      document.getElementById('meta').textContent = '⏱ ' + elapsed + 's  |  ' + w + ' × ' + h + '  |  ' + MODEL;
+      document.getElementById('statusMsg').textContent = '✓ Done!';
+      document.getElementById('editBar').style.display = 'block';
+      document.getElementById('editDesc').value = '';
+      document.getElementById('editStatusMsg').textContent = '';
+    })
+    .catch(function(err) {
+      document.getElementById('frame').innerHTML = '';
+      document.getElementById('errorMsg').textContent = 'Error: ' + err.message;
+      document.getElementById('errorMsg').style.display = 'block';
+      document.getElementById('statusMsg').textContent = '';
+    })
+    .finally(function() {
+      busy = false;
+      btn.disabled = false;
+      btn.textContent = 'Generate Image →';
+    });
+};
+function editSvg(apiKey, originalDesc, editInstruction, currentSvg, w, h) {
+  var prompt = 'You are an expert SVG designer. You have an existing SVG image and need to apply a specific edit to it.\n\nOriginal description:\n' + originalDesc + '\n\nEdit requested:\n' + editInstruction + '\n\nExisting SVG:\n' + currentSvg + '\n\nRequirements:\n- Output ONLY the updated raw SVG code, no markdown, no explanation\n- Start directly with <svg viewBox="0 0 ' + w + ' ' + h + '" xmlns="http://www.w3.org/2000/svg">\n- Apply ONLY the requested edit — keep everything else exactly the same\n- Maintain the same dimensions, layout, fonts, and style unless the edit asks otherwise';
+
+  return fetch(ANTHROPIC_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      max_tokens: 8000,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  })
+  .then(function(res) {
+    if (!res.ok) {
+      return res.json().then(function(e) {
+        throw new Error(e.error && e.error.message ? e.error.message : 'Anthropic API error (HTTP ' + res.status + ')');
+      });
+    }
+    return res.json();
+  })
+  .then(function(data) {
+    if (!data.content || !data.content[0] || !data.content[0].text) {
+      throw new Error('Unexpected response format from API');
+    }
+    return data.content[0].text;
+  });
+}
+
+document.getElementById('editBtn').onclick = function() {
+  if (busy) return;
+  var editDesc = document.getElementById('editDesc').value.trim();
+  if (!editDesc) {
+    document.getElementById('editStatusMsg').textContent = 'Please describe what you want to change.';
+    return;
+  }
+  if (!lastSvg) {
+    document.getElementById('editStatusMsg').textContent = 'No image to edit yet.';
+    return;
+  }
+
+  busy = true;
+  var btn = document.getElementById('editBtn');
+  btn.disabled = true;
+  btn.textContent = 'Applying…';
+  document.getElementById('editStatusMsg').textContent = 'Claude is applying your edit…';
+
+  var w = selectedW, h = selectedH;
+  var t0 = Date.now();
+
+  getApiKey()
+    .then(function(apiKey) {
+      return editSvg(apiKey, lastDesc, editDesc, lastSvg, w, h);
+    })
+    .then(function(rawText) {
+      var svg = rawText.trim()
+        .replace(/^```[\w]*\n?/m, '').replace(/\n?```$/m, '').trim();
+      if (!svg.startsWith('<svg')) throw new Error('Invalid SVG returned. Try rephrasing your edit.');
+      lastSvg = svg;
+      var elapsed = ((Date.now() - t0) / 1000).toFixed(1);
+      document.getElementById('frame').innerHTML = svg;
+      var svgEl = document.getElementById('frame').querySelector('svg');
+      if (svgEl) { svgEl.style.width = '100%'; svgEl.style.height = '100%'; }
+      document.getElementById('editStatusMsg').textContent = '✓ Edit applied in ' + elapsed + 's';
+      document.getElementById('editDesc').value = '';
+    })
+    .catch(function(err) {
+      document.getElementById('editStatusMsg').textContent = 'Error: ' + err.message;
+    })
+    .finally(function() {
+      busy = false;
+      btn.disabled = false;
+      btn.textContent = 'Apply Edit →';
+    });
+};
+</script>
+</body>
+</html>
