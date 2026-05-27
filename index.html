@@ -176,6 +176,7 @@ var MODEL = 'claude-sonnet-4-5';
 var cachedKey = null;
 var lastSvg = null;
 var lastDesc = "";
+var editHistory = [];
 var busy = false;
 var selectedW = 1920;
 var selectedH = 1080;
@@ -334,6 +335,7 @@ document.getElementById('genBtn').onclick = function() {
 
   busy = true;
   lastDesc = desc;
+  editHistory = [];
   var btn = document.getElementById('genBtn');
   var w = selectedW, h = selectedH;
   btn.disabled = true;
@@ -383,7 +385,12 @@ document.getElementById('genBtn').onclick = function() {
     });
 };
 function editSvg(apiKey, originalDesc, editInstruction, currentSvg, w, h) {
-  var prompt = 'You are an expert SVG designer. You have an existing SVG image and need to apply a specific edit to it.\n\nOriginal description:\n' + originalDesc + '\n\nEdit requested:\n' + editInstruction + '\n\nExisting SVG:\n' + currentSvg + '\n\nRequirements:\n- Output ONLY the updated raw SVG code, no markdown, no explanation\n- Start directly with <svg viewBox="0 0 ' + w + ' ' + h + '" xmlns="http://www.w3.org/2000/svg">\n- Apply ONLY the requested edit — keep everything else exactly the same\n- Maintain the same dimensions, layout, fonts, and style unless the edit asks otherwise';
+  var historyText = '';
+  if (editHistory.length > 0) {
+    historyText = '\n\nPrevious edits already applied (do NOT undo these):\n' +
+      editHistory.map(function(e, i) { return (i+1) + '. ' + e; }).join('\n');
+  }
+  var prompt = 'You are an expert SVG designer. You have an existing SVG image and need to apply ONE additional edit to it, while preserving ALL previous edits.\n\nOriginal description:\n' + originalDesc + historyText + '\n\nNew edit to apply NOW:\n' + editInstruction + '\n\nCurrent SVG (this already includes all previous edits — use this as your base):\n' + currentSvg + '\n\nRequirements:\n- Output ONLY the updated raw SVG code, no markdown, no explanation\n- Start directly with <svg viewBox="0 0 ' + w + ' ' + h + '" xmlns="http://www.w3.org/2000/svg">\n- Apply ONLY the new edit above — preserve everything else exactly as it is in the Current SVG\n- Do NOT revert any previous edits\n- Maintain the same dimensions unless the edit asks otherwise';
 
   return fetch(ANTHROPIC_API_URL, {
     method: 'POST',
@@ -449,7 +456,8 @@ document.getElementById('editBtn').onclick = function() {
       document.getElementById('frame').innerHTML = svg;
       var svgEl = document.getElementById('frame').querySelector('svg');
       if (svgEl) { svgEl.style.width = '100%'; svgEl.style.height = '100%'; }
-      document.getElementById('editStatusMsg').textContent = '✓ Edit applied in ' + elapsed + 's';
+      editHistory.push(editDesc);
+      document.getElementById('editStatusMsg').textContent = '✓ Edit ' + editHistory.length + ' applied in ' + elapsed + 's';
       document.getElementById('editDesc').value = '';
     })
     .catch(function(err) {
