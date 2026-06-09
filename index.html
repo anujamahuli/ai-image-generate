@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Image Generator + Editor</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@700;800&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0e0e10;--surface:#18181c;--surface2:#222228;--border:#2e2e38;
+  --accent:#7c6aff;--accent2:#a78bfa;--text:#f0f0f5;--muted:#8888a0;
+  --success:#34d399;--danger:#f87171;
+}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* Header */
+header{padding:12px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:12px}
+.logo{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;letter-spacing:-0.02em;white-space:nowrap}
+.logo span{color:var(--accent2)}
+.header-actions{display:flex;gap:8px;align-items:center}
+
+/* Layout */
+.app{display:flex;flex:1;overflow:hidden;min-height:0}
+
+/* Left panel */
+.panel{width:300px;min-width:260px;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
+.panel-section{padding:16px;border-bottom:1px solid var(--border)}
+.section-label{font-size:0.68rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+
+textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:0.83rem;padding:9px 11px;resize:none;outline:none;transition:border-color .2s;line-height:1.5}
+textarea:focus{border-color:var(--accent)}
+textarea::placeholder{color:var(--muted)}
+
+.size-pills{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.size-pill{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:0.72rem;padding:5px 9px;cursor:pointer;transition:all .15s}
+.size-pill:hover{border-color:var(--accent);color:var(--text)}
+.size-pill.active{background:rgba(124,106,255,.15);border-color:var(--accent);color:var(--accent2)}
+
+.custom-res-row{display:flex;align-items:center;gap:6px;margin-top:8px}
+.custom-res-row input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Inter',sans-serif;font-size:0.78rem;padding:6px 8px;outline:none;min-width:0}
+.custom-res-row input:focus{border-color:var(--accent)}
+.custom-res-row input::placeholder{color:var(--muted)}
+.res-x{color:var(--muted);font-size:0.8rem;flex-shrink:0}
+.res-apply-btn{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.72rem;font-weight:600;padding:6px 10px;cursor:pointer;white-space:nowrap;transition:all .15s;font-family:'Inter',sans-serif}
+.res-apply-btn:hover{border-color:var(--accent);color:var(--accent2)}
+
+.quick-prompts{display:flex;flex-wrap:wrap;gap:5px}
+.qp{background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:0.7rem;padding:4px 9px;cursor:pointer;transition:all .15s}
+.qp:hover{border-color:var(--accent);color:var(--text)}
+
+.btn{padding:9px 14px;border-radius:8px;border:none;font-family:'Inter',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;gap:6px;width:100%}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#6b5be0}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed}
+.btn-ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent2)}
+.btn-ghost:disabled{opacity:.4;cursor:not-allowed}
+.btn-sm{padding:6px 11px;font-size:0.75rem;width:auto}
+
+/* Canvas area */
+.canvas-area{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.canvas-toolbar{padding:8px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap}
+.toolbar-label{font-size:0.72rem;color:var(--muted)}
+
+/* View/Edit tabs */
+.tab-row{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:7px;overflow:hidden}
+.tab-btn{padding:5px 11px;font-size:0.73rem;font-weight:500;border:none;background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif}
+.tab-btn.active{background:var(--accent);color:#fff}
+
+.spacer{flex:1}
+.toolbar-btn-group{display:flex;gap:6px}
+
+.canvas-scroll{flex:1;overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:28px;background:repeating-conic-gradient(#1a1a22 0% 25%,#161620 0% 50%) 0 0/20px 20px;position:relative}
+
+/* SVG stage */
+.svg-stage{position:relative;display:inline-block;box-shadow:0 0 0 1px var(--border),0 20px 60px rgba(0,0,0,.6);flex-shrink:0}
+.svg-stage svg{display:block;max-width:100%;height:auto}
+
+/* Selection handles */
+.sel-box{position:absolute;pointer-events:none;border:2px solid var(--accent);border-radius:1px;display:none}
+.sel-box.visible{display:block}
+.handle{position:absolute;width:8px;height:8px;background:#fff;border:2px solid var(--accent);border-radius:2px;transform:translate(-50%,-50%)}
+.handle-tl{top:0;left:0;cursor:nw-resize}
+.handle-tr{top:0;left:100%;cursor:ne-resize}
+.handle-bl{top:100%;left:0;cursor:sw-resize}
+.handle-br{top:100%;left:100%;cursor:se-resize}
+.handle-tm{top:0;left:50%;cursor:n-resize}
+.handle-bm{top:100%;left:50%;cursor:s-resize}
+.handle-ml{top:50%;left:0;cursor:w-resize}
+.handle-mr{top:50%;left:100%;cursor:e-resize}
+
+/* Inline text edit */
+.inline-text-input{position:absolute;background:rgba(0,0,0,.8);border:2px solid var(--accent);border-radius:4px;color:#fff;font-family:'Inter',sans-serif;font-size:14px;padding:3px 6px;outline:none;z-index:100;min-width:40px;display:none}
+
+/* Code editor panel */
+.code-panel{display:none;flex-direction:column;flex:1;overflow:hidden}
+.code-panel.visible{display:flex}
+.code-editor-wrap{flex:1;overflow:hidden;position:relative}
+.code-editor{width:100%;height:100%;background:#0a0a0c;color:#c9d1d9;font-family:'Fira Code','Cascadia Code',monospace;font-size:0.78rem;line-height:1.6;padding:16px;border:none;outline:none;resize:none;tab-size:2}
+.code-editor-toolbar{padding:8px 12px;border-top:1px solid var(--border);display:flex;gap:8px;background:var(--surface);flex-shrink:0}
+
+/* Inspector */
+.inspector{width:250px;min-width:230px;border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.inspector-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+.insp-tab{flex:1;padding:9px 6px;font-size:0.7rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);text-align:center;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.insp-tab.active{color:var(--accent2);border-bottom-color:var(--accent)}
+.insp-tab-panel{display:none;flex:1;overflow-y:auto;flex-direction:column}
+.insp-tab-panel.active{display:flex}
+
+.inspector-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted);font-size:0.78rem;text-align:center;padding:20px}
+.inspector-empty svg{opacity:.25}
+
+.insp-fields{padding:12px;display:flex;flex-direction:column;gap:10px}
+.field-group label{display:block;font-size:0.67rem;font-weight:500;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em}
+.field-group input[type="text"],.field-group input[type="number"],.field-group select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Inter',sans-serif;font-size:0.8rem;padding:6px 9px;outline:none;transition:border-color .2s}
+.field-group input:focus,.field-group select:focus{border-color:var(--accent)}
+.field-row{display:flex;gap:7px}
+.field-row .field-group{flex:1;min-width:0}
+.color-row{display:flex;align-items:center;gap:7px}
+.color-row input[type="color"]{width:32px;height:28px;border:1px solid var(--border);border-radius:5px;background:transparent;cursor:pointer;padding:1px;flex-shrink:0}
+.color-row input[type="text"]{flex:1;min-width:0}
+.el-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(124,106,255,.12);color:var(--accent2);border-radius:4px;font-size:0.68rem;font-weight:600;padding:3px 7px;font-family:monospace;margin-bottom:8px}
+
+/* Layers panel */
+.layers-list{padding:8px;display:flex;flex-direction:column;gap:3px}
+.layer-item{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:6px;cursor:pointer;font-size:0.75rem;color:var(--muted);transition:all .15s;border:1px solid transparent}
+.layer-item:hover{background:var(--surface2);color:var(--text)}
+.layer-item.selected{background:rgba(124,106,255,.12);border-color:rgba(124,106,255,.3);color:var(--accent2)}
+.layer-icon{width:14px;height:14px;flex-shrink:0;opacity:.6}
+.layer-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.layer-vis{cursor:pointer;opacity:.4;transition:opacity .15s;flex-shrink:0}
+.layer-vis:hover{opacity:1}
+
+/* placeholder */
+.canvas-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--muted);text-align:center;padding:40px;max-width:380px;margin:auto}
+.canvas-placeholder h2{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--text)}
+.canvas-placeholder p{font-size:0.83rem;line-height:1.6}
+.spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* toast */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:0.8rem;color:var(--text);box-shadow:0 8px 30px rgba(0,0,0,.4);transform:translateY(12px);opacity:0;transition:all .25s;z-index:9999;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success{border-color:var(--success);color:var(--success)}
+.toast.error{border-color:var(--danger);color:var(--danger)}
+
+/* history */
+.history-list{display:flex;flex-direction:column;gap:4px}
+.history-item{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 9px;font-size:0.72rem;color:var(--muted);display:flex;align-items:center;gap:7px}
+.history-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0}
+
+/* edit mode cursor */
+.edit-active svg *{cursor:pointer!important}
+[data-sel="1"]{outline:2px solid var(--accent)!important;outline-offset:1px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">image<span>craft</span></div>
+  <div class="header-actions">
+    <span id="status-text" style="font-size:0.72rem;color:var(--muted)"></span>
+    <button class="btn btn-ghost btn-sm" id="save-btn" style="display:none" onclick="saveSVG()">↓ Save SVG</button>
+    <button class="btn btn-ghost btn-sm" id="copy-btn" style="display:none" onclick="copySVG()">⎘ Copy SVG</button>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- ── LEFT PANEL ── -->
+  <div class="panel">
+
+    <div class="panel-section">
+      <div class="section-label">Describe your image</div>
+      <textarea id="prompt" rows="4" placeholder="A warm café menu board with a latte illustration, earthy tones, chalk-style typography…"></textarea>
+      <div style="margin-top:9px">
+        <div class="quick-prompts">
+          <span class="qp" onclick="setPrompt(this)">🍽 Restaurant menu</span>
+          <span class="qp" onclick="setPrompt(this)">🏷 Sale banner</span>
+          <span class="qp" onclick="setPrompt(this)">📅 Event board</span>
+          <span class="qp" onclick="setPrompt(this)">☕ Café specials</span>
+          <span class="qp" onclick="setPrompt(this)">💍 Wedding board</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="section-label">Canvas size</div>
+      <div class="size-pills">
+        <div class="size-pill active" data-w="1920" data-h="1080" onclick="setSize(this)">Landscape <span style="color:var(--muted);font-size:.65rem">1920×1080</span></div>
+        <div class="size-pill" data-w="1080" data-h="1920" onclick="setSize(this)">Portrait <span style="color:var(--muted);font-size:.65rem">1080×1920</span></div>
+        <div class="size-pill" data-w="1080" data-h="1080" onclick="setSize(this)">Square <span style="color:var(--muted);font-size:.65rem">1080×1080</span></div>
+      </div>
+      <div class="custom-res-row">
+        <input type="number" id="custom-w" placeholder="W" min="100" max="4000">
+        <span class="res-x">×</span>
+        <input type="number" id="custom-h" placeholder="H" min="100" max="4000">
+        <button class="res-apply-btn" onclick="applyCustomSize()">Apply</button>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <button class="btn btn-primary" id="gen-btn" onclick="generateImage()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        Generate Image →
+      </button>
+    </div>
+
+    <div class="panel-section">
+      <div class="section-label">Want to make changes?</div>
+      <p style="font-size:0.72rem;color:var(--muted);margin-bottom:9px;line-height:1.5">Describe what to edit — everything else stays the same.</p>
+      <textarea id="edit-prompt" rows="3" placeholder="Make the background darker, change the title to 'Today's Specials'…"></textarea>
+      <button class="btn btn-ghost" style="margin-top:8px" onclick="applyAIEdit()" id="ai-edit-btn">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Apply Edit →
+      </button>
+    </div>
+
+    <div class="panel-section edit-mode-section" id="history-section">
+      <div class="section-label">History</div>
+      <div class="history-list" id="history-list">
+        <div style="font-size:0.72rem;color:var(--muted)">No edits yet</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── CANVAS ── -->
+  <div class="canvas-area">
+    <div class="canvas-toolbar">
+      <span class="toolbar-label">Mode</span>
+      <div class="tab-row">
+        <button class="tab-btn active" id="tab-view" onclick="setCanvasMode('view')">View</button>
+        <button class="tab-btn" id="tab-edit" onclick="setCanvasMode('edit')">✏ Edit</button>
+        <button class="tab-btn" id="tab-code" onclick="setCanvasMode('code')">⌥ Code</button>
+      </div>
+      <span id="edit-hint" style="font-size:0.7rem;color:var(--accent2);display:none">Click to select · Drag to move · Double-click text to edit</span>
+      <div class="spacer"></div>
+      <div class="toolbar-btn-group" id="edit-actions" style="display:none">
+        <button class="btn btn-ghost btn-sm" onclick="undoEdit()" title="Undo">↩ Undo</button>
+        <button class="btn btn-ghost btn-sm" onclick="resetSVG()" title="Reset to original">Reset</button>
+      </div>
+    </div>
+
+    <!-- View + Edit canvas -->
+    <div class="canvas-scroll" id="canvas-scroll">
+      <div class="canvas-placeholder" id="placeholder">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <h2>Describe it. See it.</h2>
+        <p>Type a description and click <strong>Generate Image</strong> to create your SVG artwork.</p>
+      </div>
+
+      <div class="svg-stage" id="svg-stage" style="display:none">
+        <div id="svg-container"></div>
+        <!-- selection overlay -->
+        <div class="sel-box" id="sel-box">
+          <div class="handle handle-tl" data-h="tl"></div>
+          <div class="handle handle-tr" data-h="tr"></div>
+          <div class="handle handle-bl" data-h="bl"></div>
+          <div class="handle handle-br" data-h="br"></div>
+          <div class="handle handle-tm" data-h="tm"></div>
+          <div class="handle handle-bm" data-h="bm"></div>
+          <div class="handle handle-ml" data-h="ml"></div>
+          <div class="handle handle-mr" data-h="mr"></div>
+        </div>
+        <input class="inline-text-input" id="inline-text-input" type="text">
+      </div>
+    </div>
+
+    <!-- Code editor panel -->
+    <div class="code-panel" id="code-panel">
+      <div class="code-editor-wrap">
+        <textarea class="code-editor" id="code-editor" spellcheck="false" placeholder="Generate an image first to edit its SVG code here…"></textarea>
+      </div>
+      <div class="code-editor-toolbar">
+        <button class="btn btn-primary btn-sm" onclick="applyCodeEdit()">▶ Apply Code</button>
+        <button class="btn btn-ghost btn-sm" onclick="formatCode()">⌥ Format</button>
+        <button class="btn btn-ghost btn-sm" onclick="copyCode()">⎘ Copy</button>
+        <div class="spacer"></div>
+        <span id="code-chars" style="font-size:0.7rem;color:var(--muted)"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── INSPECTOR ── -->
+  <div class="inspector" id="inspector">
+    <div class="inspector-tabs">
+      <div class="insp-tab active" onclick="switchInspTab('props')" id="itab-props">Properties</div>
+      <div class="insp-tab" onclick="switchInspTab('layers')" id="itab-layers">Layers</div>
+    </div>
+
+    <!-- Properties tab -->
+    <div class="insp-tab-panel active" id="ipanel-props">
+      <div class="inspector-empty" id="insp-empty">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        <span>Switch to <strong>Edit</strong> mode<br>and click any element.</span>
+      </div>
+      <div id="insp-fields-wrap" style="display:none">
+        <div class="insp-fields" id="insp-fields"></div>
+      </div>
+    </div>
+
+    <!-- Layers tab -->
+    <div class="insp-tab-panel" id="ipanel-layers">
+      <div class="inspector-empty" id="layers-empty">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        <span>Generate an image to<br>see its layer tree.</span>
+      </div>
+      <div class="layers-list" id="layers-list" style="display:none"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── State ──
+let W = 1920, H = 1080;
+let currentSVG = null, originalSVG = null;
+let svgHistory = [];
+let selectedEl = null;
+let canvasMode = 'view'; // view | edit | code
+let inspTab = 'props';
+let generating = false;
+
+// drag state
+let drag = {active:false, el:null, startX:0, startY:0, origX:0, origY:0, attr:null};
+// resize state
+let rsz = {active:false, el:null, handle:'', startX:0, startY:0, origBox:null};
+// inline text state
+let textEdit = {active:false, el:null};
+
+// ── Utilities ──
+const $=id=>document.getElementById(id);
+const svg=()=>document.querySelector('#svg-container svg');
+
+function toast(msg,type=''){
+  const t=$('toast'); t.textContent=msg;
+  t.className='toast show '+(type||'');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.className='toast',3000);
+}
+function setStatus(s){$('status-text').textContent=s}
+
+// ── Prompts / size ──
+function setPrompt(el){
+  const map={
+    '🍽 Restaurant menu':'A warm restaurant menu board with elegant serif typography, warm amber tones, decorative borders, featuring today\'s specials with appetisers, mains and desserts',
+    '🏷 Sale banner':'A bold sale banner with 50% OFF in huge typography, vibrant red and gold palette, confetti decorations, modern geometric shapes',
+    '📅 Event board':'A community event board for Summer Festival 2025, July 14th, outdoor park setting, illustrated with trees and sun, welcoming warm palette',
+    '☕ Café specials':'A chalkboard-style café specials menu with hand-drawn coffee cup illustration, cream and brown palette, featuring lattes, pastries and daily specials',
+    '💍 Wedding board':'An elegant wedding welcome sign for Sarah & James, June 21, floral watercolor borders, soft blush and gold palette, cursive script typography'
+  };
+  $('prompt').value=map[el.textContent.trim()]||el.textContent.trim();
+}
+function setSize(el){
+  document.querySelectorAll('.size-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  W=+el.dataset.w; H=+el.dataset.h;
+}
+function applyCustomSize(){
+  const cw=+$('custom-w').value, ch=+$('custom-h').value;
+  if(cw>=100&&ch>=100){
+    W=cw; H=ch;
+    document.querySelectorAll('.size-pill').forEach(p=>p.classList.remove('active'));
+    toast(`Size set to ${cw}×${ch}`,'success');
+  } else toast('Enter valid dimensions (min 100)','error');
+}
+
+// ── Canvas mode ──
+function setCanvasMode(m){
+  canvasMode=m;
+  ['view','edit','code'].forEach(t=>{
+    $(`tab-${t}`).classList.toggle('active', t===m);
+  });
+  $('edit-hint').style.display = m==='edit'?'block':'none';
+  $('edit-actions').style.display = m==='edit'||m==='code'?'flex':'none';
+
+  const cScroll = $('canvas-scroll');
+  const cPanel = $('code-panel');
+
+  if(m==='code'){
+    cScroll.style.display='none';
+    cPanel.classList.add('visible');
+    syncCodeEditor();
+  } else {
+    cScroll.style.display='flex';
+    cPanel.classList.remove('visible');
+    if(m==='edit'){
+      $('svg-stage').classList.add('edit-active');
+      attachEditHandlers();
+    } else {
+      $('svg-stage').classList.remove('edit-active');
+      detachEditHandlers();
+      clearSelection();
+    }
+  }
+}
+
+// ── Generate ──
+async function generateImage(){
+  const prompt=$('prompt').value.trim();
+  if(!prompt){toast('Enter a prompt first','error');return}
+  if(generating)return;
+  generating=true;
+  const btn=$('gen-btn');
+  btn.disabled=true;
+  btn.innerHTML='<div class="spinner" style="width:15px;height:15px;border-width:2px"></div> Generating…';
+  setStatus('Generating…');
+  $('placeholder').innerHTML=`<div class="spinner"></div><p style="font-size:.82rem;color:var(--muted)">Claude is crafting your image…</p>`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:8000,
+        system:`You are an expert SVG illustrator. Generate complete, highly detailed, production-quality SVG images.
+RULES:
+- Output ONLY raw SVG, nothing else — no markdown fences, no preamble
+- Start exactly with <svg and end with </svg>
+- Always set viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"
+- Use rich gradients, patterns, decorative shapes, layered elements
+- Add meaningful id attributes to all major elements
+- Ensure text is readable, well-positioned
+- Fill the entire canvas with intentional design
+- Use vibrant, harmonious color palettes`,
+        messages:[{role:'user',content:`Create a high-quality SVG image: ${prompt}`}]
+      })
+    });
+    const data=await res.json();
+    let svgText=data.content?.[0]?.text||'';
+    svgText=svgText.replace(/```svg|```xml|```/g,'').trim();
+    if(!svgText.startsWith('<svg')){const i=svgText.indexOf('<svg');if(i>=0)svgText=svgText.slice(i);else throw new Error('No SVG')}
+
+    renderSVG(svgText);
+    originalSVG=svgText; currentSVG=svgText; svgHistory=[];
+    $('svg-stage').style.display='block';
+    $('placeholder').style.display='none';
+    $('save-btn').style.display='inline-flex';
+    $('copy-btn').style.display='inline-flex';
+    addHistory('Generated: '+prompt.slice(0,38)+(prompt.length>38?'…':''));
+    buildLayerTree();
+    setStatus('Generated ✓');
+    toast('Image generated! Switch to Edit mode to modify elements.','success');
+  }catch(e){
+    console.error(e);
+    toast('Generation failed — check console','error');
+    setStatus('');
+    $('placeholder').innerHTML=`<p style="color:var(--danger);font-size:.83rem">Generation failed. Check the browser console.</p>`;
+  }finally{
+    generating=false; btn.disabled=false;
+    btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> Generate Image →';
+  }
+}
+
+function renderSVG(code){
+  $('svg-container').innerHTML=code;
+  // scale SVG to fit container nicely
+  const s=svg();
+  if(s){s.style.maxWidth='100%';s.style.height='auto';}
+}
+
+// ── AI Edit ──
+async function applyAIEdit(){
+  const ep=$('edit-prompt').value.trim();
+  if(!ep){toast('Describe what to edit','error');return}
+  const s=svg(); if(!s){toast('Generate an image first','error');return}
+
+  const btn=$('ai-edit-btn');
+  btn.disabled=true; btn.innerHTML='<div class="spinner" style="width:14px;height:14px;border-width:2px"></div> Applying…';
+  setStatus('Applying AI edit…');
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:8000,
+        system:`You are an expert SVG editor. Receive an SVG and modification instructions.
+Output ONLY the complete modified SVG — no markdown, no explanation.
+Preserve all structure, IDs, and elements not mentioned. Keep same viewBox.`,
+        messages:[{role:'user',content:`Edit: ${ep}\n\nSVG:\n${s.outerHTML}`}]
+      })
+    });
+    const data=await res.json();
+    let svgText=data.content?.[0]?.text||'';
+    svgText=svgText.replace(/```svg|```xml|```/g,'').trim();
+    if(!svgText.startsWith('<svg')){const i=svgText.indexOf('<svg');if(i>=0)svgText=svgText.slice(i);else throw new Error('No SVG')}
+    pushHistory();
+    renderSVG(svgText); currentSVG=svgText;
+    if(canvasMode==='edit')attachEditHandlers();
+    buildLayerTree(); clearSelection();
+    addHistory('AI: '+ep.slice(0,38)+(ep.length>38?'…':''));
+    $('edit-prompt').value=''; setStatus('Edit applied ✓');
+    toast('Edit applied ✓','success');
+  }catch(e){
+    console.error(e); toast('Edit failed','error'); setStatus('');
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Apply Edit →';
+  }
+}
+
+// ── Code editor ──
+function syncCodeEditor(){
+  const s=svg();
+  if(!s){$('code-editor').value='';$('code-chars').textContent='';return}
+  const code=formatSVGCode(s.outerHTML);
+  $('code-editor').value=code;
+  updateCodeChars();
+}
+function formatSVGCode(code){
+  let indent=0, result='', i=0;
+  const lines=code.replace(/></g,'>\n<').replace(/\n\s+/g,'\n').split('\n');
+  for(const raw of lines){
+    const line=raw.trim();
+    if(!line)continue;
+    if(line.startsWith('</')){indent=Math.max(0,indent-1)}
+    result+='  '.repeat(indent)+line+'\n';
+    if(!line.startsWith('</') && !line.endsWith('/>') && line.startsWith('<') && !line.includes('</')){indent++}
+  }
+  return result.trim();
+}
+function applyCodeEdit(){
+  const code=$('code-editor').value.trim();
+  if(!code.includes('<svg')){toast('Invalid SVG','error');return}
+  pushHistory();
+  renderSVG(code); currentSVG=code;
+  buildLayerTree(); clearSelection();
+  addHistory('Code edit');
+  toast('Code applied ✓','success');
+}
+function formatCode(){$('code-editor').value=formatSVGCode($('code-editor').value);updateCodeChars()}
+function copyCode(){navigator.clipboard.writeText($('code-editor').value).then(()=>toast('Copied ✓','success'))}
+function updateCodeChars(){const v=$('code-editor').value;$('code-chars').textContent=v?`${v.length.toLocaleString()} chars`:''}
+$('code-editor').addEventListener('input',updateCodeChars);
+
+// ── Edit mode handlers ──
+function attachEditHandlers(){
+  const s=svg(); if(!s)return;
+  const els=s.querySelectorAll('text,tspan,rect,circle,ellipse,path,polygon,polyline,line,image,g');
+  els.forEach(el=>{
+    el.removeEventListener('mousedown',onElMouseDown);
+    el.removeEventListener('dblclick',onElDblClick);
+    el.addEventListener('mousedown',onElMouseDown);
+    el.addEventListener('dblclick',onElDblClick);
+  });
+}
+function detachEditHandlers(){
+  const s=svg(); if(!s)return;
+  const els=s.querySelectorAll('*');
+  els.forEach(el=>{
+    el.removeEventListener('mousedown',onElMouseDown);
+    el.removeEventListener('dblclick',onElDblClick);
+  });
+}
+
+function onElMouseDown(e){
+  if(canvasMode!=='edit')return;
+  e.stopPropagation(); e.preventDefault();
+  const target=e.currentTarget;
+  selectElement(target);
+
+  // start drag
+  const stage=$('svg-stage');
+  const svgEl=svg();
+  const scale=svgEl.getBoundingClientRect().width / svgEl.viewBox.baseVal.width;
+  drag.active=true; drag.el=target;
+  drag.startX=e.clientX; drag.startY=e.clientY;
+  drag.scale=scale;
+
+  // get current position
+  const tag=target.tagName.toLowerCase();
+  if(tag==='circle'||tag==='ellipse'){drag.attr={x:'cx',y:'cy'}}
+  else if(tag==='line'){drag.attr={x:'x1',y:'y1',x2:'x2',y2:'y2'}}
+  else{drag.attr={x:'x',y:'y'}}
+
+  drag.origX=parseFloat(target.getAttribute(drag.attr.x)||target.getAttribute('transform')?.match(/translate\(([^,)]+)/)?.[1]||0)||0;
+  drag.origY=parseFloat(target.getAttribute(drag.attr.y)||target.getAttribute('transform')?.match(/,([^)]+)/)?.[1]||0)||0;
+  drag.hasTranslate=!target.hasAttribute(drag.attr.x)&&!['circle','ellipse'].includes(tag);
+}
+
+document.addEventListener('mousemove',e=>{
+  if(drag.active&&drag.el){
+    const dx=(e.clientX-drag.startX)/drag.scale;
+    const dy=(e.clientY-drag.startY)/drag.scale;
+    const el=drag.el, tag=el.tagName.toLowerCase();
+    pushHistoryDebounced();
+    if(drag.hasTranslate||tag==='g'||tag==='path'||tag==='polygon'||tag==='polyline'){
+      const cur=el.getAttribute('transform')||'';
+      const base=cur.replace(/translate\([^)]+\)/,'').trim();
+      el.setAttribute('transform',(base+` translate(${drag.origX+dx},${drag.origY+dy})`).trim());
+    } else {
+      el.setAttribute(drag.attr.x, drag.origX+dx);
+      el.setAttribute(drag.attr.y, drag.origY+dy);
+    }
+    updateSelBox(drag.el);
+    refreshInspector(drag.el);
+  }
+});
+document.addEventListener('mouseup',e=>{
+  if(drag.active){drag.active=false;drag.el=null;}
+});
+
+// ── Double-click inline text edit ──
+function onElDblClick(e){
+  if(canvasMode!=='edit')return;
+  e.stopPropagation();
+  const el=e.currentTarget;
+  const tag=el.tagName.toLowerCase();
+  if(tag!=='text'&&tag!=='tspan')return;
+
+  textEdit.active=true; textEdit.el=el;
+  const inp=$('inline-text-input');
+  inp.value=el.textContent;
+  inp.style.display='block';
+
+  // position over element
+  const svgEl=svg();
+  const svgRect=svgEl.getBoundingClientRect();
+  const elRect=el.getBoundingClientRect();
+  const stageRect=$('svg-stage').getBoundingClientRect();
+
+  inp.style.left=(elRect.left-stageRect.left)+'px';
+  inp.style.top=(elRect.top-stageRect.top-4)+'px';
+  inp.style.width=Math.max(elRect.width+20,80)+'px';
+  inp.style.fontSize=(parseFloat(el.getAttribute('font-size')||16)*(svgRect.width/W))+'px';
+  inp.focus(); inp.select();
+}
+$('inline-text-input').addEventListener('keydown',e=>{
+  if(e.key==='Enter'||e.key==='Escape')commitTextEdit();
+});
+$('inline-text-input').addEventListener('blur',commitTextEdit);
+function commitTextEdit(){
+  if(!textEdit.active)return;
+  const el=textEdit.el, inp=$('inline-text-input');
+  pushHistory();
+  el.textContent=inp.value;
+  inp.style.display='none';
+  textEdit.active=false; textEdit.el=null;
+  refreshInspector(el);
+}
+
+// ── Selection ──
+function selectElement(el){
+  const s=svg();
+  if(s)s.querySelectorAll('[data-sel]').forEach(e=>e.removeAttribute('data-sel'));
+  selectedEl=el;
+  el.setAttribute('data-sel','1');
+  updateSelBox(el);
+  showInspector(el);
+  highlightLayer(el);
+}
+function clearSelection(){
+  const s=svg();
+  if(s)s.querySelectorAll('[data-sel]').forEach(e=>e.removeAttribute('data-sel'));
+  selectedEl=null;
+  $('sel-box').classList.remove('visible');
+  clearInspector();
+}
+function updateSelBox(el){
+  const svgEl=svg(); if(!svgEl)return;
+  try{
+    const r=el.getBoundingClientRect();
+    const sr=$('svg-stage').getBoundingClientRect();
+    const box=$('sel-box');
+    box.style.left=(r.left-sr.left-2)+'px';
+    box.style.top=(r.top-sr.top-2)+'px';
+    box.style.width=(r.width+4)+'px';
+    box.style.height=(r.height+4)+'px';
+    box.classList.add('visible');
+  }catch(e){}
+}
+
+$('canvas-scroll').addEventListener('mousedown',e=>{
+  if(e.target===$('canvas-scroll')||e.target.id==='svg-stage')clearSelection();
+});
+
+// ── Inspector ──
+function switchInspTab(tab){
+  inspTab=tab;
+  ['props','layers'].forEach(t=>{
+    $(`itab-${t}`).classList.toggle('active',t===tab);
+    $(`ipanel-${t}`).classList.toggle('active',t===tab);
+  });
+}
+function clearInspector(){
+  $('insp-empty').style.display='flex';
+  $('insp-fields-wrap').style.display='none';
+  $('insp-fields').innerHTML='';
+}
+function refreshInspector(el){if(el)showInspector(el)}
+
+function showInspector(el){
+  $('insp-empty').style.display='none';
+  $('insp-fields-wrap').style.display='block';
+  const f=$('insp-fields'); f.innerHTML='';
+  const tag=el.tagName.toLowerCase();
+
+  // badge
+  const badge=document.createElement('div');
+  badge.className='el-badge';
+  badge.innerHTML=`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg> &lt;${tag}&gt; ${el.id?'#'+el.id:''}`;
+  f.appendChild(badge);
+
+  const add=(label,val,key,type='text',opts={})=>{
+    const g=document.createElement('div'); g.className='field-group';
+    g.innerHTML=`<label>${label}</label>`;
+    if(type==='color'){
+      const safe=val&&/^#[0-9a-f]{3,8}$/i.test(val)?val:'#ffffff';
+      g.innerHTML+=`<div class="color-row">
+        <input type="color" value="${safe}" oninput="this.nextElementSibling.value=this.value;liveAttr('${key}',this.value)">
+        <input type="text" value="${val||''}" placeholder="${val||''}" oninput="if(/^#[0-9a-f]{6}$/i.test(this.value)){this.previousElementSibling.value=this.value} liveAttr('${key}',this.value)">
+      </div>`;
+    } else {
+      g.innerHTML+=`<input type="${type}" value="${val||''}" placeholder="${val||''}" oninput="liveAttr('${key}',this.value)">`;
+    }
+    f.appendChild(g);
+  };
+
+  const addRow=(fields)=>{
+    const row=document.createElement('div'); row.className='field-row';
+    fields.forEach(([label,val,key,type='number'])=>{
+      const g=document.createElement('div'); g.className='field-group';
+      g.innerHTML=`<label>${label}</label><input type="${type}" value="${val||''}" placeholder="${val||''}" oninput="liveAttr('${key}',this.value)">`;
+      row.appendChild(g);
+    });
+    f.appendChild(row);
+  };
+
+  // text content (text/tspan)
+  if(tag==='text'||tag==='tspan'){
+    const g=document.createElement('div'); g.className='field-group';
+    g.innerHTML=`<label>Content</label><input type="text" value="${el.textContent||''}" placeholder="Text…" oninput="liveText(this.value)">`;
+    f.insertBefore(g,f.firstChild);
+    addRow([['Font size',el.getAttribute('font-size'),'font-size'],['X',el.getAttribute('x'),'x'],['Y',el.getAttribute('y'),'y']]);
+    add('Font family',el.getAttribute('font-family'),'font-family');
+    add('Font weight',el.getAttribute('font-weight'),'font-weight');
+    add('Text anchor',el.getAttribute('text-anchor'),'text-anchor');
+    add('Fill',el.getAttribute('fill')||'','fill','color');
+  } else if(tag==='rect'){
+    addRow([['X',el.getAttribute('x'),'x'],['Y',el.getAttribute('y'),'y']]);
+    addRow([['Width',el.getAttribute('width'),'width'],['Height',el.getAttribute('height'),'height']]);
+    addRow([['RX',el.getAttribute('rx')||'0','rx'],['RY',el.getAttribute('ry')||'0','ry']]);
+    add('Fill',el.getAttribute('fill')||'','fill','color');
+    add('Stroke',el.getAttribute('stroke')||'','stroke','color');
+    add('Stroke width',el.getAttribute('stroke-width')||'','stroke-width');
+  } else if(tag==='circle'){
+    addRow([['CX',el.getAttribute('cx'),'cx'],['CY',el.getAttribute('cy'),'cy']]);
+    add('Radius',el.getAttribute('r'),'r','number');
+    add('Fill',el.getAttribute('fill')||'','fill','color');
+    add('Stroke',el.getAttribute('stroke')||'','stroke','color');
+  } else if(tag==='ellipse'){
+    addRow([['CX',el.getAttribute('cx'),'cx'],['CY',el.getAttribute('cy'),'cy']]);
+    addRow([['RX',el.getAttribute('rx'),'rx'],['RY',el.getAttribute('ry'),'ry']]);
+    add('Fill',el.getAttribute('fill')||'','fill','color');
+    add('Stroke',el.getAttribute('stroke')||'','stroke','color');
+  } else if(tag==='line'){
+    addRow([['X1',el.getAttribute('x1'),'x1'],['Y1',el.getAttribute('y1'),'y1']]);
+    addRow([['X2',el.getAttribute('x2'),'x2'],['Y2',el.getAttribute('y2'),'y2']]);
+    add('Stroke',el.getAttribute('stroke')||'','stroke','color');
+    add('Stroke width',el.getAttribute('stroke-width')||'2','stroke-width');
+  } else if(tag==='path'){
+    add('Fill',el.getAttribute('fill')||'','fill','color');
+    add('Stroke',el.getAttribute('stroke')||'','stroke','color');
+    add('Stroke width',el.getAttribute('stroke-width')||'','stroke-width');
+    add('D (path)',el.getAttribute('d')||'','d');
+  } else {
+    add('Fill',el.getAttribute('fill')||'','fill','color');
+    add('Stroke',el.getAttribute('stroke')||'','stroke','color');
+  }
+
+  // common
+  add('Opacity',el.getAttribute('opacity')||'1','opacity');
+  if(el.getAttribute('transform')) add('Transform',el.getAttribute('transform'),'transform');
+  if(el.id) add('ID',el.id,'id');
+}
+
+window.liveAttr=(key,val)=>{
+  if(!selectedEl)return;
+  pushHistoryDebounced();
+  selectedEl.setAttribute(key,val);
+  updateSelBox(selectedEl);
+};
+window.liveText=val=>{
+  if(!selectedEl)return;
+  pushHistoryDebounced();
+  selectedEl.textContent=val;
+};
+
+// ── Layers ──
+function buildLayerTree(){
+  const s=svg(); if(!s){$('layers-empty').style.display='flex';$('layers-list').style.display='none';return}
+  $('layers-empty').style.display='none';
+  const list=$('layers-list'); list.style.display='flex'; list.innerHTML='';
+  const els=[...s.children].reverse();
+  els.forEach(el=>addLayerItem(el,list,0));
+}
+function addLayerItem(el,container,depth){
+  const tag=el.tagName.toLowerCase();
+  if(['defs','style','title','desc'].includes(tag))return;
+  const item=document.createElement('div');
+  item.className='layer-item';
+  item.style.paddingLeft=(8+depth*14)+'px';
+  const icon=layerIcon(tag);
+  const name=el.id?`#${el.id}`:tag+(el.className?' .'+el.className:'');
+  item.innerHTML=`${icon}<span class="layer-name" title="${name}">${name}</span>
+    <svg class="layer-vis" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="toggleVisibility(event,this.parentElement)"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+  item.dataset.elId=el.id||'';
+  item.dataset.tag=tag;
+  item._el=el;
+  item.addEventListener('click',e=>{
+    if(e.target.closest('.layer-vis'))return;
+    if(canvasMode==='edit') selectElement(el);
+    else{setCanvasMode('edit');setTimeout(()=>selectElement(el),50);}
+  });
+  container.appendChild(item);
+  if(tag==='g'&&el.children.length){
+    [...el.children].reverse().forEach(child=>addLayerItem(child,container,depth+1));
+  }
+}
+function layerIcon(tag){
+  const icons={text:`<svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>`,rect:`<svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`,circle:`<svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>`,path:`<svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12 Q8 4 12 12 T21 12"/></svg>`,g:`<svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>`};
+  return icons[tag]||`<svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/></svg>`;
+}
+window.toggleVisibility=(e,item)=>{
+  e.stopPropagation();
+  const el=item._el; if(!el)return;
+  const hidden=el.getAttribute('visibility')==='hidden';
+  el.setAttribute('visibility',hidden?'visible':'hidden');
+  item.style.opacity=hidden?'1':'0.4';
+};
+function highlightLayer(el){
+  document.querySelectorAll('.layer-item').forEach(item=>{
+    item.classList.toggle('selected',item._el===el);
+  });
+}
+
+// ── History / Undo ──
+let historyTimer=null;
+function pushHistoryDebounced(){clearTimeout(historyTimer);historyTimer=setTimeout(pushHistory,300)}
+function pushHistory(){
+  const s=svg(); if(s)svgHistory.push(s.outerHTML);
+  if(svgHistory.length>40)svgHistory.shift();
+}
+function undoEdit(){
+  if(!svgHistory.length){toast('Nothing to undo');return}
+  const prev=svgHistory.pop();
+  renderSVG(prev); currentSVG=prev;
+  clearSelection(); buildLayerTree();
+  if(canvasMode==='edit')attachEditHandlers();
+  if(canvasMode==='code')syncCodeEditor();
+  toast('Undone ✓');
+}
+function resetSVG(){
+  if(!originalSVG)return;
+  renderSVG(originalSVG); currentSVG=originalSVG; svgHistory=[];
+  clearSelection(); buildLayerTree();
+  if(canvasMode==='edit')attachEditHandlers();
+  if(canvasMode==='code')syncCodeEditor();
+  toast('Reset to original ✓');
+}
+
+// ── Edit history sidebar ──
+function addHistory(label){
+  const list=$('history-list');
+  if(list.firstChild&&!list.firstChild.classList?.contains('history-item'))list.innerHTML='';
+  const item=document.createElement('div'); item.className='history-item';
+  item.innerHTML=`<span class="history-dot"></span><span>${label}</span>`;
+  list.insertBefore(item,list.firstChild);
+}
+
+// ── Save / Copy ──
+function saveSVG(){
+  const s=svg(); if(!s)return;
+  const blob=new Blob([s.outerHTML],{type:'image/svg+xml'});
+  const url=URL.createObjectURL(blob), a=document.createElement('a');
+  a.href=url; a.download='imagecraft.svg'; a.click();
+  URL.revokeObjectURL(url);
+  toast('SVG saved ✓','success');
+}
+function copySVG(){
+  const s=svg(); if(!s)return;
+  navigator.clipboard.writeText(s.outerHTML).then(()=>toast('SVG copied ✓','success'));
+}
+
+// ── Keyboard shortcuts ──
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key==='z'&&!e.shiftKey){e.preventDefault();undoEdit()}
+  if(e.key==='Escape'&&canvasMode==='edit') clearSelection();
+  if(e.key==='Delete'&&selectedEl&&canvasMode==='edit'){
+    pushHistory();
+    selectedEl.remove();
+    clearSelection(); buildLayerTree();
+    toast('Element deleted');
+  }
+  if((e.metaKey||e.ctrlKey)&&e.key==='Enter')generateImage();
+});
+
+$('prompt').addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter')generateImage()});
+</script>
+</body>
+</html>
