@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -63,7 +64,6 @@ textarea::placeholder{color:var(--muted)}
 .canvas-toolbar{padding:8px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap}
 .toolbar-label{font-size:0.72rem;color:var(--muted)}
 
-/* View/Edit tabs */
 .tab-row{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:7px;overflow:hidden}
 .tab-btn{padding:5px 11px;font-size:0.73rem;font-weight:500;border:none;background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif}
 .tab-btn.active{background:var(--accent);color:#fff}
@@ -81,19 +81,15 @@ textarea::placeholder{color:var(--muted)}
 .sel-box{position:absolute;pointer-events:none;border:2px solid var(--accent);border-radius:1px;display:none}
 .sel-box.visible{display:block}
 .handle{position:absolute;width:8px;height:8px;background:#fff;border:2px solid var(--accent);border-radius:2px;transform:translate(-50%,-50%)}
-.handle-tl{top:0;left:0;cursor:nw-resize}
-.handle-tr{top:0;left:100%;cursor:ne-resize}
-.handle-bl{top:100%;left:0;cursor:sw-resize}
-.handle-br{top:100%;left:100%;cursor:se-resize}
-.handle-tm{top:0;left:50%;cursor:n-resize}
-.handle-bm{top:100%;left:50%;cursor:s-resize}
-.handle-ml{top:50%;left:0;cursor:w-resize}
-.handle-mr{top:50%;left:100%;cursor:e-resize}
+.handle-tl{top:0;left:0;cursor:nw-resize}.handle-tr{top:0;left:100%;cursor:ne-resize}
+.handle-bl{top:100%;left:0;cursor:sw-resize}.handle-br{top:100%;left:100%;cursor:se-resize}
+.handle-tm{top:0;left:50%;cursor:n-resize}.handle-bm{top:100%;left:50%;cursor:s-resize}
+.handle-ml{top:50%;left:0;cursor:w-resize}.handle-mr{top:50%;left:100%;cursor:e-resize}
 
 /* Inline text edit */
-.inline-text-input{position:absolute;background:rgba(0,0,0,.8);border:2px solid var(--accent);border-radius:4px;color:#fff;font-family:'Inter',sans-serif;font-size:14px;padding:3px 6px;outline:none;z-index:100;min-width:40px;display:none}
+.inline-text-input{position:absolute;background:rgba(0,0,0,.85);border:2px solid var(--accent);border-radius:4px;color:#fff;font-family:'Inter',sans-serif;font-size:14px;padding:3px 6px;outline:none;z-index:100;min-width:40px;display:none}
 
-/* Code editor panel */
+/* Code editor */
 .code-panel{display:none;flex-direction:column;flex:1;overflow:hidden}
 .code-panel.visible{display:flex}
 .code-editor-wrap{flex:1;overflow:hidden;position:relative}
@@ -122,7 +118,7 @@ textarea::placeholder{color:var(--muted)}
 .color-row input[type="text"]{flex:1;min-width:0}
 .el-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(124,106,255,.12);color:var(--accent2);border-radius:4px;font-size:0.68rem;font-weight:600;padding:3px 7px;font-family:monospace;margin-bottom:8px}
 
-/* Layers panel */
+/* Layers */
 .layers-list{padding:8px;display:flex;flex-direction:column;gap:3px}
 .layer-item{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:6px;cursor:pointer;font-size:0.75rem;color:var(--muted);transition:all .15s;border:1px solid transparent}
 .layer-item:hover{background:var(--surface2);color:var(--text)}
@@ -132,25 +128,25 @@ textarea::placeholder{color:var(--muted)}
 .layer-vis{cursor:pointer;opacity:.4;transition:opacity .15s;flex-shrink:0}
 .layer-vis:hover{opacity:1}
 
-/* placeholder */
+/* Placeholder */
 .canvas-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--muted);text-align:center;padding:40px;max-width:380px;margin:auto}
 .canvas-placeholder h2{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--text)}
 .canvas-placeholder p{font-size:0.83rem;line-height:1.6}
 .spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* toast */
+/* Toast */
 .toast{position:fixed;bottom:20px;right:20px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:0.8rem;color:var(--text);box-shadow:0 8px 30px rgba(0,0,0,.4);transform:translateY(12px);opacity:0;transition:all .25s;z-index:9999;pointer-events:none}
 .toast.show{transform:translateY(0);opacity:1}
 .toast.success{border-color:var(--success);color:var(--success)}
 .toast.error{border-color:var(--danger);color:var(--danger)}
 
-/* history */
+/* History */
 .history-list{display:flex;flex-direction:column;gap:4px}
 .history-item{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 9px;font-size:0.72rem;color:var(--muted);display:flex;align-items:center;gap:7px}
 .history-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0}
 
-/* edit mode cursor */
+/* Edit mode */
 .edit-active svg *{cursor:pointer!important}
 [data-sel="1"]{outline:2px solid var(--accent)!important;outline-offset:1px}
 </style>
@@ -168,7 +164,7 @@ textarea::placeholder{color:var(--muted)}
 
 <div class="app">
 
-  <!-- ── LEFT PANEL ── -->
+  <!-- LEFT PANEL -->
   <div class="panel">
 
     <div class="panel-section">
@@ -217,7 +213,7 @@ textarea::placeholder{color:var(--muted)}
       </button>
     </div>
 
-    <div class="panel-section edit-mode-section" id="history-section">
+    <div class="panel-section">
       <div class="section-label">History</div>
       <div class="history-list" id="history-list">
         <div style="font-size:0.72rem;color:var(--muted)">No edits yet</div>
@@ -226,7 +222,7 @@ textarea::placeholder{color:var(--muted)}
 
   </div>
 
-  <!-- ── CANVAS ── -->
+  <!-- CANVAS -->
   <div class="canvas-area">
     <div class="canvas-toolbar">
       <span class="toolbar-label">Mode</span>
@@ -235,11 +231,11 @@ textarea::placeholder{color:var(--muted)}
         <button class="tab-btn" id="tab-edit" onclick="setCanvasMode('edit')">✏ Edit</button>
         <button class="tab-btn" id="tab-code" onclick="setCanvasMode('code')">⌥ Code</button>
       </div>
-      <span id="edit-hint" style="font-size:0.7rem;color:var(--accent2);display:none">Click to select · Drag to move · Double-click text to edit</span>
+      <span id="edit-hint" style="font-size:0.7rem;color:var(--accent2);display:none">Click to select · Drag to move · Double-click text to edit · Delete key to remove</span>
       <div class="spacer"></div>
       <div class="toolbar-btn-group" id="edit-actions" style="display:none">
-        <button class="btn btn-ghost btn-sm" onclick="undoEdit()" title="Undo">↩ Undo</button>
-        <button class="btn btn-ghost btn-sm" onclick="resetSVG()" title="Reset to original">Reset</button>
+        <button class="btn btn-ghost btn-sm" onclick="undoEdit()">↩ Undo</button>
+        <button class="btn btn-ghost btn-sm" onclick="resetSVG()">Reset</button>
       </div>
     </div>
 
@@ -248,27 +244,21 @@ textarea::placeholder{color:var(--muted)}
       <div class="canvas-placeholder" id="placeholder">
         <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
         <h2>Describe it. See it.</h2>
-        <p>Type a description and click <strong>Generate Image</strong> to create your SVG artwork.</p>
+        <p>Type a description and click <strong>Generate Image →</strong> to create your SVG artwork.</p>
       </div>
-
       <div class="svg-stage" id="svg-stage" style="display:none">
         <div id="svg-container"></div>
-        <!-- selection overlay -->
         <div class="sel-box" id="sel-box">
-          <div class="handle handle-tl" data-h="tl"></div>
-          <div class="handle handle-tr" data-h="tr"></div>
-          <div class="handle handle-bl" data-h="bl"></div>
-          <div class="handle handle-br" data-h="br"></div>
-          <div class="handle handle-tm" data-h="tm"></div>
-          <div class="handle handle-bm" data-h="bm"></div>
-          <div class="handle handle-ml" data-h="ml"></div>
-          <div class="handle handle-mr" data-h="mr"></div>
+          <div class="handle handle-tl"></div><div class="handle handle-tr"></div>
+          <div class="handle handle-bl"></div><div class="handle handle-br"></div>
+          <div class="handle handle-tm"></div><div class="handle handle-bm"></div>
+          <div class="handle handle-ml"></div><div class="handle handle-mr"></div>
         </div>
         <input class="inline-text-input" id="inline-text-input" type="text">
       </div>
     </div>
 
-    <!-- Code editor panel -->
+    <!-- Code editor -->
     <div class="code-panel" id="code-panel">
       <div class="code-editor-wrap">
         <textarea class="code-editor" id="code-editor" spellcheck="false" placeholder="Generate an image first to edit its SVG code here…"></textarea>
@@ -283,14 +273,12 @@ textarea::placeholder{color:var(--muted)}
     </div>
   </div>
 
-  <!-- ── INSPECTOR ── -->
-  <div class="inspector" id="inspector">
+  <!-- INSPECTOR -->
+  <div class="inspector">
     <div class="inspector-tabs">
       <div class="insp-tab active" onclick="switchInspTab('props')" id="itab-props">Properties</div>
       <div class="insp-tab" onclick="switchInspTab('layers')" id="itab-layers">Layers</div>
     </div>
-
-    <!-- Properties tab -->
     <div class="insp-tab-panel active" id="ipanel-props">
       <div class="inspector-empty" id="insp-empty">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
@@ -300,8 +288,6 @@ textarea::placeholder{color:var(--muted)}
         <div class="insp-fields" id="insp-fields"></div>
       </div>
     </div>
-
-    <!-- Layers tab -->
     <div class="insp-tab-panel" id="ipanel-layers">
       <div class="inspector-empty" id="layers-empty">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
@@ -316,78 +302,105 @@ textarea::placeholder{color:var(--muted)}
 <div class="toast" id="toast"></div>
 
 <script>
+// ── API config (matches original pattern) ──
+var API_KEY_URL = 'https://login.intelisa.in/api/getAPIKeyForImageGeneration';
+var ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
+var MODEL = 'claude-sonnet-4-5';
+var cachedKey = null;
+
+async function getAPIKey() {
+  if (cachedKey) return cachedKey;
+  const res = await fetch(API_KEY_URL);
+  if (!res.ok) throw new Error('Failed to fetch API key');
+  const data = await res.json();
+  cachedKey = data.apiKey || data.api_key || data.key || data;
+  return cachedKey;
+}
+
+async function callClaude(system, userMsg) {
+  const key = await getAPIKey();
+  const res = await fetch(ANTHROPIC_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': key,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      max_tokens: 8000,
+      system: system,
+      messages: [{ role: 'user', content: userMsg }]
+    })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+  return data.content?.[0]?.text || '';
+}
+
 // ── State ──
 let W = 1920, H = 1080;
 let currentSVG = null, originalSVG = null;
 let svgHistory = [];
 let selectedEl = null;
-let canvasMode = 'view'; // view | edit | code
-let inspTab = 'props';
+let canvasMode = 'view';
 let generating = false;
+let drag = { active: false, el: null, startX: 0, startY: 0, origX: 0, origY: 0, scale: 1, attr: null, hasTranslate: false };
+let textEdit = { active: false, el: null };
 
-// drag state
-let drag = {active:false, el:null, startX:0, startY:0, origX:0, origY:0, attr:null};
-// resize state
-let rsz = {active:false, el:null, handle:'', startX:0, startY:0, origBox:null};
-// inline text state
-let textEdit = {active:false, el:null};
+const $ = id => document.getElementById(id);
+const svgEl = () => document.querySelector('#svg-container svg');
 
-// ── Utilities ──
-const $=id=>document.getElementById(id);
-const svg=()=>document.querySelector('#svg-container svg');
-
-function toast(msg,type=''){
-  const t=$('toast'); t.textContent=msg;
-  t.className='toast show '+(type||'');
-  clearTimeout(t._t); t._t=setTimeout(()=>t.className='toast',3000);
+function toast(msg, type = '') {
+  const t = $('toast'); t.textContent = msg;
+  t.className = 'toast show ' + (type || '');
+  clearTimeout(t._t); t._t = setTimeout(() => t.className = 'toast', 3200);
 }
-function setStatus(s){$('status-text').textContent=s}
+function setStatus(s) { $('status-text').textContent = s; }
 
 // ── Prompts / size ──
-function setPrompt(el){
-  const map={
-    '🍽 Restaurant menu':'A warm restaurant menu board with elegant serif typography, warm amber tones, decorative borders, featuring today\'s specials with appetisers, mains and desserts',
-    '🏷 Sale banner':'A bold sale banner with 50% OFF in huge typography, vibrant red and gold palette, confetti decorations, modern geometric shapes',
-    '📅 Event board':'A community event board for Summer Festival 2025, July 14th, outdoor park setting, illustrated with trees and sun, welcoming warm palette',
-    '☕ Café specials':'A chalkboard-style café specials menu with hand-drawn coffee cup illustration, cream and brown palette, featuring lattes, pastries and daily specials',
-    '💍 Wedding board':'An elegant wedding welcome sign for Sarah & James, June 21, floral watercolor borders, soft blush and gold palette, cursive script typography'
+function setPrompt(el) {
+  const map = {
+    '🍽 Restaurant menu': "A warm restaurant menu board with elegant serif typography, warm amber tones, decorative borders, featuring today's specials with appetisers, mains and desserts",
+    '🏷 Sale banner': 'A bold sale banner with 50% OFF in huge typography, vibrant red and gold palette, confetti decorations, modern geometric shapes',
+    '📅 Event board': 'A community event board for Summer Festival 2025, July 14th, outdoor park setting, illustrated with trees and sun, welcoming warm palette',
+    '☕ Café specials': 'A chalkboard-style café specials menu with hand-drawn coffee cup illustration, cream and brown palette, featuring lattes, pastries and daily specials',
+    '💍 Wedding board': 'An elegant wedding welcome sign for Sarah & James, June 21, floral watercolor borders, soft blush and gold palette, cursive script typography'
   };
-  $('prompt').value=map[el.textContent.trim()]||el.textContent.trim();
+  $('prompt').value = map[el.textContent.trim()] || el.textContent.trim();
 }
-function setSize(el){
-  document.querySelectorAll('.size-pill').forEach(p=>p.classList.remove('active'));
+
+function setSize(el) {
+  document.querySelectorAll('.size-pill').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
-  W=+el.dataset.w; H=+el.dataset.h;
+  W = +el.dataset.w; H = +el.dataset.h;
 }
-function applyCustomSize(){
-  const cw=+$('custom-w').value, ch=+$('custom-h').value;
-  if(cw>=100&&ch>=100){
-    W=cw; H=ch;
-    document.querySelectorAll('.size-pill').forEach(p=>p.classList.remove('active'));
-    toast(`Size set to ${cw}×${ch}`,'success');
-  } else toast('Enter valid dimensions (min 100)','error');
+
+function applyCustomSize() {
+  const cw = +$('custom-w').value, ch = +$('custom-h').value;
+  if (cw >= 100 && ch >= 100) {
+    W = cw; H = ch;
+    document.querySelectorAll('.size-pill').forEach(p => p.classList.remove('active'));
+    toast(`Size set to ${cw}×${ch}`, 'success');
+  } else toast('Enter valid dimensions (min 100)', 'error');
 }
 
 // ── Canvas mode ──
-function setCanvasMode(m){
-  canvasMode=m;
-  ['view','edit','code'].forEach(t=>{
-    $(`tab-${t}`).classList.toggle('active', t===m);
-  });
-  $('edit-hint').style.display = m==='edit'?'block':'none';
-  $('edit-actions').style.display = m==='edit'||m==='code'?'flex':'none';
+function setCanvasMode(m) {
+  canvasMode = m;
+  ['view', 'edit', 'code'].forEach(t => $(`tab-${t}`).classList.toggle('active', t === m));
+  $('edit-hint').style.display = m === 'edit' ? 'block' : 'none';
+  $('edit-actions').style.display = (m === 'edit' || m === 'code') ? 'flex' : 'none';
 
-  const cScroll = $('canvas-scroll');
-  const cPanel = $('code-panel');
-
-  if(m==='code'){
-    cScroll.style.display='none';
-    cPanel.classList.add('visible');
+  if (m === 'code') {
+    $('canvas-scroll').style.display = 'none';
+    $('code-panel').classList.add('visible');
     syncCodeEditor();
   } else {
-    cScroll.style.display='flex';
-    cPanel.classList.remove('visible');
-    if(m==='edit'){
+    $('canvas-scroll').style.display = 'flex';
+    $('code-panel').classList.remove('visible');
+    if (m === 'edit') {
       $('svg-stage').classList.add('edit-active');
       attachEditHandlers();
     } else {
@@ -399,509 +412,458 @@ function setCanvasMode(m){
 }
 
 // ── Generate ──
-async function generateImage(){
-  const prompt=$('prompt').value.trim();
-  if(!prompt){toast('Enter a prompt first','error');return}
-  if(generating)return;
-  generating=true;
-  const btn=$('gen-btn');
-  btn.disabled=true;
-  btn.innerHTML='<div class="spinner" style="width:15px;height:15px;border-width:2px"></div> Generating…';
-  setStatus('Generating…');
-  $('placeholder').innerHTML=`<div class="spinner"></div><p style="font-size:.82rem;color:var(--muted)">Claude is crafting your image…</p>`;
+async function generateImage() {
+  const prompt = $('prompt').value.trim();
+  if (!prompt) { toast('Enter a prompt first', 'error'); return; }
+  if (generating) return;
+  generating = true;
 
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:8000,
-        system:`You are an expert SVG illustrator. Generate complete, highly detailed, production-quality SVG images.
+  const btn = $('gen-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner" style="width:15px;height:15px;border-width:2px"></div> Generating…';
+  setStatus('Generating…');
+  $('placeholder').style.display = 'flex';
+  $('placeholder').innerHTML = `<div class="spinner"></div><p style="font-size:.82rem;color:var(--muted)">Claude is crafting your image…</p>`;
+  $('svg-stage').style.display = 'none';
+
+  const system = `You are an expert SVG illustrator. Generate complete, highly detailed, production-quality SVG images.
 RULES:
 - Output ONLY raw SVG, nothing else — no markdown fences, no preamble
 - Start exactly with <svg and end with </svg>
 - Always set viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"
 - Use rich gradients, patterns, decorative shapes, layered elements
 - Add meaningful id attributes to all major elements
-- Ensure text is readable, well-positioned
+- Ensure text is readable and well-positioned
 - Fill the entire canvas with intentional design
-- Use vibrant, harmonious color palettes`,
-        messages:[{role:'user',content:`Create a high-quality SVG image: ${prompt}`}]
-      })
-    });
-    const data=await res.json();
-    let svgText=data.content?.[0]?.text||'';
-    svgText=svgText.replace(/```svg|```xml|```/g,'').trim();
-    if(!svgText.startsWith('<svg')){const i=svgText.indexOf('<svg');if(i>=0)svgText=svgText.slice(i);else throw new Error('No SVG')}
+- Use vibrant, harmonious color palettes`;
+
+  try {
+    let svgText = await callClaude(system, `Create a high-quality SVG image: ${prompt}`);
+    svgText = svgText.replace(/```svg|```xml|```/g, '').trim();
+    if (!svgText.startsWith('<svg')) {
+      const i = svgText.indexOf('<svg');
+      if (i >= 0) svgText = svgText.slice(i); else throw new Error('No SVG in response');
+    }
 
     renderSVG(svgText);
-    originalSVG=svgText; currentSVG=svgText; svgHistory=[];
-    $('svg-stage').style.display='block';
-    $('placeholder').style.display='none';
-    $('save-btn').style.display='inline-flex';
-    $('copy-btn').style.display='inline-flex';
-    addHistory('Generated: '+prompt.slice(0,38)+(prompt.length>38?'…':''));
+    originalSVG = svgText; currentSVG = svgText; svgHistory = [];
+    $('svg-stage').style.display = 'block';
+    $('placeholder').style.display = 'none';
+    $('save-btn').style.display = 'inline-flex';
+    $('copy-btn').style.display = 'inline-flex';
+    addHistory('Generated: ' + prompt.slice(0, 38) + (prompt.length > 38 ? '…' : ''));
     buildLayerTree();
     setStatus('Generated ✓');
-    toast('Image generated! Switch to Edit mode to modify elements.','success');
-  }catch(e){
+    toast('Image generated! Switch to Edit mode to modify elements.', 'success');
+  } catch (e) {
     console.error(e);
-    toast('Generation failed — check console','error');
+    toast('Generation failed: ' + e.message, 'error');
     setStatus('');
-    $('placeholder').innerHTML=`<p style="color:var(--danger);font-size:.83rem">Generation failed. Check the browser console.</p>`;
-  }finally{
-    generating=false; btn.disabled=false;
-    btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> Generate Image →';
+    $('placeholder').innerHTML = `<p style="color:var(--danger);font-size:.83rem;max-width:280px;line-height:1.6">Generation failed:<br>${e.message}</p>`;
+  } finally {
+    generating = false; btn.disabled = false;
+    btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> Generate Image →';
   }
 }
 
-function renderSVG(code){
-  $('svg-container').innerHTML=code;
-  // scale SVG to fit container nicely
-  const s=svg();
-  if(s){s.style.maxWidth='100%';s.style.height='auto';}
+function renderSVG(code) {
+  $('svg-container').innerHTML = code;
+  const s = svgEl();
+  if (s) { s.style.maxWidth = '100%'; s.style.height = 'auto'; }
 }
 
 // ── AI Edit ──
-async function applyAIEdit(){
-  const ep=$('edit-prompt').value.trim();
-  if(!ep){toast('Describe what to edit','error');return}
-  const s=svg(); if(!s){toast('Generate an image first','error');return}
+async function applyAIEdit() {
+  const ep = $('edit-prompt').value.trim();
+  if (!ep) { toast('Describe what to edit', 'error'); return; }
+  const s = svgEl(); if (!s) { toast('Generate an image first', 'error'); return; }
 
-  const btn=$('ai-edit-btn');
-  btn.disabled=true; btn.innerHTML='<div class="spinner" style="width:14px;height:14px;border-width:2px"></div> Applying…';
+  const btn = $('ai-edit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner" style="width:14px;height:14px;border-width:2px"></div> Applying…';
   setStatus('Applying AI edit…');
 
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:8000,
-        system:`You are an expert SVG editor. Receive an SVG and modification instructions.
+  const system = `You are an expert SVG editor. Receive an SVG and modification instructions.
 Output ONLY the complete modified SVG — no markdown, no explanation.
-Preserve all structure, IDs, and elements not mentioned. Keep same viewBox.`,
-        messages:[{role:'user',content:`Edit: ${ep}\n\nSVG:\n${s.outerHTML}`}]
-      })
-    });
-    const data=await res.json();
-    let svgText=data.content?.[0]?.text||'';
-    svgText=svgText.replace(/```svg|```xml|```/g,'').trim();
-    if(!svgText.startsWith('<svg')){const i=svgText.indexOf('<svg');if(i>=0)svgText=svgText.slice(i);else throw new Error('No SVG')}
+Preserve all structure, IDs, and elements not mentioned. Keep same viewBox dimensions.`;
+
+  try {
+    let svgText = await callClaude(system, `Edit: ${ep}\n\nSVG:\n${s.outerHTML}`);
+    svgText = svgText.replace(/```svg|```xml|```/g, '').trim();
+    if (!svgText.startsWith('<svg')) {
+      const i = svgText.indexOf('<svg');
+      if (i >= 0) svgText = svgText.slice(i); else throw new Error('No SVG returned');
+    }
     pushHistory();
-    renderSVG(svgText); currentSVG=svgText;
-    if(canvasMode==='edit')attachEditHandlers();
+    renderSVG(svgText); currentSVG = svgText;
+    if (canvasMode === 'edit') attachEditHandlers();
+    if (canvasMode === 'code') syncCodeEditor();
     buildLayerTree(); clearSelection();
-    addHistory('AI: '+ep.slice(0,38)+(ep.length>38?'…':''));
-    $('edit-prompt').value=''; setStatus('Edit applied ✓');
-    toast('Edit applied ✓','success');
-  }catch(e){
-    console.error(e); toast('Edit failed','error'); setStatus('');
-  }finally{
-    btn.disabled=false;
-    btn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Apply Edit →';
+    addHistory('AI edit: ' + ep.slice(0, 38) + (ep.length > 38 ? '…' : ''));
+    $('edit-prompt').value = '';
+    setStatus('Edit applied ✓');
+    toast('Edit applied ✓', 'success');
+  } catch (e) {
+    console.error(e);
+    toast('Edit failed: ' + e.message, 'error');
+    setStatus('');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Apply Edit →';
   }
 }
 
 // ── Code editor ──
-function syncCodeEditor(){
-  const s=svg();
-  if(!s){$('code-editor').value='';$('code-chars').textContent='';return}
-  const code=formatSVGCode(s.outerHTML);
-  $('code-editor').value=code;
+function syncCodeEditor() {
+  const s = svgEl();
+  if (!s) { $('code-editor').value = ''; $('code-chars').textContent = ''; return; }
+  $('code-editor').value = formatSVGCode(s.outerHTML);
   updateCodeChars();
 }
-function formatSVGCode(code){
-  let indent=0, result='', i=0;
-  const lines=code.replace(/></g,'>\n<').replace(/\n\s+/g,'\n').split('\n');
-  for(const raw of lines){
-    const line=raw.trim();
-    if(!line)continue;
-    if(line.startsWith('</')){indent=Math.max(0,indent-1)}
-    result+='  '.repeat(indent)+line+'\n';
-    if(!line.startsWith('</') && !line.endsWith('/>') && line.startsWith('<') && !line.includes('</')){indent++}
+function formatSVGCode(code) {
+  let indent = 0, result = '';
+  const lines = code.replace(/></g, '>\n<').replace(/\n\s+/g, '\n').split('\n');
+  for (const raw of lines) {
+    const line = raw.trim(); if (!line) continue;
+    if (line.startsWith('</')) indent = Math.max(0, indent - 1);
+    result += '  '.repeat(indent) + line + '\n';
+    if (!line.startsWith('</') && !line.endsWith('/>') && line.startsWith('<') && !line.includes('</')) indent++;
   }
   return result.trim();
 }
-function applyCodeEdit(){
-  const code=$('code-editor').value.trim();
-  if(!code.includes('<svg')){toast('Invalid SVG','error');return}
+function applyCodeEdit() {
+  const code = $('code-editor').value.trim();
+  if (!code.includes('<svg')) { toast('Invalid SVG', 'error'); return; }
   pushHistory();
-  renderSVG(code); currentSVG=code;
+  renderSVG(code); currentSVG = code;
   buildLayerTree(); clearSelection();
   addHistory('Code edit');
-  toast('Code applied ✓','success');
+  toast('Code applied ✓', 'success');
 }
-function formatCode(){$('code-editor').value=formatSVGCode($('code-editor').value);updateCodeChars()}
-function copyCode(){navigator.clipboard.writeText($('code-editor').value).then(()=>toast('Copied ✓','success'))}
-function updateCodeChars(){const v=$('code-editor').value;$('code-chars').textContent=v?`${v.length.toLocaleString()} chars`:''}
-$('code-editor').addEventListener('input',updateCodeChars);
+function formatCode() { $('code-editor').value = formatSVGCode($('code-editor').value); updateCodeChars(); }
+function copyCode() { navigator.clipboard.writeText($('code-editor').value).then(() => toast('Copied ✓', 'success')); }
+function updateCodeChars() { const v = $('code-editor').value; $('code-chars').textContent = v ? `${v.length.toLocaleString()} chars` : ''; }
+$('code-editor').addEventListener('input', updateCodeChars);
 
 // ── Edit mode handlers ──
-function attachEditHandlers(){
-  const s=svg(); if(!s)return;
-  const els=s.querySelectorAll('text,tspan,rect,circle,ellipse,path,polygon,polyline,line,image,g');
-  els.forEach(el=>{
-    el.removeEventListener('mousedown',onElMouseDown);
-    el.removeEventListener('dblclick',onElDblClick);
-    el.addEventListener('mousedown',onElMouseDown);
-    el.addEventListener('dblclick',onElDblClick);
+function attachEditHandlers() {
+  const s = svgEl(); if (!s) return;
+  s.querySelectorAll('text,tspan,rect,circle,ellipse,path,polygon,polyline,line,image,g').forEach(el => {
+    el.removeEventListener('mousedown', onElMouseDown);
+    el.removeEventListener('dblclick', onElDblClick);
+    el.addEventListener('mousedown', onElMouseDown);
+    el.addEventListener('dblclick', onElDblClick);
   });
 }
-function detachEditHandlers(){
-  const s=svg(); if(!s)return;
-  const els=s.querySelectorAll('*');
-  els.forEach(el=>{
-    el.removeEventListener('mousedown',onElMouseDown);
-    el.removeEventListener('dblclick',onElDblClick);
+function detachEditHandlers() {
+  const s = svgEl(); if (!s) return;
+  s.querySelectorAll('*').forEach(el => {
+    el.removeEventListener('mousedown', onElMouseDown);
+    el.removeEventListener('dblclick', onElDblClick);
   });
 }
 
-function onElMouseDown(e){
-  if(canvasMode!=='edit')return;
+function onElMouseDown(e) {
+  if (canvasMode !== 'edit') return;
   e.stopPropagation(); e.preventDefault();
-  const target=e.currentTarget;
+  const target = e.currentTarget;
   selectElement(target);
 
-  // start drag
-  const stage=$('svg-stage');
-  const svgEl=svg();
-  const scale=svgEl.getBoundingClientRect().width / svgEl.viewBox.baseVal.width;
-  drag.active=true; drag.el=target;
-  drag.startX=e.clientX; drag.startY=e.clientY;
-  drag.scale=scale;
+  const s = svgEl();
+  const scale = s.getBoundingClientRect().width / s.viewBox.baseVal.width;
+  const tag = target.tagName.toLowerCase();
+  drag.active = true; drag.el = target;
+  drag.startX = e.clientX; drag.startY = e.clientY; drag.scale = scale;
 
-  // get current position
-  const tag=target.tagName.toLowerCase();
-  if(tag==='circle'||tag==='ellipse'){drag.attr={x:'cx',y:'cy'}}
-  else if(tag==='line'){drag.attr={x:'x1',y:'y1',x2:'x2',y2:'y2'}}
-  else{drag.attr={x:'x',y:'y'}}
+  if (tag === 'circle' || tag === 'ellipse') drag.attr = { x: 'cx', y: 'cy' };
+  else drag.attr = { x: 'x', y: 'y' };
 
-  drag.origX=parseFloat(target.getAttribute(drag.attr.x)||target.getAttribute('transform')?.match(/translate\(([^,)]+)/)?.[1]||0)||0;
-  drag.origY=parseFloat(target.getAttribute(drag.attr.y)||target.getAttribute('transform')?.match(/,([^)]+)/)?.[1]||0)||0;
-  drag.hasTranslate=!target.hasAttribute(drag.attr.x)&&!['circle','ellipse'].includes(tag);
+  const noXY = ['g', 'path', 'polygon', 'polyline', 'line'];
+  drag.hasTranslate = noXY.includes(tag) || (!target.hasAttribute(drag.attr.x) && tag !== 'circle' && tag !== 'ellipse');
+
+  const tf = target.getAttribute('transform') || '';
+  const tm = tf.match(/translate\(\s*([^,)]+)(?:,\s*([^)]+))?\)/);
+  drag.origX = tm ? parseFloat(tm[1]) : parseFloat(target.getAttribute(drag.attr.x) || 0) || 0;
+  drag.origY = tm ? parseFloat(tm[2] || 0) : parseFloat(target.getAttribute(drag.attr.y) || 0) || 0;
 }
 
-document.addEventListener('mousemove',e=>{
-  if(drag.active&&drag.el){
-    const dx=(e.clientX-drag.startX)/drag.scale;
-    const dy=(e.clientY-drag.startY)/drag.scale;
-    const el=drag.el, tag=el.tagName.toLowerCase();
-    pushHistoryDebounced();
-    if(drag.hasTranslate||tag==='g'||tag==='path'||tag==='polygon'||tag==='polyline'){
-      const cur=el.getAttribute('transform')||'';
-      const base=cur.replace(/translate\([^)]+\)/,'').trim();
-      el.setAttribute('transform',(base+` translate(${drag.origX+dx},${drag.origY+dy})`).trim());
-    } else {
-      el.setAttribute(drag.attr.x, drag.origX+dx);
-      el.setAttribute(drag.attr.y, drag.origY+dy);
-    }
-    updateSelBox(drag.el);
-    refreshInspector(drag.el);
+document.addEventListener('mousemove', e => {
+  if (!drag.active || !drag.el) return;
+  const dx = (e.clientX - drag.startX) / drag.scale;
+  const dy = (e.clientY - drag.startY) / drag.scale;
+  const el = drag.el, tag = el.tagName.toLowerCase();
+  pushHistoryDebounced();
+  if (drag.hasTranslate) {
+    const cur = (el.getAttribute('transform') || '').replace(/translate\([^)]+\)/, '').trim();
+    el.setAttribute('transform', (cur + ` translate(${drag.origX + dx},${drag.origY + dy})`).trim());
+  } else {
+    el.setAttribute(drag.attr.x, drag.origX + dx);
+    el.setAttribute(drag.attr.y, drag.origY + dy);
   }
+  updateSelBox(drag.el);
+  refreshInspector(drag.el);
 });
-document.addEventListener('mouseup',e=>{
-  if(drag.active){drag.active=false;drag.el=null;}
-});
+
+document.addEventListener('mouseup', () => { if (drag.active) { drag.active = false; drag.el = null; } });
 
 // ── Double-click inline text edit ──
-function onElDblClick(e){
-  if(canvasMode!=='edit')return;
+function onElDblClick(e) {
+  if (canvasMode !== 'edit') return;
   e.stopPropagation();
-  const el=e.currentTarget;
-  const tag=el.tagName.toLowerCase();
-  if(tag!=='text'&&tag!=='tspan')return;
-
-  textEdit.active=true; textEdit.el=el;
-  const inp=$('inline-text-input');
-  inp.value=el.textContent;
-  inp.style.display='block';
-
-  // position over element
-  const svgEl=svg();
-  const svgRect=svgEl.getBoundingClientRect();
-  const elRect=el.getBoundingClientRect();
-  const stageRect=$('svg-stage').getBoundingClientRect();
-
-  inp.style.left=(elRect.left-stageRect.left)+'px';
-  inp.style.top=(elRect.top-stageRect.top-4)+'px';
-  inp.style.width=Math.max(elRect.width+20,80)+'px';
-  inp.style.fontSize=(parseFloat(el.getAttribute('font-size')||16)*(svgRect.width/W))+'px';
+  const el = e.currentTarget;
+  if (!['text', 'tspan'].includes(el.tagName.toLowerCase())) return;
+  textEdit.active = true; textEdit.el = el;
+  const inp = $('inline-text-input');
+  inp.value = el.textContent;
+  inp.style.display = 'block';
+  const s = svgEl();
+  const svgRect = s.getBoundingClientRect();
+  const elRect = el.getBoundingClientRect();
+  const stageRect = $('svg-stage').getBoundingClientRect();
+  inp.style.left = (elRect.left - stageRect.left) + 'px';
+  inp.style.top = (elRect.top - stageRect.top - 4) + 'px';
+  inp.style.width = Math.max(elRect.width + 20, 80) + 'px';
+  inp.style.fontSize = (parseFloat(el.getAttribute('font-size') || 16) * (svgRect.width / W)) + 'px';
   inp.focus(); inp.select();
 }
-$('inline-text-input').addEventListener('keydown',e=>{
-  if(e.key==='Enter'||e.key==='Escape')commitTextEdit();
-});
-$('inline-text-input').addEventListener('blur',commitTextEdit);
-function commitTextEdit(){
-  if(!textEdit.active)return;
-  const el=textEdit.el, inp=$('inline-text-input');
+$('inline-text-input').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === 'Escape') commitTextEdit(); });
+$('inline-text-input').addEventListener('blur', commitTextEdit);
+function commitTextEdit() {
+  if (!textEdit.active) return;
   pushHistory();
-  el.textContent=inp.value;
-  inp.style.display='none';
-  textEdit.active=false; textEdit.el=null;
-  refreshInspector(el);
+  textEdit.el.textContent = $('inline-text-input').value;
+  $('inline-text-input').style.display = 'none';
+  textEdit.active = false; textEdit.el = null;
 }
 
 // ── Selection ──
-function selectElement(el){
-  const s=svg();
-  if(s)s.querySelectorAll('[data-sel]').forEach(e=>e.removeAttribute('data-sel'));
-  selectedEl=el;
-  el.setAttribute('data-sel','1');
+function selectElement(el) {
+  const s = svgEl();
+  if (s) s.querySelectorAll('[data-sel]').forEach(e => e.removeAttribute('data-sel'));
+  selectedEl = el;
+  el.setAttribute('data-sel', '1');
   updateSelBox(el);
   showInspector(el);
   highlightLayer(el);
 }
-function clearSelection(){
-  const s=svg();
-  if(s)s.querySelectorAll('[data-sel]').forEach(e=>e.removeAttribute('data-sel'));
-  selectedEl=null;
+function clearSelection() {
+  const s = svgEl();
+  if (s) s.querySelectorAll('[data-sel]').forEach(e => e.removeAttribute('data-sel'));
+  selectedEl = null;
   $('sel-box').classList.remove('visible');
   clearInspector();
 }
-function updateSelBox(el){
-  const svgEl=svg(); if(!svgEl)return;
-  try{
-    const r=el.getBoundingClientRect();
-    const sr=$('svg-stage').getBoundingClientRect();
-    const box=$('sel-box');
-    box.style.left=(r.left-sr.left-2)+'px';
-    box.style.top=(r.top-sr.top-2)+'px';
-    box.style.width=(r.width+4)+'px';
-    box.style.height=(r.height+4)+'px';
+function updateSelBox(el) {
+  try {
+    const r = el.getBoundingClientRect();
+    const sr = $('svg-stage').getBoundingClientRect();
+    const box = $('sel-box');
+    box.style.left = (r.left - sr.left - 2) + 'px';
+    box.style.top = (r.top - sr.top - 2) + 'px';
+    box.style.width = (r.width + 4) + 'px';
+    box.style.height = (r.height + 4) + 'px';
     box.classList.add('visible');
-  }catch(e){}
+  } catch (e) {}
 }
-
-$('canvas-scroll').addEventListener('mousedown',e=>{
-  if(e.target===$('canvas-scroll')||e.target.id==='svg-stage')clearSelection();
+$('canvas-scroll').addEventListener('mousedown', e => {
+  if (e.target === $('canvas-scroll') || e.target.id === 'svg-stage' || e.target.id === 'svg-container') clearSelection();
 });
 
 // ── Inspector ──
-function switchInspTab(tab){
-  inspTab=tab;
-  ['props','layers'].forEach(t=>{
-    $(`itab-${t}`).classList.toggle('active',t===tab);
-    $(`ipanel-${t}`).classList.toggle('active',t===tab);
+function switchInspTab(tab) {
+  ['props', 'layers'].forEach(t => {
+    $(`itab-${t}`).classList.toggle('active', t === tab);
+    $(`ipanel-${t}`).classList.toggle('active', t === tab);
   });
 }
-function clearInspector(){
-  $('insp-empty').style.display='flex';
-  $('insp-fields-wrap').style.display='none';
-  $('insp-fields').innerHTML='';
+function clearInspector() {
+  $('insp-empty').style.display = 'flex';
+  $('insp-fields-wrap').style.display = 'none';
+  $('insp-fields').innerHTML = '';
 }
-function refreshInspector(el){if(el)showInspector(el)}
+function refreshInspector(el) { if (el && $('insp-fields-wrap').style.display !== 'none') showInspector(el); }
 
-function showInspector(el){
-  $('insp-empty').style.display='none';
-  $('insp-fields-wrap').style.display='block';
-  const f=$('insp-fields'); f.innerHTML='';
-  const tag=el.tagName.toLowerCase();
+function showInspector(el) {
+  $('insp-empty').style.display = 'none';
+  $('insp-fields-wrap').style.display = 'block';
+  const f = $('insp-fields'); f.innerHTML = '';
+  const tag = el.tagName.toLowerCase();
 
-  // badge
-  const badge=document.createElement('div');
-  badge.className='el-badge';
-  badge.innerHTML=`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg> &lt;${tag}&gt; ${el.id?'#'+el.id:''}`;
+  const badge = document.createElement('div');
+  badge.className = 'el-badge';
+  badge.textContent = `<${tag}>${el.id ? ' #' + el.id : ''}`;
   f.appendChild(badge);
 
-  const add=(label,val,key,type='text',opts={})=>{
-    const g=document.createElement('div'); g.className='field-group';
-    g.innerHTML=`<label>${label}</label>`;
-    if(type==='color'){
-      const safe=val&&/^#[0-9a-f]{3,8}$/i.test(val)?val:'#ffffff';
-      g.innerHTML+=`<div class="color-row">
-        <input type="color" value="${safe}" oninput="this.nextElementSibling.value=this.value;liveAttr('${key}',this.value)">
-        <input type="text" value="${val||''}" placeholder="${val||''}" oninput="if(/^#[0-9a-f]{6}$/i.test(this.value)){this.previousElementSibling.value=this.value} liveAttr('${key}',this.value)">
+  function add(label, val, key, type = 'text') {
+    const g = document.createElement('div'); g.className = 'field-group';
+    g.innerHTML = `<label>${label}</label>`;
+    if (type === 'color') {
+      const safe = val && /^#[0-9a-f]{3,8}$/i.test(val) ? val : '#ffffff';
+      g.innerHTML += `<div class="color-row">
+        <input type="color" value="${safe}" oninput="this.nextElementSibling.value=this.value;window.liveAttr('${key}',this.value)">
+        <input type="text" value="${val||''}" placeholder="${val||''}" oninput="if(/^#[0-9a-f]{6}$/i.test(this.value))this.previousElementSibling.value=this.value;window.liveAttr('${key}',this.value)">
       </div>`;
     } else {
-      g.innerHTML+=`<input type="${type}" value="${val||''}" placeholder="${val||''}" oninput="liveAttr('${key}',this.value)">`;
+      g.innerHTML += `<input type="${type}" value="${val||''}" placeholder="${val||''}" oninput="window.liveAttr('${key}',this.value)">`;
     }
     f.appendChild(g);
-  };
-
-  const addRow=(fields)=>{
-    const row=document.createElement('div'); row.className='field-row';
-    fields.forEach(([label,val,key,type='number'])=>{
-      const g=document.createElement('div'); g.className='field-group';
-      g.innerHTML=`<label>${label}</label><input type="${type}" value="${val||''}" placeholder="${val||''}" oninput="liveAttr('${key}',this.value)">`;
+  }
+  function addRow(fields) {
+    const row = document.createElement('div'); row.className = 'field-row';
+    fields.forEach(([label, val, key, type='number']) => {
+      const g = document.createElement('div'); g.className = 'field-group';
+      g.innerHTML = `<label>${label}</label><input type="${type}" value="${val||''}" placeholder="${val||''}" oninput="window.liveAttr('${key}',this.value)">`;
       row.appendChild(g);
     });
     f.appendChild(row);
-  };
-
-  // text content (text/tspan)
-  if(tag==='text'||tag==='tspan'){
-    const g=document.createElement('div'); g.className='field-group';
-    g.innerHTML=`<label>Content</label><input type="text" value="${el.textContent||''}" placeholder="Text…" oninput="liveText(this.value)">`;
-    f.insertBefore(g,f.firstChild);
-    addRow([['Font size',el.getAttribute('font-size'),'font-size'],['X',el.getAttribute('x'),'x'],['Y',el.getAttribute('y'),'y']]);
-    add('Font family',el.getAttribute('font-family'),'font-family');
-    add('Font weight',el.getAttribute('font-weight'),'font-weight');
-    add('Text anchor',el.getAttribute('text-anchor'),'text-anchor');
-    add('Fill',el.getAttribute('fill')||'','fill','color');
-  } else if(tag==='rect'){
-    addRow([['X',el.getAttribute('x'),'x'],['Y',el.getAttribute('y'),'y']]);
-    addRow([['Width',el.getAttribute('width'),'width'],['Height',el.getAttribute('height'),'height']]);
-    addRow([['RX',el.getAttribute('rx')||'0','rx'],['RY',el.getAttribute('ry')||'0','ry']]);
-    add('Fill',el.getAttribute('fill')||'','fill','color');
-    add('Stroke',el.getAttribute('stroke')||'','stroke','color');
-    add('Stroke width',el.getAttribute('stroke-width')||'','stroke-width');
-  } else if(tag==='circle'){
-    addRow([['CX',el.getAttribute('cx'),'cx'],['CY',el.getAttribute('cy'),'cy']]);
-    add('Radius',el.getAttribute('r'),'r','number');
-    add('Fill',el.getAttribute('fill')||'','fill','color');
-    add('Stroke',el.getAttribute('stroke')||'','stroke','color');
-  } else if(tag==='ellipse'){
-    addRow([['CX',el.getAttribute('cx'),'cx'],['CY',el.getAttribute('cy'),'cy']]);
-    addRow([['RX',el.getAttribute('rx'),'rx'],['RY',el.getAttribute('ry'),'ry']]);
-    add('Fill',el.getAttribute('fill')||'','fill','color');
-    add('Stroke',el.getAttribute('stroke')||'','stroke','color');
-  } else if(tag==='line'){
-    addRow([['X1',el.getAttribute('x1'),'x1'],['Y1',el.getAttribute('y1'),'y1']]);
-    addRow([['X2',el.getAttribute('x2'),'x2'],['Y2',el.getAttribute('y2'),'y2']]);
-    add('Stroke',el.getAttribute('stroke')||'','stroke','color');
-    add('Stroke width',el.getAttribute('stroke-width')||'2','stroke-width');
-  } else if(tag==='path'){
-    add('Fill',el.getAttribute('fill')||'','fill','color');
-    add('Stroke',el.getAttribute('stroke')||'','stroke','color');
-    add('Stroke width',el.getAttribute('stroke-width')||'','stroke-width');
-    add('D (path)',el.getAttribute('d')||'','d');
-  } else {
-    add('Fill',el.getAttribute('fill')||'','fill','color');
-    add('Stroke',el.getAttribute('stroke')||'','stroke','color');
   }
 
-  // common
-  add('Opacity',el.getAttribute('opacity')||'1','opacity');
-  if(el.getAttribute('transform')) add('Transform',el.getAttribute('transform'),'transform');
-  if(el.id) add('ID',el.id,'id');
+  if (tag === 'text' || tag === 'tspan') {
+    const g = document.createElement('div'); g.className = 'field-group';
+    g.innerHTML = `<label>Content</label><input type="text" value="${el.textContent||''}" placeholder="Text…" oninput="window.liveText(this.value)">`;
+    f.insertBefore(g, f.firstChild);
+    addRow([['Font size', el.getAttribute('font-size'), 'font-size'], ['X', el.getAttribute('x'), 'x'], ['Y', el.getAttribute('y'), 'y']]);
+    add('Font family', el.getAttribute('font-family'), 'font-family');
+    add('Font weight', el.getAttribute('font-weight'), 'font-weight');
+    add('Text anchor', el.getAttribute('text-anchor'), 'text-anchor');
+    add('Fill', el.getAttribute('fill') || '', 'fill', 'color');
+  } else if (tag === 'rect') {
+    addRow([['X', el.getAttribute('x'), 'x'], ['Y', el.getAttribute('y'), 'y']]);
+    addRow([['Width', el.getAttribute('width'), 'width'], ['Height', el.getAttribute('height'), 'height']]);
+    addRow([['RX', el.getAttribute('rx')||'0', 'rx'], ['RY', el.getAttribute('ry')||'0', 'ry']]);
+    add('Fill', el.getAttribute('fill')||'', 'fill', 'color');
+    add('Stroke', el.getAttribute('stroke')||'', 'stroke', 'color');
+    add('Stroke width', el.getAttribute('stroke-width')||'', 'stroke-width');
+  } else if (tag === 'circle') {
+    addRow([['CX', el.getAttribute('cx'), 'cx'], ['CY', el.getAttribute('cy'), 'cy']]);
+    add('Radius', el.getAttribute('r'), 'r', 'number');
+    add('Fill', el.getAttribute('fill')||'', 'fill', 'color');
+    add('Stroke', el.getAttribute('stroke')||'', 'stroke', 'color');
+  } else if (tag === 'ellipse') {
+    addRow([['CX', el.getAttribute('cx'), 'cx'], ['CY', el.getAttribute('cy'), 'cy']]);
+    addRow([['RX', el.getAttribute('rx'), 'rx'], ['RY', el.getAttribute('ry'), 'ry']]);
+    add('Fill', el.getAttribute('fill')||'', 'fill', 'color');
+    add('Stroke', el.getAttribute('stroke')||'', 'stroke', 'color');
+  } else if (tag === 'line') {
+    addRow([['X1', el.getAttribute('x1'), 'x1'], ['Y1', el.getAttribute('y1'), 'y1']]);
+    addRow([['X2', el.getAttribute('x2'), 'x2'], ['Y2', el.getAttribute('y2'), 'y2']]);
+    add('Stroke', el.getAttribute('stroke')||'', 'stroke', 'color');
+    add('Stroke width', el.getAttribute('stroke-width')||'2', 'stroke-width');
+  } else if (tag === 'path') {
+    add('Fill', el.getAttribute('fill')||'', 'fill', 'color');
+    add('Stroke', el.getAttribute('stroke')||'', 'stroke', 'color');
+    add('Stroke width', el.getAttribute('stroke-width')||'', 'stroke-width');
+    add('D (path data)', el.getAttribute('d')||'', 'd');
+  } else {
+    add('Fill', el.getAttribute('fill')||'', 'fill', 'color');
+    add('Stroke', el.getAttribute('stroke')||'', 'stroke', 'color');
+  }
+  add('Opacity', el.getAttribute('opacity')||'1', 'opacity');
+  if (el.getAttribute('transform')) add('Transform', el.getAttribute('transform'), 'transform');
+  if (el.id) add('ID', el.id, 'id');
 }
 
-window.liveAttr=(key,val)=>{
-  if(!selectedEl)return;
-  pushHistoryDebounced();
-  selectedEl.setAttribute(key,val);
-  updateSelBox(selectedEl);
-};
-window.liveText=val=>{
-  if(!selectedEl)return;
-  pushHistoryDebounced();
-  selectedEl.textContent=val;
-};
+window.liveAttr = (key, val) => { if (!selectedEl) return; pushHistoryDebounced(); selectedEl.setAttribute(key, val); updateSelBox(selectedEl); };
+window.liveText = val => { if (!selectedEl) return; pushHistoryDebounced(); selectedEl.textContent = val; };
 
 // ── Layers ──
-function buildLayerTree(){
-  const s=svg(); if(!s){$('layers-empty').style.display='flex';$('layers-list').style.display='none';return}
-  $('layers-empty').style.display='none';
-  const list=$('layers-list'); list.style.display='flex'; list.innerHTML='';
-  const els=[...s.children].reverse();
-  els.forEach(el=>addLayerItem(el,list,0));
+function buildLayerTree() {
+  const s = svgEl();
+  if (!s) { $('layers-empty').style.display = 'flex'; $('layers-list').style.display = 'none'; return; }
+  $('layers-empty').style.display = 'none';
+  const list = $('layers-list'); list.style.display = 'flex'; list.innerHTML = '';
+  [...s.children].reverse().forEach(el => addLayerItem(el, list, 0));
 }
-function addLayerItem(el,container,depth){
-  const tag=el.tagName.toLowerCase();
-  if(['defs','style','title','desc'].includes(tag))return;
-  const item=document.createElement('div');
-  item.className='layer-item';
-  item.style.paddingLeft=(8+depth*14)+'px';
-  const icon=layerIcon(tag);
-  const name=el.id?`#${el.id}`:tag+(el.className?' .'+el.className:'');
-  item.innerHTML=`${icon}<span class="layer-name" title="${name}">${name}</span>
-    <svg class="layer-vis" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="toggleVisibility(event,this.parentElement)"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
-  item.dataset.elId=el.id||'';
-  item.dataset.tag=tag;
-  item._el=el;
-  item.addEventListener('click',e=>{
-    if(e.target.closest('.layer-vis'))return;
-    if(canvasMode==='edit') selectElement(el);
-    else{setCanvasMode('edit');setTimeout(()=>selectElement(el),50);}
+function addLayerItem(el, container, depth) {
+  const tag = el.tagName.toLowerCase();
+  if (['defs', 'style', 'title', 'desc'].includes(tag)) return;
+  const item = document.createElement('div');
+  item.className = 'layer-item';
+  item.style.paddingLeft = (8 + depth * 14) + 'px';
+  const icons = {
+    text: '⟨T⟩', rect: '▭', circle: '◯', ellipse: '⬬', path: '⌇', g: '▤', line: '╱', polygon: '⬡'
+  };
+  const icon = icons[tag] || '·';
+  const name = el.id ? `#${el.id}` : tag;
+  item.innerHTML = `<span style="font-size:.8rem;opacity:.5;flex-shrink:0">${icon}</span>
+    <span class="layer-name" title="${name}">${name}</span>
+    <svg class="layer-vis" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Toggle visibility"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+  item._el = el;
+  item.addEventListener('click', e => {
+    if (e.target.closest('.layer-vis')) return;
+    if (canvasMode === 'edit') selectElement(el);
+    else { setCanvasMode('edit'); setTimeout(() => selectElement(el), 60); }
+  });
+  item.querySelector('.layer-vis').addEventListener('click', e => {
+    e.stopPropagation();
+    const hidden = el.getAttribute('visibility') === 'hidden';
+    el.setAttribute('visibility', hidden ? 'visible' : 'hidden');
+    item.style.opacity = hidden ? '1' : '0.4';
   });
   container.appendChild(item);
-  if(tag==='g'&&el.children.length){
-    [...el.children].reverse().forEach(child=>addLayerItem(child,container,depth+1));
+  if (tag === 'g' && el.children.length) {
+    [...el.children].reverse().forEach(child => addLayerItem(child, container, depth + 1));
   }
 }
-function layerIcon(tag){
-  const icons={text:`<svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>`,rect:`<svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`,circle:`<svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>`,path:`<svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12 Q8 4 12 12 T21 12"/></svg>`,g:`<svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>`};
-  return icons[tag]||`<svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/></svg>`;
-}
-window.toggleVisibility=(e,item)=>{
-  e.stopPropagation();
-  const el=item._el; if(!el)return;
-  const hidden=el.getAttribute('visibility')==='hidden';
-  el.setAttribute('visibility',hidden?'visible':'hidden');
-  item.style.opacity=hidden?'1':'0.4';
-};
-function highlightLayer(el){
-  document.querySelectorAll('.layer-item').forEach(item=>{
-    item.classList.toggle('selected',item._el===el);
-  });
+function highlightLayer(el) {
+  document.querySelectorAll('.layer-item').forEach(item => item.classList.toggle('selected', item._el === el));
 }
 
 // ── History / Undo ──
-let historyTimer=null;
-function pushHistoryDebounced(){clearTimeout(historyTimer);historyTimer=setTimeout(pushHistory,300)}
-function pushHistory(){
-  const s=svg(); if(s)svgHistory.push(s.outerHTML);
-  if(svgHistory.length>40)svgHistory.shift();
-}
-function undoEdit(){
-  if(!svgHistory.length){toast('Nothing to undo');return}
-  const prev=svgHistory.pop();
-  renderSVG(prev); currentSVG=prev;
-  clearSelection(); buildLayerTree();
-  if(canvasMode==='edit')attachEditHandlers();
-  if(canvasMode==='code')syncCodeEditor();
+let historyTimer = null;
+function pushHistoryDebounced() { clearTimeout(historyTimer); historyTimer = setTimeout(pushHistory, 400); }
+function pushHistory() { const s = svgEl(); if (s) svgHistory.push(s.outerHTML); if (svgHistory.length > 40) svgHistory.shift(); }
+function undoEdit() {
+  if (!svgHistory.length) { toast('Nothing to undo'); return; }
+  renderSVG(svgHistory.pop()); clearSelection(); buildLayerTree();
+  if (canvasMode === 'edit') attachEditHandlers();
+  if (canvasMode === 'code') syncCodeEditor();
   toast('Undone ✓');
 }
-function resetSVG(){
-  if(!originalSVG)return;
-  renderSVG(originalSVG); currentSVG=originalSVG; svgHistory=[];
+function resetSVG() {
+  if (!originalSVG) return;
+  renderSVG(originalSVG); currentSVG = originalSVG; svgHistory = [];
   clearSelection(); buildLayerTree();
-  if(canvasMode==='edit')attachEditHandlers();
-  if(canvasMode==='code')syncCodeEditor();
+  if (canvasMode === 'edit') attachEditHandlers();
+  if (canvasMode === 'code') syncCodeEditor();
   toast('Reset to original ✓');
 }
 
 // ── Edit history sidebar ──
-function addHistory(label){
-  const list=$('history-list');
-  if(list.firstChild&&!list.firstChild.classList?.contains('history-item'))list.innerHTML='';
-  const item=document.createElement('div'); item.className='history-item';
-  item.innerHTML=`<span class="history-dot"></span><span>${label}</span>`;
-  list.insertBefore(item,list.firstChild);
+function addHistory(label) {
+  const list = $('history-list');
+  if (list.firstChild && !list.firstChild.classList?.contains('history-item')) list.innerHTML = '';
+  const item = document.createElement('div'); item.className = 'history-item';
+  item.innerHTML = `<span class="history-dot"></span><span>${label}</span>`;
+  list.insertBefore(item, list.firstChild);
 }
 
 // ── Save / Copy ──
-function saveSVG(){
-  const s=svg(); if(!s)return;
-  const blob=new Blob([s.outerHTML],{type:'image/svg+xml'});
-  const url=URL.createObjectURL(blob), a=document.createElement('a');
-  a.href=url; a.download='imagecraft.svg'; a.click();
+function saveSVG() {
+  const s = svgEl(); if (!s) return;
+  const blob = new Blob([s.outerHTML], { type: 'image/svg+xml' });
+  const url = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = url; a.download = 'imagecraft.svg'; a.click();
   URL.revokeObjectURL(url);
-  toast('SVG saved ✓','success');
+  toast('SVG saved ✓', 'success');
 }
-function copySVG(){
-  const s=svg(); if(!s)return;
-  navigator.clipboard.writeText(s.outerHTML).then(()=>toast('SVG copied ✓','success'));
+function copySVG() {
+  const s = svgEl(); if (!s) return;
+  navigator.clipboard.writeText(s.outerHTML).then(() => toast('SVG copied ✓', 'success'));
 }
 
 // ── Keyboard shortcuts ──
-document.addEventListener('keydown',e=>{
-  if((e.metaKey||e.ctrlKey)&&e.key==='z'&&!e.shiftKey){e.preventDefault();undoEdit()}
-  if(e.key==='Escape'&&canvasMode==='edit') clearSelection();
-  if(e.key==='Delete'&&selectedEl&&canvasMode==='edit'){
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); undoEdit(); }
+  if (e.key === 'Escape' && canvasMode === 'edit') clearSelection();
+  if (e.key === 'Delete' && selectedEl && canvasMode === 'edit') {
     pushHistory();
     selectedEl.remove();
     clearSelection(); buildLayerTree();
     toast('Element deleted');
   }
-  if((e.metaKey||e.ctrlKey)&&e.key==='Enter')generateImage();
 });
-
-$('prompt').addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter')generateImage()});
+$('prompt').addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') generateImage(); });
 </script>
 </body>
 </html>
