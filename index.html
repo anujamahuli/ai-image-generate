@@ -152,6 +152,15 @@ textarea::placeholder{color:var(--muted)}
 </head>
 <body>
 
+<div id="cors-warning" style="display:none;background:#f87171;color:#fff;font-size:0.8rem;font-weight:500;padding:9px 20px;text-align:center;flex-shrink:0">
+  ⚠️ This file is open as a local file (<code>file://</code>). CORS will block API calls. 
+  Serve it from a web server: <code>python3 -m http.server 8080</code> → open <code>http://localhost:8080</code>
+</div>
+
+<script>
+  if (location.protocol === 'file:') document.getElementById('cors-warning').style.display = 'block';
+</script>
+
 <header>
   <div class="logo">image<span>craft</span></div>
   <div class="header-actions">
@@ -304,19 +313,18 @@ textarea::placeholder{color:var(--muted)}
 // ── API config (matches original pattern) ──
 var API_KEY_URL = 'https://login.intelisa.in/api/getAPIKeyForImageGeneration';
 var ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
-var MODEL = 'claude-sonnet-4-5';
+var MODEL = 'claude-sonnet-4-5-20250929';
 var cachedKey = null;
 
 async function getAPIKey() {
   if (cachedKey) return cachedKey;
   const res = await fetch(API_KEY_URL);
-  if (!res.ok) throw new Error('Failed to fetch API key');
+  if (!res.ok) throw new Error('Failed to fetch API key: ' + res.status);
   const text = await res.text();
   try {
     const data = JSON.parse(text);
     cachedKey = data.apiKey || data.api_key || data.key || data;
   } catch (e) {
-    // plain text key
     cachedKey = text.trim();
   }
   return cachedKey;
@@ -328,7 +336,7 @@ async function callClaude(system, userMsg) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': key,
+      'x-api-key': String(key).trim(),
       'anthropic-version': '2023-06-01',
       'anthropic-dangerous-direct-browser-access': 'true'
     },
@@ -339,7 +347,15 @@ async function callClaude(system, userMsg) {
       messages: [{ role: 'user', content: userMsg }]
     })
   });
-  const data = await res.json();
+  const rawText = await res.text();
+  console.log('Anthropic HTTP status:', res.status);
+  console.log('Anthropic raw response (first 200):', rawText.slice(0, 200));
+  let data;
+  try {
+    data = JSON.parse(rawText);
+  } catch (e) {
+    throw new Error('Anthropic returned non-JSON (HTTP ' + res.status + '). See console for raw response.');
+  }
   if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
   return data.content?.[0]?.text || '';
 }
