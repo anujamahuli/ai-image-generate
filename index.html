@@ -314,6 +314,16 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .utoast.on{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:all}
 .utoast button{background:transparent;border:none;color:#fff;font-size:var(--fs-base);font-weight:700;cursor:pointer;font-family:inherit;padding:5px 10px;border-radius:6px;transition:background .12s}
 .utoast button:hover{background:rgba(255,255,255,.12)}
+
+/* unsaved-changes confirmation dialog */
+.uc-veil{position:fixed;inset:0;background:rgba(20,20,30,.4);z-index:2000;display:none;align-items:center;justify-content:center}
+.uc-veil.on{display:flex}
+.uc-card{background:var(--s1);border-radius:14px;box-shadow:var(--shadow-lg);padding:20px 22px;max-width:380px;display:flex;flex-direction:column;gap:12px;animation:coachIn .2s ease}
+.uc-head{display:flex;align-items:center;gap:10px}
+.uc-icon{width:36px;height:36px;border-radius:9px;background:rgba(217,119,6,.12);color:var(--warn);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.uc-title{font-size:var(--fs-md);font-weight:700;color:var(--text)}
+.uc-body{font-size:var(--fs-base);color:var(--text2);line-height:1.6}
+.uc-foot{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:4px;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -681,6 +691,24 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   <button onclick="undoLastDelete()">Undo</button>
 </div>
 
+<!-- unsaved-changes confirmation, shown when generating or loading a new template would discard the current canvas -->
+<div class="uc-veil" id="uc-veil" onclick="if(event.target===this) ucCancel()">
+  <div class="uc-card">
+    <div class="uc-head">
+      <div class="uc-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+      </div>
+      <div class="uc-title">Save your current design?</div>
+    </div>
+    <div class="uc-body" id="uc-body">This will replace what's on the canvas. Download a copy first if you want to keep it.</div>
+    <div class="uc-foot">
+      <button class="btn sm" onclick="ucCancel()">Cancel</button>
+      <button class="btn sm" onclick="ucDiscard()">Discard & Continue</button>
+      <button class="btn p sm" onclick="ucSaveAndContinue()">Save & Continue</button>
+    </div>
+  </div>
+</div>
+
 <!-- RIGHT PANEL -->
 <div class="rp">
   <div class="rp-tabs">
@@ -754,6 +782,7 @@ let marquee = { on:false, sx:0, sy:0 };
 let clipboard = [];
 let locked = new Set();
 let hidden = new Set();
+let ucPendingAction = null; // holds the deferred action (a function) while the unsaved-changes dialog is open
 
 const $ = id => document.getElementById(id);
 const svg = () => document.querySelector('#svc svg');
@@ -887,11 +916,46 @@ function applyZoom() {
 }
 
 // ════════════════════════════════════════════
+// UNSAVED-CHANGES CONFIRMATION
+// Guards any action that would REPLACE the current canvas (new AI generation, loading a template).
+// AI Edit and in-place editing are NOT guarded here since they modify the existing design rather
+// than discarding it.
+// ════════════════════════════════════════════
+function hasCurrentDesign() { return !!svg(); }
+function confirmReplace(actionFn, bodyText) {
+  if(ite.on) commitIte(); // close out any in-progress inline text edit first so it doesn't linger mid-transition
+  if(!hasCurrentDesign()) { actionFn(); return; } // nothing on canvas yet — nothing to lose, just proceed
+  ucPendingAction = actionFn;
+  $('uc-body').textContent = bodyText || "This will replace what's on the canvas. Download a copy first if you want to keep it.";
+  $('uc-veil').classList.add('on');
+}
+function ucCancel() {
+  ucPendingAction = null;
+  $('uc-veil').classList.remove('on');
+}
+function ucDiscard() {
+  const action = ucPendingAction;
+  ucPendingAction = null;
+  $('uc-veil').classList.remove('on');
+  if(action) action();
+}
+function ucSaveAndContinue() {
+  saveSVG(); // triggers a browser download of the current design as-is
+  const action = ucPendingAction;
+  ucPendingAction = null;
+  $('uc-veil').classList.remove('on');
+  if(action) action();
+}
+
+// ════════════════════════════════════════════
 // GENERATE
 // ════════════════════════════════════════════
-async function gen() {
+function gen() {
   const p = $('prompt').value.trim();
   if(!p) { toast('Enter a prompt','err'); return; }
+  confirmReplace(() => doGen(p), "Generating a new image will replace what's on the canvas. Download a copy first if you want to keep it.");
+}
+async function doGen(p) {
   const btn = $('gen-btn');
   btn.disabled=true; btn.innerHTML='<div class="spin"></div> Generating…';
   stat('Generating…');
@@ -1036,6 +1100,10 @@ function buildTplGrid() {
   });
 }
 function useTemplate(i) {
+  const t = TEMPLATES[i];
+  confirmReplace(() => doUseTemplate(i), `Loading "${t.name}" will replace what's on the canvas. Download a copy first if you want to keep it.`);
+}
+function doUseTemplate(i) {
   const t = TEMPLATES[i];
   W = t.w; H = t.h;
   const code = t.svg(W,H);
@@ -2141,6 +2209,7 @@ function savePNG(){
 // KEYBOARD SHORTCUTS
 // ════════════════════════════════════════════
 document.addEventListener('keydown',e=>{
+  if($('uc-veil').classList.contains('on')) { if(e.key==='Escape'){ e.preventDefault(); ucCancel(); } return; }
   const notInput=!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName);
   if((e.metaKey||e.ctrlKey)&&e.key==='z'&&!e.shiftKey){e.preventDefault();undo();return;}
   if((e.metaKey||e.ctrlKey)&&(e.key==='y'||(e.key==='z'&&e.shiftKey))){e.preventDefault();redo();return;}
