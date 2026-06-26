@@ -1,0 +1,2254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intelisa Image Studio – AI Design Editor</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;600;700&family=Pacifico&family=Oswald:wght@400;700&family=Raleway:wght@400;700&family=Lato:ital,wght@0,400;0,700;1,400&family=Poppins:wght@400;600;700&family=Dancing+Script:wght@600&family=Bebas+Neue&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4f5f7;--s1:#ffffff;--s2:#f8f9fb;--s3:#eef0f4;--s4:#e4e6ec;
+  --border:#dde0e8;--border2:#d4d7e090;
+  --accent:#b4282e;--accent-h:#961f24;--accent-l:rgba(180,40,46,.09);
+  --accent2:#d4383f;--accent3:#e87a7e;
+  --text:#1c1c2e;--text2:#52526e;--text3:#9494aa;
+  --ok:#16a34a;--err:#dc2626;--warn:#d97706;
+  --guide:#00b8d9;
+  --r:8px;--r2:6px;--r3:4px;
+
+  /* Type scale — 7 deliberate steps replacing what had drifted into ~20 one-off sizes */
+  --fs-3xs: .53125rem; /* 8.5px — icon micro-labels (sidebar tool names) */
+  --fs-2xs: .625rem;   /* 10px — micro labels, eyebrow text */
+  --fs-xs:  .6875rem;  /* 11px — toolbar/secondary button text, captions */
+  --fs-sm:  .75rem;    /* 12px — default UI text: buttons, inputs, panel body */
+  --fs-base:.8125rem;  /* 13px — body copy, slightly larger emphasis text */
+  --fs-md:  .875rem;   /* 14px — emphasized labels, larger buttons */
+  --fs-lg:  1rem;      /* 16px — logo, section headers */
+  --fs-xl:  1.75rem;   /* 28px — placeholder/empty-state heading */
+
+  /* Elevation — 3 shadow tiers replacing ~16 near-duplicate one-off shadows */
+  --shadow-sm: 0 1px 4px rgba(0,0,0,.3);                              /* small chrome: handles, swatches, dots */
+  --shadow-handle: 0 2px 6px rgba(0,0,0,.4);                          /* rotate knob — slightly heavier than shadow-sm to read as the primary grab affordance */
+  --shadow-md: 0 2px 10px rgba(0,0,0,.1);                             /* floating UI: zoom bar, hints, toasts */
+  --shadow-lg: 0 8px 32px rgba(0,0,0,.18);                            /* overlays: modals, coachmark */
+  --shadow-ctx: 0 4px 20px rgba(0,0,0,.12), 0 0 0 1px rgba(0,0,0,.04); /* floating context toolbar — elevation + crisp hairline edge */
+  --shadow-accent-sm: 0 2px 8px rgba(180,40,46,.28);                  /* primary button rest state */
+  --shadow-accent-md: 0 4px 14px rgba(180,40,46,.4);                  /* primary button hover state */
+}
+html,body{height:100%;overflow:hidden;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;display:flex;flex-direction:column;font-size:var(--fs-base)}
+
+/* ── HEADER ── */
+.hdr{height:50px;background:var(--s1);border-bottom:1px solid var(--border);border-top:3px solid var(--accent);display:flex;align-items:center;padding:0 14px;gap:10px;flex-shrink:0;z-index:200}
+.logo{font-family:'Syne',sans-serif;font-size:var(--fs-lg);font-weight:800;letter-spacing:-.02em;color:var(--text);white-space:nowrap;display:flex;align-items:baseline;gap:7px}
+.logo b{color:var(--accent);font-weight:800}
+.hdiv{width:1px;height:20px;background:var(--border);flex-shrink:0}
+.vtabs{display:flex;background:var(--s2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.vt{padding:5px 13px;font-size:var(--fs-sm);font-weight:600;border:none;background:transparent;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .15s;letter-spacing:.01em}
+.vt.on{background:var(--accent);color:#fff}
+.hgap{flex:1}
+.hstat{font-size:var(--fs-xs);color:var(--text3)}
+.hbtn{background:var(--s2);border:1px solid var(--border);border-radius:var(--r2);color:var(--text2);font-size:var(--fs-sm);font-weight:600;padding:5px 12px;cursor:pointer;font-family:inherit;transition:all .15s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.hbtn:hover{border-color:var(--accent2);color:var(--text)}
+.hbtn.p{background:linear-gradient(135deg,var(--accent),#961f24);color:#fff;border-color:var(--accent);box-shadow:var(--shadow-accent-sm)}
+.hbtn.p:hover{background:linear-gradient(135deg,#961f24,var(--accent))}
+.hbtn:disabled{opacity:.35;cursor:not-allowed;pointer-events:none}
+
+/* ── WORKSPACE ── */
+.ws{display:flex;flex:1;overflow:hidden;min-height:0}
+
+/* ── ICON SIDEBAR ── */
+.isb{width:60px;background:var(--s1);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px;flex-shrink:0}
+.itool{width:44px;height:44px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text2);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:all .15s;font-size:var(--fs-3xs);font-family:inherit;font-weight:600;letter-spacing:.01em;position:relative}
+.itool:hover{background:var(--s2);color:var(--text)}
+.itool.on{background:var(--accent-l);border-color:var(--accent);color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.itool-sep{width:28px;height:1px;background:var(--border);margin:3px 0}
+.itool-tip{position:absolute;left:52px;top:50%;transform:translateY(-50%);background:#1a1a2e;color:#fff;font-size:var(--fs-xs);padding:4px 8px;border-radius:5px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:999}
+.itool:hover .itool-tip{opacity:1}
+
+/* ── LEFT PANEL ── */
+.lp{width:256px;background:var(--s1);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.lp-head{padding:11px 14px 9px;border-bottom:1px solid var(--border);font-size:var(--fs-xs);font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
+.lp-body{flex:1;overflow-y:auto;padding:10px 12px}
+.lp-body::-webkit-scrollbar{width:4px}.lp-body::-webkit-scrollbar-track{background:transparent}.lp-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.sec{margin-bottom:16px}
+.sec-lbl{font-size:var(--fs-2xs);font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:7px}
+
+/* ── Inputs ── */
+input[type=text],input[type=number],select{background:var(--s2);border:1px solid var(--border);border-radius:var(--r2);color:var(--text);font-family:inherit;font-size:var(--fs-base);padding:6px 9px;outline:none;transition:border-color .15s;width:100%}
+textarea{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:inherit;font-size:var(--fs-base);padding:8px 10px;outline:none;transition:border-color .15s;width:100%;resize:none;line-height:1.5}
+input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{border-color:var(--accent)}
+input::placeholder,textarea::placeholder{color:var(--text3)}
+input[type=color]{width:28px;height:26px;border:1px solid var(--border);border-radius:5px;background:transparent;cursor:pointer;padding:2px;transition:border-color .15s}
+input[type=color]:hover{border-color:var(--accent)}
+input[type=range]{-webkit-appearance:none;width:100%;height:4px;background:var(--s3);border-radius:4px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid #fff;box-shadow:var(--shadow-sm)}
+
+/* quick chips */
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.chip{background:var(--s2);border:1px solid var(--border);border-radius:20px;color:var(--text2);font-size:var(--fs-xs);padding:3px 9px;cursor:pointer;transition:all .12s}
+.chip:hover{border-color:var(--accent2);color:var(--text)}
+
+/* size pills */
+.spills{display:flex;gap:4px;flex-wrap:wrap}
+.spill{background:var(--s2);border:1px solid var(--border);border-radius:var(--r2);color:var(--text2);font-size:var(--fs-xs);padding:5px 7px;cursor:pointer;text-align:center;line-height:1.3;transition:all .12s}
+.spill:hover{border-color:var(--accent2);color:var(--text)}
+.spill.on{background:var(--accent-l);border-color:var(--accent);color:var(--accent2)}
+.cres{display:flex;align-items:center;gap:4px;margin-top:6px}
+.cres input{flex:1;min-width:0}
+.cx{color:var(--text3);flex-shrink:0}
+.crbtn{background:var(--s2);border:1px solid var(--border);border-radius:var(--r2);color:var(--text);font-size:var(--fs-xs);font-weight:600;padding:6px 9px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .12s}
+.crbtn:hover{border-color:var(--accent)}
+
+/* swatches */
+.sw-grid{display:flex;flex-wrap:wrap;gap:5px}
+.sw{width:24px;height:24px;border-radius:5px;cursor:pointer;border:2px solid transparent;transition:all .12s;flex-shrink:0}
+.sw:hover{transform:scale(1.15);border-color:rgba(255,255,255,.3)}
+.sw.on{border-color:#fff;box-shadow:0 0 0 2px var(--accent)}
+.gds{display:flex;flex-wrap:wrap;gap:4px}
+.gd{height:24px;width:42px;border-radius:5px;cursor:pointer;border:2px solid transparent;transition:all .12s}
+.gd:hover{transform:scale(1.08)}
+.gd.on{border-color:#fff;box-shadow:0 0 0 2px var(--accent)}
+
+/* font list */
+.flist{display:flex;flex-direction:column;gap:3px;max-height:200px;overflow-y:auto}
+.flist::-webkit-scrollbar{width:3px}.flist::-webkit-scrollbar-thumb{background:var(--border)}
+.fi{padding:6px 9px;border-radius:var(--r2);cursor:pointer;font-size:var(--fs-md);border:1px solid transparent;transition:all .1s;color:var(--text2)}
+.fi:hover{background:var(--s2);color:var(--text)}
+.fi.on{background:var(--accent-l);border-color:var(--accent);color:var(--accent2)}
+
+/* buttons */
+.btn{padding:7px 12px;border-radius:var(--r);border:1px solid var(--border);background:var(--s2);color:var(--text2);font-size:var(--fs-sm);font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;display:inline-flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap}
+.btn:hover{border-color:var(--accent2);color:var(--text)}
+.btn.p{background:linear-gradient(135deg,var(--accent),#961f24);border-color:var(--accent);color:#fff;box-shadow:var(--shadow-accent-sm)}
+.btn.p:hover{background:linear-gradient(135deg,#961f24,var(--accent));box-shadow:var(--shadow-accent-md)}
+.btn.full{width:100%}
+.btn.sm{padding:5px 10px;font-size:var(--fs-xs);border-radius:var(--r2)}
+.btn.danger{color:var(--err);border-color:var(--err)}
+.btn.danger:hover{background:var(--err);color:#fff}
+.btn:disabled{opacity:.35;cursor:not-allowed;pointer-events:none}
+.brow{display:flex;gap:5px;flex-wrap:wrap}
+.brow .btn{flex:1;min-width:0}
+
+/* shape thumbnails */
+.shape-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.shape-card{border:1px solid var(--border);border-radius:var(--r);background:var(--s2);cursor:pointer;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;transition:all .12s;font-size:var(--fs-2xs);color:var(--text2)}
+.shape-card:hover{border-color:var(--accent2);color:var(--text);background:var(--s3)}
+.shape-card.on{border-color:var(--accent);background:var(--accent-l);color:var(--accent2);box-shadow:inset 0 0 0 1px var(--accent)}
+.shape-card svg{flex-shrink:0}
+
+/* template thumbnails */
+.tpl-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.tpl-card{border:1px solid var(--border);border-radius:var(--r);background:var(--s2);cursor:pointer;overflow:hidden;transition:all .12s;position:relative}
+.tpl-card:hover{border-color:var(--accent2);box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.tpl-card svg{display:block;width:100%;height:72px}
+.tpl-card .tpl-lbl{font-size:var(--fs-2xs);font-weight:600;color:var(--text2);padding:5px 7px;border-top:1px solid var(--border);background:var(--s1)}
+
+/* ── CANVAS ── */
+.cw{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.canvas-scroll{flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;background:repeating-conic-gradient(#e8eaf0 0% 25%,#f0f2f5 0% 50%) 0 0/24px 24px;position:relative}
+.canvas-scroll::-webkit-scrollbar{width:8px;height:8px}
+.canvas-scroll::-webkit-scrollbar-track{background:var(--bg)}
+.canvas-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.stage{position:relative;flex-shrink:0;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 8px 40px rgba(0,0,0,.15)}
+.stage svg{display:block}
+
+/* marquee */
+.marquee{position:absolute;border:1px solid var(--accent);background:rgba(180,40,46,.08);pointer-events:none;display:none;z-index:99}
+
+/* alignment guides */
+.guide{position:absolute;background:var(--guide);pointer-events:none;display:none;z-index:150}
+.guide.v{width:1px;top:0;bottom:0}
+.guide.h{height:1px;left:0;right:0}
+
+/* selection */
+.sel{position:absolute;pointer-events:none;border:2px solid var(--accent);display:none;z-index:100;transform-origin:center center}
+.sel.on{display:block}
+.sel.multi{border-style:dashed}
+.hdl{position:absolute;width:10px;height:10px;background:#fff;border:2px solid var(--accent);border-radius:2px;pointer-events:all;transform:translate(-50%,-50%);z-index:101;box-shadow:var(--shadow-sm);cursor:grab}
+.hdl::after{content:'';position:absolute;top:-7px;left:-7px;right:-7px;bottom:-7px}
+.hdl:active{cursor:grabbing}
+.hdl-tl{top:0;left:0;cursor:nw-resize}
+.hdl-tr{top:0;left:100%;cursor:ne-resize}
+.hdl-bl{top:100%;left:0;cursor:sw-resize}
+.hdl-br{top:100%;left:100%;cursor:se-resize}
+.hdl-tm{top:0;left:50%;cursor:n-resize}
+.hdl-bm{top:100%;left:50%;cursor:s-resize}
+.hdl-ml{top:50%;left:0;cursor:w-resize}
+.hdl-mr{top:50%;left:100%;cursor:e-resize}
+.rot{position:absolute;top:-30px;left:50%;transform:translateX(-50%);width:20px;height:20px;background:var(--accent);border-radius:50%;pointer-events:all;cursor:grab;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-handle);z-index:101}
+
+/* inline text editor */
+.ite{position:absolute;background:rgba(20,20,30,.04);border:1.5px dashed var(--accent3);outline:none;z-index:300;padding:2px 4px;margin:0;display:none;resize:none;overflow:visible;white-space:pre-wrap;word-break:break-word;cursor:text;min-width:40px;border-radius:3px;box-sizing:content-box}
+.ite::selection{background:rgba(180,40,46,.35)}
+.ite-hint{position:absolute;z-index:301;background:#1c1c2e;color:#fff;font-size:var(--fs-xs);padding:4px 8px;border-radius:6px;white-space:nowrap;display:none;pointer-events:none;box-shadow:var(--shadow-sm)}
+.ite-hint.on{display:block}
+.ite-hint kbd{background:rgba(255,255,255,.15);border-radius:3px;padding:1px 4px;font-family:inherit;font-size:var(--fs-2xs)}
+
+/* code view */
+.code-view{display:none;flex:1;flex-direction:column;overflow:hidden}
+.code-view.on{display:flex}
+.code-ta{flex:1;background:#f8f9fc;color:#2d2d4e;font-family:'Fira Code','JetBrains Mono','Cascadia Code',monospace;font-size:var(--fs-sm);line-height:1.7;padding:16px;border:none;outline:none;resize:none}
+.code-foot{padding:8px 12px;border-top:1px solid var(--border);display:flex;gap:6px;background:var(--s1);flex-shrink:0;align-items:center}
+
+/* placeholder */
+.ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:var(--text2);text-align:center;padding:40px;max-width:400px}
+.ph h2{font-family:'Syne',sans-serif;font-size:var(--fs-xl);font-weight:800;color:var(--text);line-height:1.1}
+.ph p{font-size:var(--fs-md);line-height:1.7;opacity:.7}
+.spin{width:26px;height:26px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── FLOATING CONTEXT TOOLBAR ── */
+.ctx{position:absolute;top:14px;left:50%;transform:translateX(-50%);background:var(--s1);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-ctx);display:none;align-items:center;gap:2px;padding:4px 6px;z-index:500;max-width:calc(100% - 28px);flex-wrap:nowrap}
+.ctx.on{display:flex}
+.cp{width:1px;height:20px;background:var(--border);margin:0 3px;flex-shrink:0}
+.cb{background:transparent;border:1px solid transparent;border-radius:var(--r2);color:var(--text2);font-size:var(--fs-sm);font-weight:600;padding:4px 7px;cursor:pointer;font-family:inherit;transition:all .12s;display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
+.cb:hover{background:var(--s3);color:var(--text)}
+.cb.on{background:var(--accent-l);color:var(--accent2)}
+.cb.del:hover{color:var(--err)}
+.cs{background:var(--s2);border:1px solid var(--border);border-radius:var(--r2);color:var(--text);font-size:var(--fs-sm);padding:4px 6px;outline:none;cursor:pointer;max-width:130px;font-family:inherit}
+.cs:focus{border-color:var(--accent)}
+.cn{background:var(--s2);border:1px solid var(--border);border-radius:var(--r2);color:var(--text);font-size:var(--fs-sm);padding:4px 5px;outline:none;text-align:center;font-family:inherit}
+.cn:focus{border-color:var(--accent)}
+.cn.w48{width:48px}
+.cn.w38{width:38px}
+.ccolor{width:26px;height:26px;border:1px solid var(--border);border-radius:5px;background:transparent;cursor:pointer;padding:2px;flex-shrink:0}
+
+/* zoom */
+.zmbar{position:absolute;bottom:14px;right:14px;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);display:flex;align-items:center;overflow:hidden;box-shadow:var(--shadow-md);z-index:100}
+.zb{background:transparent;border:none;color:var(--text2);font-size:var(--fs-base);padding:7px 10px;cursor:pointer;font-family:inherit;transition:background .12s}
+.zb:hover{background:var(--s2);color:var(--text)}
+.zl{padding:4px 9px;font-size:var(--fs-xs);color:var(--text2);min-width:44px;text-align:center;border-left:1px solid var(--border);border-right:1px solid var(--border)}
+
+/* ── RIGHT PANEL ── */
+.rp{width:236px;background:var(--s1);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.rp-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+.rpt{flex:1;padding:9px 4px;font-size:var(--fs-2xs);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);text-align:center;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.rpt.on{color:var(--accent);border-color:var(--accent)}
+.rp-panel{display:none;flex:1;overflow-y:auto;flex-direction:column}
+.rp-panel.on{display:flex}
+.rp-panel::-webkit-scrollbar{width:4px}.rp-panel::-webkit-scrollbar-thumb{background:var(--border)}
+.rp-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--text3);font-size:var(--fs-sm);text-align:center;padding:20px;line-height:1.6}
+.rpf{padding:10px 11px;display:flex;flex-direction:column;gap:8px}
+.rf{display:flex;flex-direction:column;gap:3px}
+.rf label{font-size:var(--fs-2xs);font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text3)}
+.rfrow{display:flex;gap:5px}
+.rfrow .rf{flex:1;min-width:0}
+.rfc{display:flex;align-items:center;gap:5px}
+.rfc input[type=color]{flex-shrink:0}
+.rfc input[type=text]{flex:1;min-width:0}
+.el-chip{display:inline-flex;align-items:center;gap:4px;background:rgba(180,40,46,.08);color:var(--accent);border-radius:var(--r3);font-size:var(--fs-2xs);font-weight:700;padding:3px 6px;font-family:monospace;margin-bottom:5px;border:1px solid rgba(180,40,46,.2)}
+.rp-divider{height:1px;background:var(--border);margin:2px 0}
+
+/* opacity row */
+.op-row{display:flex;align-items:center;gap:7px}
+.op-row input[type=range]{flex:1}
+.op-row input[type=number]{width:46px;flex-shrink:0}
+
+/* layers */
+.ll{padding:5px 6px;display:flex;flex-direction:column;gap:1px}
+.li{display:flex;align-items:center;gap:5px;padding:5px 6px;border-radius:6px;cursor:pointer;color:var(--text2);border:1px solid transparent;transition:all .1s;font-size:var(--fs-sm)}
+.li:hover{background:var(--s2);color:var(--text)}
+.li.on{background:var(--accent-l);border-color:rgba(108,99,255,.35);color:var(--accent2)}
+.li-ic{width:13px;text-align:center;font-size:var(--fs-xs);opacity:.5;flex-shrink:0}
+.li-nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.li-eye{opacity:.25;font-size:var(--fs-xs);flex-shrink:0;cursor:pointer;padding:1px 3px;border-radius:3px;transition:opacity .12s}
+.li-eye:hover{opacity:1}
+.li-lock{opacity:.25;font-size:var(--fs-xs);flex-shrink:0;cursor:pointer;padding:1px 3px;border-radius:3px;transition:opacity .12s}
+.li-lock:hover{opacity:1}
+.li-lock.active{opacity:1;color:var(--accent)}
+.ll-actions{display:flex;gap:5px;padding:6px 8px;border-top:1px solid var(--border)}
+
+/* history */
+.hi{display:flex;align-items:center;gap:6px;padding:5px 11px;font-size:var(--fs-xs);color:var(--text2);border-bottom:1px solid var(--border2)}
+.hd2{width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0}
+
+/* toast */
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:8px 16px;font-size:var(--fs-base);color:var(--text);box-shadow:var(--shadow-lg);opacity:0;transition:all .22s;z-index:9999;pointer-events:none;white-space:nowrap}
+.toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.ok{border-color:var(--ok);color:var(--ok)}
+.toast.err{border-color:var(--err);color:var(--err)}
+
+/* kbd hint */
+.kbd-hint{position:absolute;bottom:14px;left:14px;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:5px 10px;font-size:var(--fs-xs);color:var(--text3);box-shadow:var(--shadow-md);z-index:100;display:none}
+.kbd-hint.on{display:block}
+.kbd-hint kbd{background:var(--s3);border:1px solid var(--border);border-radius:3px;padding:1px 4px;font-family:inherit;font-size:var(--fs-2xs);color:var(--text2)}
+
+/* CORS */
+#cw{display:none;background:var(--err);color:#fff;font-size:var(--fs-sm);padding:7px 16px;text-align:center;flex-shrink:0}
+
+/* edit mode cursors */
+.em svg{cursor:default}
+.em svg>:not(defs):not(style){cursor:move}
+.em svg text,.em svg tspan{cursor:text}
+.em svg [data-locked]{cursor:not-allowed!important}
+.em svg>:not(defs):not(style):not([data-s]):not([data-ms]):hover{outline:1.5px dashed var(--accent3);outline-offset:2px}
+[data-s]{outline:2px solid var(--accent)!important;outline-offset:2px}
+[data-ms]{outline:2px dashed var(--accent2)!important;outline-offset:2px}
+.rot{cursor:grab}
+.rot:active{cursor:grabbing}
+
+/* scrollbar gen */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* coachmark / guided first-run */
+.coach-veil{position:absolute;inset:0;background:rgba(20,20,30,.32);z-index:800;display:none;align-items:flex-end;justify-content:center;padding-bottom:64px}
+.coach-veil.on{display:flex}
+.coach-card{background:var(--s1);border-radius:14px;box-shadow:var(--shadow-lg);padding:18px 20px;max-width:340px;display:flex;flex-direction:column;gap:10px;animation:coachIn .25s ease}
+@keyframes coachIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.coach-icon{width:34px;height:34px;border-radius:9px;background:var(--accent-l);color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.coach-head{display:flex;align-items:center;gap:10px}
+.coach-title{font-size:var(--fs-md);font-weight:700;color:var(--text)}
+.coach-body{font-size:var(--fs-base);color:var(--text2);line-height:1.6}
+.coach-body kbd{background:var(--s3);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-family:inherit;font-size:var(--fs-sm);color:var(--text2)}
+.coach-foot{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+.coach-dots{display:flex;gap:5px}
+.coach-dot{width:6px;height:6px;border-radius:50%;background:var(--s3);transition:background .15s}
+.coach-dot.on{background:var(--accent)}
+.coach-btns{display:flex;gap:6px}
+
+/* undo-toast (replaces blocking delete confirmation) */
+.utoast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(10px);background:#1c1c2e;color:#fff;border-radius:10px;padding:9px 10px 9px 16px;font-size:var(--fs-base);display:flex;align-items:center;gap:14px;box-shadow:var(--shadow-lg);opacity:0;transition:all .22s;z-index:9999;pointer-events:none}
+.utoast.on{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:all}
+.utoast button{background:transparent;border:none;color:#fff;font-size:var(--fs-base);font-weight:700;cursor:pointer;font-family:inherit;padding:5px 10px;border-radius:6px;transition:background .12s}
+.utoast button:hover{background:rgba(255,255,255,.12)}
+
+/* unsaved-changes confirmation dialog */
+.uc-veil{position:fixed;inset:0;background:rgba(20,20,30,.4);z-index:2000;display:none;align-items:center;justify-content:center}
+.uc-veil.on{display:flex}
+.uc-card{background:var(--s1);border-radius:14px;box-shadow:var(--shadow-lg);padding:20px 22px;max-width:380px;display:flex;flex-direction:column;gap:12px;animation:coachIn .2s ease}
+.uc-head{display:flex;align-items:center;gap:10px}
+.uc-icon{width:36px;height:36px;border-radius:9px;background:rgba(217,119,6,.12);color:var(--warn);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.uc-title{font-size:var(--fs-md);font-weight:700;color:var(--text)}
+.uc-body{font-size:var(--fs-base);color:var(--text2);line-height:1.6}
+.uc-foot{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:4px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<div id="cw">⚠ Open via web server, not file://. Run: <code>python3 -m http.server 8080</code></div>
+<script>if(location.protocol==='file:')document.getElementById('cw').style.display='block'</script>
+
+<!-- ══ HEADER ══ -->
+<div class="hdr">
+  <div class="logo">intel<b>isa</b> <span style="font-size:var(--fs-2xs);font-weight:500;color:var(--text3);letter-spacing:.06em;font-family:'Inter',sans-serif">IMAGE STUDIO</span></div>
+  <div class="hdiv"></div>
+  <div class="vtabs">
+    <button class="vt on" id="vt-gen" onclick="setV('gen')">✦ Generate</button>
+    <button class="vt" id="vt-edit" onclick="setV('edit')">✏ Edit</button>
+    <button class="vt" id="vt-code" onclick="setV('code')">⌥ Code</button>
+  </div>
+  <div class="hgap"></div>
+  <span class="hstat" id="hstat"></span>
+  <button class="hbtn" id="h-undo" style="display:none" onclick="undo()">↩ Undo</button>
+  <button class="hbtn" id="h-redo" style="display:none" onclick="redo()">↪ Redo</button>
+  <button class="hbtn" id="h-reset" style="display:none" onclick="resetAll()">↺ Reset</button>
+  <button class="hbtn" id="h-svg" style="display:none" onclick="saveSVG()">↓ SVG</button>
+  <button class="hbtn p" id="h-png" style="display:none" onclick="savePNG()">↓ PNG</button>
+</div>
+
+<!-- ══ WORKSPACE ══ -->
+<div class="ws">
+
+<!-- ICON SIDEBAR -->
+<div class="isb">
+  <button class="itool on" id="it-select" onclick="setTool('select')">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-7 1-4 7z"/></svg>
+    Select
+    <span class="itool-tip">Select (V)</span>
+  </button>
+  <button class="itool" id="it-text" onclick="addTextDirect()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+    Text
+    <span class="itool-tip">Add Text (T)</span>
+  </button>
+  <button class="itool" id="it-shapes" onclick="setPanel('shapes')">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="9" width="11" height="11" rx="2"/><circle cx="16.5" cy="6.5" r="4.5"/></svg>
+    Shapes
+    <span class="itool-tip">Shapes (R/C/L)</span>
+  </button>
+  <div class="itool-sep"></div>
+  <button class="itool" id="it-tpl" onclick="setPanel('tpl')">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Templates
+    <span class="itool-tip">Templates</span>
+  </button>
+  <button class="itool" id="it-bg" onclick="setPanel('bg')">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M2 12h20M12 2v20" stroke-dasharray="3"/></svg>
+    BG
+    <span class="itool-tip">Background</span>
+  </button>
+  <button class="itool" id="it-img" onclick="triggerImageUpload()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><polyline points="21 15 16 10 5 21"/></svg>
+    Image
+    <span class="itool-tip">Upload Image</span>
+  </button>
+  <input type="file" id="img-upload" accept="image/*" style="display:none" onchange="insertImage(this)">
+  <div class="itool-sep"></div>
+  <button class="itool" id="it-ai" onclick="setPanel('gen')">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+    AI
+    <span class="itool-tip">AI Generate</span>
+  </button>
+</div>
+
+<!-- LEFT PANEL -->
+<div class="lp" id="lp">
+
+  <!-- GEN panel -->
+  <div id="p-gen" style="display:flex;flex-direction:column;height:100%;overflow:hidden">
+    <div class="lp-head">Generate with AI</div>
+    <div class="lp-body">
+      <div class="sec">
+        <div class="sec-lbl">Describe your image</div>
+        <textarea id="prompt" rows="5" placeholder="A warm café menu board with chalk-style typography and a latte illustration…"></textarea>
+        <div style="margin-top:7px" class="chips">
+          <span class="chip" onclick="setQ(this)">🍽 Restaurant menu</span>
+          <span class="chip" onclick="setQ(this)">🏷 Sale banner</span>
+          <span class="chip" onclick="setQ(this)">📅 Event board</span>
+          <span class="chip" onclick="setQ(this)">☕ Café specials</span>
+          <span class="chip" onclick="setQ(this)">💍 Wedding board</span>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-lbl">Canvas size</div>
+        <div class="spills">
+          <div class="spill on" data-w="1920" data-h="1080" onclick="setSz(this)">Landscape<br><span style="font-size:var(--fs-2xs);opacity:.5">1920×1080</span></div>
+          <div class="spill" data-w="1080" data-h="1920" onclick="setSz(this)">Portrait<br><span style="font-size:var(--fs-2xs);opacity:.5">1080×1920</span></div>
+          <div class="spill" data-w="1080" data-h="1080" onclick="setSz(this)">Square<br><span style="font-size:var(--fs-2xs);opacity:.5">1080×1080</span></div>
+          <div class="spill" data-w="1200" data-h="630" onclick="setSz(this)">Social<br><span style="font-size:var(--fs-2xs);opacity:.5">1200×630</span></div>
+        </div>
+        <div class="cres">
+          <input type="number" id="cw2" placeholder="W" min="100" max="4000" style="text-align:center">
+          <span class="cx">×</span>
+          <input type="number" id="ch2" placeholder="H" min="100" max="4000" style="text-align:center">
+          <button class="crbtn" onclick="applyCS()">Apply</button>
+        </div>
+      </div>
+      <div class="sec">
+        <button class="btn p full" id="gen-btn" onclick="gen()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          Generate Image →
+        </button>
+      </div>
+      <div class="sec">
+        <div class="sec-lbl">AI edit — describe changes</div>
+        <textarea id="ep" rows="3" placeholder="Make the background darker, change title to 'Today's Specials'…"></textarea>
+        <button class="btn full" style="margin-top:6px" id="ae-btn" onclick="aiEdit()">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Apply Edit →
+        </button>
+      </div>
+      <div class="sec">
+        <div class="sec-lbl">Edit history</div>
+        <div id="hist" style="font-size:var(--fs-xs);color:var(--text3);line-height:1.8">No history yet</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEMPLATES panel -->
+  <div id="p-tpl" style="display:none;flex-direction:column;height:100%;overflow:hidden">
+    <div class="lp-head">Templates</div>
+    <div class="lp-body">
+      <div class="sec">
+        <div class="sec-lbl">Start from a layout</div>
+        <div class="tpl-grid" id="tpl-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BG panel -->
+  <div id="p-bg" style="display:none;flex-direction:column;height:100%;overflow:hidden">
+    <div class="lp-head">Background</div>
+    <div class="lp-body">
+      <div class="sec">
+        <div class="sec-lbl">Solid colors</div>
+        <div class="sw-grid" id="swatches"></div>
+      </div>
+      <div class="sec">
+        <div class="sec-lbl">Gradients</div>
+        <div class="gds" id="grads"></div>
+      </div>
+      <div class="sec">
+        <div class="sec-lbl">Custom</div>
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:7px">
+          <input type="color" id="bg-col" value="#1a1a2e" oninput="applyBgSolid(this.value)" style="width:34px;height:32px">
+          <input type="text" id="bg-hex" placeholder="#hex or css gradient…" onchange="applyBgRaw(this.value)">
+        </div>
+        <div class="sec-lbl" style="margin-top:8px">Image fill</div>
+        <button class="btn full" onclick="triggerBgImage()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><polyline points="21 15 16 10 5 21"/></svg>
+          Upload background image
+        </button>
+        <input type="file" id="bg-img-upload" accept="image/*" style="display:none" onchange="insertBgImage(this)">
+      </div>
+    </div>
+  </div>
+
+  <!-- TEXT panel -->
+  <div id="p-text" style="display:none;flex-direction:column;height:100%;overflow:hidden">
+    <div class="lp-head">Text</div>
+    <div class="lp-body">
+      <div class="sec">
+        <div class="sec-lbl">Add text element</div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <button class="btn full" style="font-size:1.1rem;font-family:'Syne',sans-serif;font-weight:800;padding:12px" onclick="addTxt('h')">Add a heading</button>
+          <button class="btn full" style="font-size:var(--fs-md);font-weight:600;padding:9px" onclick="addTxt('s')">Add a subheading</button>
+          <button class="btn full" style="font-size:var(--fs-sm);padding:8px" onclick="addTxt('b')">Add body text</button>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-lbl">Font family</div>
+        <div class="flist" id="flist"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHAPES panel -->
+  <div id="p-shapes" style="display:none;flex-direction:column;height:100%;overflow:hidden">
+    <div class="lp-head">Shapes</div>
+    <div class="lp-body">
+      <div class="sec">
+        <div class="sec-lbl">Draw on canvas — click &amp; drag</div>
+        <div class="shape-grid">
+          <div class="shape-card" data-tool="rect" onclick="setTool('rect')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--accent-l)" stroke="var(--accent2)" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="3"/></svg>
+            Rectangle
+          </div>
+          <div class="shape-card" data-tool="circle" onclick="setTool('circle')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--accent-l)" stroke="var(--accent2)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/></svg>
+            Circle
+          </div>
+          <div class="shape-card" data-tool="line" onclick="setTool('line')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2"><line x1="3" y1="21" x2="21" y2="3"/></svg>
+            Line
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-lbl">Click to insert</div>
+        <div class="shape-grid">
+          <div class="shape-card" onclick="addShape('triangle')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--accent-l)" stroke="var(--accent2)" stroke-width="1.5"><polygon points="12,2 22,22 2,22"/></svg>
+            Triangle
+          </div>
+          <div class="shape-card" onclick="addShape('star')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--accent-l)" stroke="var(--accent2)" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Star
+          </div>
+          <div class="shape-card" onclick="addShape('arrow')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            Arrow
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- lp -->
+
+<!-- CANVAS -->
+<div class="cw" id="canvas-wrap">
+
+  <!-- FLOATING CONTEXT TOOLBAR -->
+  <div class="ctx" id="ctx">
+    <!-- text group -->
+    <div id="ctx-txt" style="display:none;align-items:center;gap:2px;contents:''">
+      <select class="cs" id="ctx-font" onchange="ap('font-family',this.value+', sans-serif')">
+        <option>Inter</option><option>Playfair Display</option><option>Montserrat</option>
+        <option>Pacifico</option><option>Oswald</option><option>Raleway</option>
+        <option>Lato</option><option>Poppins</option><option>Dancing Script</option>
+        <option>Bebas Neue</option><option>Georgia</option><option>Arial</option><option>Verdana</option>
+      </select>
+      <input class="cn w48" id="ctx-sz" type="number" value="60" min="6" max="800" title="Size" onchange="ap('font-size',this.value)">
+      <div class="cp"></div>
+      <button class="cb" id="ctx-b" onclick="tog('font-weight','bold','normal')" title="Bold"><b>B</b></button>
+      <button class="cb" id="ctx-i" onclick="tog('font-style','italic','normal')" title="Italic"><i>I</i></button>
+      <button class="cb" id="ctx-u" onclick="togDeco('underline')" title="Underline"><u>U</u></button>
+      <div class="cp"></div>
+      <input class="ccolor" type="color" id="ctx-tc" value="#ffffff" oninput="ap('fill',this.value)" title="Text color">
+      <div class="cp"></div>
+      <button class="cb" onclick="ap('text-anchor','start')" title="Left align">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/></svg>
+      </button>
+      <button class="cb" onclick="ap('text-anchor','middle')" title="Center">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+      </button>
+      <button class="cb" onclick="ap('text-anchor','end')" title="Right align">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="6" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="cp"></div>
+      <select class="cs" id="ctx-ls" onchange="ap('letter-spacing',this.value)" title="Letter spacing" style="max-width:90px">
+        <option value="-2">Tight −2</option><option value="0" selected>Normal</option>
+        <option value="2">Wide +2</option><option value="5">Wider +5</option><option value="10">Widest +10</option>
+      </select>
+    </div>
+    <!-- shape group -->
+    <div id="ctx-shp" style="display:none;align-items:center;gap:2px">
+      <span style="font-size:var(--fs-xs);color:var(--text3)">Fill</span>
+      <input class="ccolor" type="color" id="ctx-fill" value="#6c63ff" oninput="ap('fill',this.value)">
+      <div class="cp"></div>
+      <span style="font-size:var(--fs-xs);color:var(--text3)">Stroke</span>
+      <input class="ccolor" type="color" id="ctx-stroke" value="#ffffff" oninput="ap('stroke',this.value)">
+      <input class="cn w38" id="ctx-sw" type="number" value="0" min="0" max="40" onchange="ap('stroke-width',this.value)" title="Stroke width">
+      <div class="cp"></div>
+      <span style="font-size:var(--fs-xs);color:var(--text3)">Round</span>
+      <input class="cn w38" id="ctx-rx" type="number" value="0" min="0" max="200" onchange="ap('rx',this.value);ap('ry',this.value)" title="Corner radius">
+    </div>
+    <!-- opacity (always when selected) -->
+    <div id="ctx-op" style="display:none;align-items:center;gap:4px">
+      <div class="cp"></div>
+      <span style="font-size:var(--fs-xs);color:var(--text3)">Opacity</span>
+      <input type="range" id="ctx-opr" min="0" max="1" step="0.02" value="1" oninput="ap('opacity',this.value);document.getElementById('ctx-opn').value=Math.round(this.value*100)" style="width:64px">
+      <input class="cn w38" id="ctx-opn" type="number" value="100" min="0" max="100" onchange="ap('opacity',this.value/100);document.getElementById('ctx-opr').value=this.value/100" title="Opacity %">
+      <span style="font-size:var(--fs-xs);color:var(--text3)">%</span>
+    </div>
+    <!-- common actions -->
+    <div id="ctx-com" style="display:none;align-items:center;gap:2px">
+      <div class="cp"></div>
+      <button class="cb" onclick="groupSel()" id="ctx-group" title="Group (⌘G)">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><path d="M10 6.5h4a3 3 0 0 1 3 3v4"/></svg>
+      </button>
+      <button class="cb" onclick="bringFwd()" title="Bring forward">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="1"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>↑
+      </button>
+      <button class="cb" onclick="sendBwd()" title="Send backward">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="13" height="13" rx="1"/><path d="M15 15h2a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2"/></svg>↓
+      </button>
+      <button class="cb" onclick="dup()" title="Duplicate (⌘D)">⎘</button>
+      <button class="cb del" onclick="delEl()" title="Delete (Del)">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- canvas scroll -->
+  <div class="canvas-scroll" id="cs">
+    <div id="ph" class="ph">
+      <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=".8" opacity=".25"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      <h2>Describe it.<br>See it.</h2>
+      <p>Type a prompt on the left and click <strong>Generate Image →</strong><br>Or start instantly from a <strong>Template</strong>.<br>Then switch to <strong>Edit</strong> to customise everything.</p>
+    </div>
+    <div class="stage" id="stage" style="display:none">
+      <div id="svc"></div>
+      <div class="guide v" id="gv"></div>
+      <div class="guide h" id="gh"></div>
+      <div class="marquee" id="marquee"></div>
+      <div class="sel" id="sel">
+        <div class="hdl hdl-tl" data-h="tl"></div><div class="hdl hdl-tr" data-h="tr"></div>
+        <div class="hdl hdl-bl" data-h="bl"></div><div class="hdl hdl-br" data-h="br"></div>
+        <div class="hdl hdl-tm" data-h="tm"></div><div class="hdl hdl-bm" data-h="bm"></div>
+        <div class="hdl hdl-ml" data-h="ml"></div><div class="hdl hdl-mr" data-h="mr"></div>
+        <div class="rot" title="Rotate"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M20.5 15a9 9 0 1 1-2.1-9.4L23 10"/></svg></div>
+      </div>
+      <textarea class="ite" id="ite" rows="1"></textarea>
+      <div class="ite-hint" id="ite-hint"><kbd>Enter</kbd> done · <kbd>⇧Enter</kbd> new line · <kbd>Esc</kbd> cancel</div>
+    </div>
+  </div>
+
+  <!-- code view -->
+  <div class="code-view" id="code-view">
+    <textarea class="code-ta" id="code-ta" spellcheck="false" placeholder="Generate an image first…"></textarea>
+    <div class="code-foot">
+      <button class="btn p sm" onclick="applyCode()">▶ Apply</button>
+      <button class="btn sm" onclick="fmtCode()">⌥ Format</button>
+      <button class="btn sm" onclick="cpCode()">⎘ Copy</button>
+      <div style="flex:1"></div>
+      <span id="csz" style="font-size:var(--fs-xs);color:var(--text3)"></span>
+    </div>
+  </div>
+
+  <!-- keyboard shortcut hint -->
+  <div class="kbd-hint" id="kbd-hint">
+    <kbd>⇧</kbd>+click multi-select · <kbd>⌘G</kbd> group · <kbd>⌘C/V</kbd> copy/paste · <kbd>⌘A</kbd> select all · hold <kbd>⌥</kbd> to disable snapping
+  </div>
+
+  <!-- zoom bar -->
+  <div class="zmbar">
+    <button class="zb" onclick="zm(-0.1)">−</button>
+    <div class="zl" id="zl">100%</div>
+    <button class="zb" onclick="zm(0.1)">+</button>
+    <button class="zb" onclick="zmFit()" title="Fit to screen">⊡</button>
+    <button class="zb" onclick="zm2(1)" title="100%">1:1</button>
+  </div>
+
+  <!-- first-run guided coachmark -->
+  <div class="coach-veil" id="coach-veil">
+    <div class="coach-card" id="coach-card"></div>
+  </div>
+</div><!-- cw -->
+
+<!-- undo-toast for delete (instant delete, easy recovery) -->
+<div class="utoast" id="utoast">
+  <span id="utoast-msg"></span>
+  <button onclick="undoLastDelete()">Undo</button>
+</div>
+
+<!-- unsaved-changes confirmation, shown when generating or loading a new template would discard the current canvas -->
+<div class="uc-veil" id="uc-veil" onclick="if(event.target===this) ucCancel()">
+  <div class="uc-card">
+    <div class="uc-head">
+      <div class="uc-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+      </div>
+      <div class="uc-title">Save your current design?</div>
+    </div>
+    <div class="uc-body" id="uc-body">This will replace what's on the canvas. Download a copy first if you want to keep it.</div>
+    <div class="uc-foot">
+      <button class="btn sm" onclick="ucCancel()">Cancel</button>
+      <button class="btn sm" onclick="ucDiscard()">Discard & Continue</button>
+      <button class="btn p sm" onclick="ucSaveAndContinue()">Save & Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="rp">
+  <div class="rp-tabs">
+    <div class="rpt on" id="rpt-p" onclick="setRP('p')">Properties</div>
+    <div class="rpt" id="rpt-l" onclick="setRP('l')">Layers</div>
+  </div>
+  <div class="rp-panel on" id="rpp-p">
+    <div class="rp-empty" id="rp-empty">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".4"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Switch to <strong>Edit</strong><br>and click any element<br>to inspect it.
+    </div>
+    <div id="rpf" style="display:none"><div class="rpf" id="rp-fields"></div></div>
+  </div>
+  <div class="rp-panel" id="rpp-l">
+    <div class="rp-empty" id="rp-le">Generate an image<br>to see layers</div>
+    <div class="ll" id="ll" style="display:none"></div>
+    <div class="ll-actions" id="ll-actions" style="display:none">
+      <button class="btn sm full" onclick="groupSel()">⛓ Group</button>
+      <button class="btn sm full" onclick="ungroupSel()">⛓‍💥 Ungroup</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- ws -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════
+// API
+// ════════════════════════════════════════════
+const API_KEY_URL = 'https://login.intelisa.in/api/getAPIKeyForImageGeneration';
+const API_URL     = 'https://api.anthropic.com/v1/messages';
+const MODEL       = 'claude-sonnet-4-5-20250929';
+let cachedKey     = null;
+
+async function getKey() {
+  if (cachedKey) return cachedKey;
+  const r = await fetch(API_KEY_URL);
+  if (!r.ok) throw new Error('Key fetch failed: ' + r.status);
+  const t = await r.text();
+  try { const d = JSON.parse(t); cachedKey = d.apiKey || d.api_key || d.key || d; }
+  catch { cachedKey = t.trim(); }
+  return cachedKey;
+}
+async function claude(system, user) {
+  const key = await getKey();
+  const r = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-api-key': String(key).trim(),
+      'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+    body: JSON.stringify({ model: MODEL, max_tokens: 8000, system, messages: [{ role: 'user', content: user }] })
+  });
+  const raw = await r.text();
+  let d; try { d = JSON.parse(raw); } catch { console.error('raw:', raw.slice(0,300)); throw new Error('Non-JSON (HTTP '+r.status+')'); }
+  if (d.error) throw new Error(d.error.message || JSON.stringify(d.error));
+  return d.content?.[0]?.text || '';
+}
+
+// ════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════
+let W = 1920, H = 1080, zoom = 1;
+let origSVG = null, hist = [], redoStack = [], sel = null, multiSel = [];
+let view = 'gen', tool = 'select';
+let drag = { on: false, el: null, sx: 0, sy: 0, ox: 0, oy: 0, sc: 1, tf: false, ax: 'x', ay: 'y', moved:false, group:null };
+let resize = { on: false, el: null, handle: '', sx:0, sy:0, sc:1, box:null, aspectLock:false };
+let rotateDrag = { on: false, el: null, cx:0, cy:0, startAngle:0, startRot:0 };
+let draw = { on: false, el: null, sx: 0, sy: 0, tool: '' };
+let ite = { on: false, el: null, gen: 0, original: '' };
+let marquee = { on:false, sx:0, sy:0 };
+let clipboard = [];
+let locked = new Set();
+let hidden = new Set();
+let ucPendingAction = null; // holds the deferred action (a function) while the unsaved-changes dialog is open
+
+const $ = id => document.getElementById(id);
+const svg = () => document.querySelector('#svc svg');
+
+function toast(m, t='') { const e=$('toast'); e.textContent=m; e.className='toast on '+(t||''); clearTimeout(e._); e._=setTimeout(()=>e.className='toast',2800); }
+function stat(s) { $('hstat').textContent = s; }
+
+// ════════════════════════════════════════════
+// VIEWS
+// ════════════════════════════════════════════
+function setV(v) {
+  view = v;
+  ['gen','edit','code'].forEach(t => $('vt-'+t).classList.toggle('on', t===v));
+  $('h-undo').style.display = v!=='gen' ? '' : 'none';
+  $('h-redo').style.display = v!=='gen' ? '' : 'none';
+  $('h-reset').style.display = v!=='gen' ? '' : 'none';
+  $('cs').style.display = v==='code' ? 'none' : 'flex';
+  $('code-view').classList.toggle('on', v==='code');
+  $('kbd-hint').classList.toggle('on', v==='edit');
+  if (v==='code') syncCode();
+  if (v==='edit') { $('stage').classList.add('em'); attachH(); showCtx(); maybeStartCoach(); }
+  else { $('stage').classList.remove('em'); detachH(); clearSel(); $('ctx').classList.remove('on'); }
+  if (v==='gen') setPanel('gen');
+}
+
+// ════════════════════════════════════════════
+// FIRST-RUN GUIDED COACHMARK
+// ════════════════════════════════════════════
+let coachSeen = false, coachStep = 0;
+const COACH_STEPS = [
+  { icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-7 1-4 7z"/></svg>',
+    title:'Click anything to select it', body:'Click any text, shape, or image on the canvas to select it. A dashed outline shows what you can click before you do.' },
+  { icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="20" cy="20" r="2" fill="currentColor" stroke="none"/></svg>',
+    title:'Drag the handles to resize', body:'Once selected, drag a corner or edge handle to resize. Hold <kbd>⇧</kbd> while dragging a corner to keep the original proportions.' },
+  { icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.5 15a9 9 0 1 1-2.1-9.4L23 10"/></svg>',
+    title:'Spin the dot to rotate', body:'Drag the small circle above a selected element to rotate it. Hold <kbd>⇧</kbd> to snap to 15° steps.' },
+  { icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>',
+    title:'Double-click text to edit it', body:'Double-click any heading or body text to type directly on the canvas. Press <kbd>Enter</kbd> or click away to finish.' },
+  { icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><path d="M10 6.5h4a3 3 0 0 1 3 3v4"/></svg>',
+    title:'Shift-click to select several', body:'Hold <kbd>⇧</kbd> and click multiple elements, or drag on empty canvas to select everything in a box. Then group, move, or style them together.' }
+];
+function maybeStartCoach() {
+  if(coachSeen) return;
+  const s=svg(); if(!s) return;
+  coachSeen = true; coachStep = 0;
+  renderCoachStep();
+  $('coach-veil').classList.add('on');
+}
+function renderCoachStep() {
+  const step = COACH_STEPS[coachStep];
+  const isLast = coachStep === COACH_STEPS.length-1;
+  const dots = COACH_STEPS.map((_,i)=>`<span class="coach-dot${i===coachStep?' on':''}"></span>`).join('');
+  $('coach-card').innerHTML = `
+    <div class="coach-head">
+      <div class="coach-icon">${step.icon}</div>
+      <div class="coach-title">${step.title}</div>
+    </div>
+    <div class="coach-body">${step.body}</div>
+    <div class="coach-foot">
+      <div class="coach-dots">${dots}</div>
+      <div class="coach-btns">
+        <button class="btn sm" onclick="dismissCoach()">Skip</button>
+        <button class="btn p sm" onclick="advanceCoach()">${isLast?'Got it':'Next'}</button>
+      </div>
+    </div>`;
+}
+function advanceCoach() {
+  coachStep++;
+  if(coachStep >= COACH_STEPS.length) { dismissCoach(); return; }
+  renderCoachStep();
+}
+function dismissCoach() { $('coach-veil').classList.remove('on'); }
+
+// ════════════════════════════════════════════
+// TOOLS & PANELS
+// ════════════════════════════════════════════
+function setTool(t) {
+  tool = t;
+  $('it-select').classList.toggle('on', t==='select');
+  $('it-shapes').classList.toggle('on', ['rect','circle','line'].includes(t));
+  document.querySelectorAll('.shape-card[data-tool]').forEach(c => c.classList.toggle('on', c.dataset.tool===t));
+  if (t==='rect'||t==='circle'||t==='line') {
+    setPanel('shapes');
+    if (view !== 'edit') setV('edit');
+  }
+}
+
+function setPanel(p) {
+  ['gen','bg','text','shapes','tpl'].forEach(n => { const el=$('p-'+n); if(el) el.style.display = n===p ? 'flex' : 'none'; });
+  $('it-ai').classList.toggle('on', p==='gen');
+  $('it-bg').classList.toggle('on', p==='bg');
+  $('it-tpl').classList.toggle('on', p==='tpl');
+  $('it-shapes').classList.toggle('on', p==='shapes');
+}
+
+// ════════════════════════════════════════════
+// SIZE / PROMPTS
+// ════════════════════════════════════════════
+const QPS = {
+  '🍽 Restaurant menu': "Warm restaurant menu board, elegant serif typography, amber tones, decorative borders, today's specials with appetisers, mains, desserts",
+  '🏷 Sale banner': 'Bold sale banner, HUGE 50% OFF, vibrant red and gold palette, confetti, geometric shapes, bold shadows',
+  '📅 Event board': 'Community event board for Summer Festival 2025 July 14th, outdoor park, illustrated trees and sun, warm welcoming palette',
+  '☕ Café specials': 'Chalkboard café specials menu, hand-drawn coffee cup illustration, cream and brown palette, lattes pastries daily specials',
+  '💍 Wedding board': 'Elegant wedding welcome sign Sarah & James June 21, floral watercolor borders, soft blush and gold palette, cursive script'
+};
+function setQ(el) { $('prompt').value = QPS[el.textContent.trim()] || el.textContent.trim(); }
+function setSz(el) { document.querySelectorAll('.spill').forEach(p=>p.classList.remove('on')); el.classList.add('on'); W=+el.dataset.w; H=+el.dataset.h; }
+function applyCS() {
+  const cw=+$('cw2').value, ch=+$('ch2').value;
+  if(cw>=100&&ch>=100){ W=cw; H=ch; document.querySelectorAll('.spill').forEach(p=>p.classList.remove('on')); toast(cw+'×'+ch+' set','ok'); }
+  else toast('Minimum 100px','err');
+}
+
+// ════════════════════════════════════════════
+// ZOOM
+// ════════════════════════════════════════════
+function zm(d) { zoom = Math.min(4, Math.max(0.05, zoom+d)); applyZoom(); }
+function zm2(v) { zoom = v; applyZoom(); }
+function zmFit() {
+  const sc=$('cs'), s=svg(); if(!s) return;
+  const vb=s.viewBox.baseVal;
+  zoom = Math.min((sc.clientWidth-64)/vb.width, (sc.clientHeight-64)/vb.height, 1);
+  applyZoom();
+}
+function applyZoom() {
+  const s=svg(); if(!s) return;
+  const vb=s.viewBox.baseVal;
+  s.style.width=vb.width*zoom+'px'; s.style.height=vb.height*zoom+'px';
+  $('zl').textContent=Math.round(zoom*100)+'%';
+  if(sel) updSel(sel);
+  if(multiSel.length) updMultiSel();
+  if(ite.on) positionIte();
+}
+
+// ════════════════════════════════════════════
+// UNSAVED-CHANGES CONFIRMATION
+// Guards any action that would REPLACE the current canvas (new AI generation, loading a template).
+// AI Edit and in-place editing are NOT guarded here since they modify the existing design rather
+// than discarding it.
+// ════════════════════════════════════════════
+function hasCurrentDesign() { return !!svg(); }
+function confirmReplace(actionFn, bodyText) {
+  if(ite.on) commitIte(); // close out any in-progress inline text edit first so it doesn't linger mid-transition
+  if(!hasCurrentDesign()) { actionFn(); return; } // nothing on canvas yet — nothing to lose, just proceed
+  ucPendingAction = actionFn;
+  $('uc-body').textContent = bodyText || "This will replace what's on the canvas. Download a copy first if you want to keep it.";
+  $('uc-veil').classList.add('on');
+}
+function ucCancel() {
+  ucPendingAction = null;
+  $('uc-veil').classList.remove('on');
+}
+function ucDiscard() {
+  const action = ucPendingAction;
+  ucPendingAction = null;
+  $('uc-veil').classList.remove('on');
+  if(action) action();
+}
+function ucSaveAndContinue() {
+  saveSVG(); // triggers a browser download of the current design as-is
+  const action = ucPendingAction;
+  ucPendingAction = null;
+  $('uc-veil').classList.remove('on');
+  if(action) action();
+}
+
+// ════════════════════════════════════════════
+// GENERATE
+// ════════════════════════════════════════════
+function gen() {
+  const p = $('prompt').value.trim();
+  if(!p) { toast('Enter a prompt','err'); return; }
+  confirmReplace(() => doGen(p), "Generating a new image will replace what's on the canvas. Download a copy first if you want to keep it.");
+}
+async function doGen(p) {
+  const btn = $('gen-btn');
+  btn.disabled=true; btn.innerHTML='<div class="spin"></div> Generating…';
+  stat('Generating…');
+  $('ph').style.display='flex';
+  $('ph').innerHTML='<div class="spin"></div><p style="font-size:var(--fs-base);color:var(--text2);margin-top:8px">Claude is crafting your image…</p>';
+  $('stage').style.display='none';
+  const sys=`Output ONLY raw SVG. Start with <svg, end with </svg>. No markdown fences.
+viewBox="0 0 ${W} ${H}" width="${W}" height="${H}".
+Use rich layered design: gradients, patterns, decorative elements. Give all major elements meaningful id attributes.
+Fill the entire canvas. Use a beautiful harmonious color palette. Make it visually stunning.`;
+  try {
+    let code = await claude(sys, 'Create a high-quality SVG design: ' + p);
+    code = code.replace(/```svg|```xml|```/g,'').trim();
+    if(!code.startsWith('<svg')){ const i=code.indexOf('<svg'); if(i>=0)code=code.slice(i); else throw new Error('No SVG found in response'); }
+    renderSVG(code); origSVG=code; hist=[]; redoStack=[];
+    $('stage').style.display='block'; $('ph').style.display='none';
+    $('h-svg').style.display=''; $('h-png').style.display='';
+    buildLayers(); buildBgPicker();
+    addHist('Generated: '+p.slice(0,32)+(p.length>32?'…':''));
+    stat('Done ✓'); setTimeout(zmFit, 60);
+    toast('Generated! Switch to ✏ Edit to customise.','ok');
+  } catch(e) {
+    console.error(e); toast('Failed: '+e.message,'err'); stat('');
+    $('ph').innerHTML=`<p style="color:var(--err);font-size:var(--fs-base);max-width:280px;line-height:1.65">${e.message}</p>`;
+  } finally {
+    btn.disabled=false;
+    btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> Generate Image →';
+  }
+}
+function renderSVG(code) {
+  $('svc').innerHTML = code;
+  const s=svg(); if(s) { s.style.maxWidth='none'; s.style.display='block'; }
+  applyZoom();
+}
+
+// ════════════════════════════════════════════
+// AI EDIT
+// ════════════════════════════════════════════
+async function aiEdit() {
+  const ep=$('ep').value.trim();
+  if(!ep) { toast('Describe what to edit','err'); return; }
+  const s=svg(); if(!s) { toast('Generate first','err'); return; }
+  const btn=$('ae-btn');
+  btn.disabled=true; btn.innerHTML='<div class="spin" style="width:13px;height:13px;border-width:2px"></div> Applying…';
+  stat('Applying edit…');
+  try {
+    let code=await claude('Output ONLY the complete modified SVG, no markdown. Preserve all structure and IDs not mentioned. Keep same viewBox dimensions.',`Edit: ${ep}\n\nSVG:\n${s.outerHTML}`);
+    code=code.replace(/```svg|```xml|```/g,'').trim();
+    if(!code.startsWith('<svg')){ const i=code.indexOf('<svg'); if(i>=0)code=code.slice(i); else throw new Error('No SVG'); }
+    push(); renderSVG(code);
+    if(view==='edit')attachH(); if(view==='code')syncCode();
+    buildLayers(); clearSel();
+    addHist('AI: '+ep.slice(0,32)+(ep.length>32?'…':''));
+    $('ep').value=''; stat('Done ✓'); toast('Applied ✓','ok');
+  } catch(e) { console.error(e); toast('Failed: '+e.message,'err'); stat(''); }
+  finally {
+    btn.disabled=false;
+    btn.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Apply Edit →';
+  }
+}
+
+// ════════════════════════════════════════════
+// TEMPLATES
+// ════════════════════════════════════════════
+const TEMPLATES = [
+  { name:'Sale Banner', w:1200, h:630, svg: (W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="tplg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff4d6d"/><stop offset="100%" stop-color="#c9184a"/></linearGradient></defs>
+    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="url(#tplg1)"/>
+    <circle cx="${W*0.85}" cy="${H*0.15}" r="${H*0.3}" fill="#ffffff" opacity="0.08"/>
+    <circle cx="${W*0.1}" cy="${H*0.9}" r="${H*0.22}" fill="#ffffff" opacity="0.07"/>
+    <text id="tpl-eyebrow" x="${W/2}" y="${H*0.28}" font-family="Poppins, sans-serif" font-size="${H*0.05}" font-weight="700" fill="#ffe5ea" text-anchor="middle" letter-spacing="4">LIMITED TIME OFFER</text>
+    <text id="tpl-headline" x="${W/2}" y="${H*0.52}" font-family="Syne, sans-serif" font-size="${H*0.22}" font-weight="800" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">50% OFF</text>
+    <text id="tpl-sub" x="${W/2}" y="${H*0.72}" font-family="Inter, sans-serif" font-size="${H*0.06}" font-weight="600" fill="#ffffff" text-anchor="middle">Everything must go — this weekend only</text>
+    <rect id="tpl-cta-bg" x="${W/2-W*0.12}" y="${H*0.82}" width="${W*0.24}" height="${H*0.1}" rx="${H*0.05}" fill="#ffffff"/>
+    <text id="tpl-cta" x="${W/2}" y="${H*0.87}" font-family="Inter, sans-serif" font-size="${H*0.04}" font-weight="700" fill="#c9184a" text-anchor="middle" dominant-baseline="middle">SHOP NOW</text>
+  </svg>` },
+  { name:'Event Poster', w:1080, h:1350, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="tplg2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#1a1a2e"/><stop offset="100%" stop-color="#16213e"/></linearGradient></defs>
+    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="url(#tplg2)"/>
+    <rect x="${W*0.08}" y="${H*0.06}" width="${W*0.84}" height="${H*0.88}" fill="none" stroke="#e94560" stroke-width="3"/>
+    <text id="tpl-eyebrow" x="${W/2}" y="${H*0.18}" font-family="Oswald, sans-serif" font-size="${H*0.035}" font-weight="700" fill="#e94560" text-anchor="middle" letter-spacing="6">YOU'RE INVITED</text>
+    <text id="tpl-headline" x="${W/2}" y="${H*0.38}" font-family="Playfair Display, serif" font-size="${H*0.09}" font-weight="700" fill="#ffffff" text-anchor="middle">Summer\nFestival</text>
+    <line x1="${W*0.32}" y1="${H*0.46}" x2="${W*0.68}" y2="${H*0.46}" stroke="#e94560" stroke-width="2"/>
+    <text id="tpl-date" x="${W/2}" y="${H*0.54}" font-family="Inter, sans-serif" font-size="${H*0.03}" font-weight="600" fill="#cbd5e1" text-anchor="middle" letter-spacing="2">JULY 14 · 4PM — MIDNIGHT</text>
+    <text id="tpl-loc" x="${W/2}" y="${H*0.6}" font-family="Inter, sans-serif" font-size="${H*0.025}" fill="#94a3b8" text-anchor="middle">Riverside Park · Free Entry</text>
+    <rect id="tpl-cta-bg" x="${W/2-W*0.14}" y="${H*0.82}" width="${W*0.28}" height="${H*0.06}" rx="4" fill="#e94560"/>
+    <text id="tpl-cta" x="${W/2}" y="${H*0.855}" font-family="Inter, sans-serif" font-size="${H*0.024}" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">RSVP TODAY</text>
+  </svg>` },
+  { name:'Menu Board', w:1080, h:1080, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
+    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="#2b1d14"/>
+    <rect x="${W*0.05}" y="${H*0.05}" width="${W*0.9}" height="${H*0.9}" fill="none" stroke="#d4a574" stroke-width="2" stroke-dasharray="6 4"/>
+    <text id="tpl-headline" x="${W/2}" y="${H*0.18}" font-family="Playfair Display, serif" font-size="${H*0.08}" font-weight="700" fill="#f5e6d3" text-anchor="middle">Today's Menu</text>
+    <line x1="${W*0.3}" y1="${H*0.24}" x2="${W*0.7}" y2="${H*0.24}" stroke="#d4a574" stroke-width="1.5"/>
+    <text x="${W*0.15}" y="${H*0.36}" font-family="Montserrat, sans-serif" font-size="${H*0.032}" font-weight="600" fill="#d4a574">Cappuccino</text>
+    <text x="${W*0.85}" y="${H*0.36}" font-family="Montserrat, sans-serif" font-size="${H*0.032}" fill="#f5e6d3" text-anchor="end">$4.50</text>
+    <text x="${W*0.15}" y="${H*0.46}" font-family="Montserrat, sans-serif" font-size="${H*0.032}" font-weight="600" fill="#d4a574">Avocado Toast</text>
+    <text x="${W*0.85}" y="${H*0.46}" font-family="Montserrat, sans-serif" font-size="${H*0.032}" fill="#f5e6d3" text-anchor="end">$8.00</text>
+    <text x="${W*0.15}" y="${H*0.56}" font-family="Montserrat, sans-serif" font-size="${H*0.032}" font-weight="600" fill="#d4a574">Berry Pancakes</text>
+    <text x="${W*0.85}" y="${H*0.56}" font-family="Montserrat, sans-serif" font-size="${H*0.032}" fill="#f5e6d3" text-anchor="end">$9.50</text>
+    <text x="${W*0.15}" y="${H*0.66}" font-family="Montserrat, sans-serif" font-size="${H*0.032}" font-weight="600" fill="#d4a574">Fresh Orange Juice</text>
+    <text x="${W*0.85}" y="${H*0.66}" font-family="Montserrat, sans-serif" font-size="${H*0.032}" fill="#f5e6d3" text-anchor="end">$5.00</text>
+    <text id="tpl-sub" x="${W/2}" y="${H*0.85}" font-family="Inter, sans-serif" font-size="${H*0.024}" fill="#9c8369" text-anchor="middle">Open daily 7am – 6pm</text>
+  </svg>` },
+  { name:'Social Quote', w:1080, h:1080, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="tplg4" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#667eea"/><stop offset="100%" stop-color="#764ba2"/></linearGradient></defs>
+    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="url(#tplg4)"/>
+    <text x="${W*0.12}" y="${H*0.28}" font-family="Georgia, serif" font-size="${H*0.14}" fill="#ffffff" opacity="0.5">"</text>
+    <text id="tpl-headline" x="${W/2}" y="${H*0.46}" font-family="Playfair Display, serif" font-size="${H*0.052}" font-weight="700" fill="#ffffff" text-anchor="middle">The best way to\nget started is to\nquit talking and\nbegin doing.</text>
+    <line x1="${W*0.42}" y1="${H*0.68}" x2="${W*0.58}" y2="${H*0.68}" stroke="#ffffff" stroke-width="1.5" opacity="0.6"/>
+    <text id="tpl-sub" x="${W/2}" y="${H*0.74}" font-family="Inter, sans-serif" font-size="${H*0.026}" font-weight="600" fill="#e9e4ff" text-anchor="middle" letter-spacing="2">WALT DISNEY</text>
+  </svg>` },
+  { name:'Product Promo', w:1200, h:1200, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
+    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="#fdf6ec"/>
+    <circle cx="${W/2}" cy="${H*0.42}" r="${H*0.28}" fill="#ffe8d6"/>
+    <rect x="${W*0.38}" y="${H*0.28}" width="${W*0.24}" height="${H*0.3}" rx="14" fill="#2b2b2b"/>
+    <text id="tpl-eyebrow" x="${W/2}" y="${H*0.1}" font-family="Inter, sans-serif" font-size="${H*0.03}" font-weight="700" fill="#d97706" text-anchor="middle" letter-spacing="3">NEW ARRIVAL</text>
+    <text id="tpl-headline" x="${W/2}" y="${H*0.72}" font-family="Syne, sans-serif" font-size="${H*0.065}" font-weight="800" fill="#1c1c2e" text-anchor="middle">Aura Wireless\nHeadphones</text>
+    <text id="tpl-sub" x="${W/2}" y="${H*0.84}" font-family="Inter, sans-serif" font-size="${H*0.028}" fill="#52526e" text-anchor="middle">Studio sound. All-day comfort.</text>
+    <rect id="tpl-cta-bg" x="${W/2-W*0.14}" y="${H*0.88}" width="${W*0.28}" height="${H*0.07}" rx="${H*0.035}" fill="#1c1c2e"/>
+    <text id="tpl-cta" x="${W/2}" y="${H*0.918}" font-family="Inter, sans-serif" font-size="${H*0.026}" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">SHOP $129</text>
+  </svg>` },
+  { name:'Minimal Title', w:1920, h:1080, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
+    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="#0f172a"/>
+    <line x1="${W*0.08}" y1="${H*0.5}" x2="${W*0.16}" y2="${H*0.5}" stroke="#38bdf8" stroke-width="4"/>
+    <text id="tpl-eyebrow" x="${W*0.08}" y="${H*0.38}" font-family="Inter, sans-serif" font-size="${H*0.03}" font-weight="600" fill="#38bdf8" letter-spacing="3">CASE STUDY</text>
+    <text id="tpl-headline" x="${W*0.08}" y="${H*0.62}" font-family="Syne, sans-serif" font-size="${H*0.11}" font-weight="800" fill="#f8fafc">Designing for\nClarity</text>
+    <text id="tpl-sub" x="${W*0.08}" y="${H*0.82}" font-family="Inter, sans-serif" font-size="${H*0.032}" fill="#94a3b8">How a simple layout doubled engagement</text>
+  </svg>` }
+];
+function tplThumb(t) {
+  const scale = 200/t.w;
+  return t.svg(200, Math.round(t.h*scale));
+}
+function buildTplGrid() {
+  const grid = $('tpl-grid'); if(!grid) return;
+  grid.innerHTML='';
+  TEMPLATES.forEach((t,i)=>{
+    const card=document.createElement('div'); card.className='tpl-card';
+    card.innerHTML = tplThumb(t) + `<div class="tpl-lbl">${t.name}</div>`;
+    card.onclick=()=>useTemplate(i);
+    grid.appendChild(card);
+  });
+}
+function useTemplate(i) {
+  const t = TEMPLATES[i];
+  confirmReplace(() => doUseTemplate(i), `Loading "${t.name}" will replace what's on the canvas. Download a copy first if you want to keep it.`);
+}
+function doUseTemplate(i) {
+  const t = TEMPLATES[i];
+  W = t.w; H = t.h;
+  const code = t.svg(W,H);
+  renderSVG(code); origSVG=code; hist=[]; redoStack=[];
+  $('stage').style.display='block'; $('ph').style.display='none';
+  $('h-svg').style.display=''; $('h-png').style.display='';
+  buildLayers(); buildBgPicker();
+  addHist('Template: '+t.name);
+  stat('Done ✓'); setTimeout(zmFit, 60);
+  setV('edit');
+  toast('Template loaded — click any text to edit it','ok');
+}
+
+// ════════════════════════════════════════════
+// BACKGROUND
+// ════════════════════════════════════════════
+const SOLIDS=['#ffffff','#000000','#1a1a2e','#16213e','#0f3460','#e94560','#f5f5f5','#fef9c3','#ecfdf5','#fdf4ff','#1e293b','#7c3aed','#059669','#dc2626','#d97706','#2563eb','#0ea5e9','#f97316','#ec4899','#065f46'];
+const GRADS=[
+  'linear-gradient(135deg,#667eea,#764ba2)','linear-gradient(135deg,#f093fb,#f5576c)',
+  'linear-gradient(135deg,#4facfe,#00f2fe)','linear-gradient(135deg,#43e97b,#38f9d7)',
+  'linear-gradient(135deg,#fa709a,#fee140)','linear-gradient(135deg,#a18cd1,#fbc2eb)',
+  'linear-gradient(135deg,#ffecd2,#fcb69f)','linear-gradient(135deg,#2d3436,#636e72)',
+  'linear-gradient(135deg,#fd7d00,#FFEF00)','linear-gradient(135deg,#0f0c29,#302b63,#24243e)',
+  'linear-gradient(135deg,#1FA2FF,#12D8FA,#A6FFCB)','linear-gradient(135deg,#f7971e,#ffd200)',
+  'linear-gradient(135deg,#fc5c7d,#6a3093)','linear-gradient(180deg,#0f2027,#203a43,#2c5364)'
+];
+function buildBgPicker() {
+  const sw=$('swatches'); sw.innerHTML='';
+  SOLIDS.forEach(c=>{ const d=document.createElement('div'); d.className='sw'; d.style.background=c; d.title=c; d.onclick=()=>{ applyBgSolid(c); sw.querySelectorAll('.sw').forEach(x=>x.classList.remove('on')); d.classList.add('on'); }; sw.appendChild(d); });
+  const gr=$('grads'); gr.innerHTML='';
+  GRADS.forEach(g=>{ const d=document.createElement('div'); d.className='gd'; d.style.background=g; d.onclick=()=>{ applyBgGrad(g); gr.querySelectorAll('.gd').forEach(x=>x.classList.remove('on')); d.classList.add('on'); }; gr.appendChild(d); });
+}
+function getBgRect() {
+  const s=svg(); if(!s) return null;
+  let bg=s.querySelector('#bg-rect');
+  if(!bg){ bg=document.createElementNS('http://www.w3.org/2000/svg','rect'); bg.setAttribute('id','bg-rect'); bg.setAttribute('x','0'); bg.setAttribute('y','0'); bg.setAttribute('width',W); bg.setAttribute('height',H); s.insertBefore(bg,s.firstChild); }
+  return bg;
+}
+function applyBgSolid(c) {
+  const s=svg(); if(!s) return; push();
+  const bg=getBgRect(); bg.setAttribute('fill',c);
+  if(/^#[0-9a-f]{6}$/i.test(c)) $('bg-col').value=c; $('bg-hex').value=c;
+}
+function applyBgGrad(css) {
+  const s=svg(); if(!s) return; push();
+  const id='__bgg'; let defs=s.querySelector('defs');
+  if(!defs){ defs=document.createElementNS('http://www.w3.org/2000/svg','defs'); s.insertBefore(defs,s.firstChild); }
+  const old=defs.querySelector('#'+id); if(old)old.remove();
+  const angle=parseFloat((css.match(/(\d+)deg/)||['','135'])[1]);
+  const rad=(angle-90)*Math.PI/180;
+  const x1=Math.round(50-50*Math.cos(rad)),y1=Math.round(50-50*Math.sin(rad)),x2=Math.round(50+50*Math.cos(rad)),y2=Math.round(50+50*Math.sin(rad));
+  const cols=[...css.matchAll(/#[0-9a-f]{3,8}/gi)].map(m=>m[0]);
+  const lg=document.createElementNS('http://www.w3.org/2000/svg','linearGradient');
+  lg.setAttribute('id',id); lg.setAttribute('x1',x1+'%'); lg.setAttribute('y1',y1+'%'); lg.setAttribute('x2',x2+'%'); lg.setAttribute('y2',y2+'%');
+  cols.forEach((c,i)=>{ const st=document.createElementNS('http://www.w3.org/2000/svg','stop'); st.setAttribute('offset',Math.round(i/(cols.length-1)*100)+'%'); st.setAttribute('stop-color',c); lg.appendChild(st); });
+  defs.appendChild(lg);
+  getBgRect().setAttribute('fill','url(#'+id+')');
+  $('bg-hex').value=css;
+}
+function applyBgRaw(v) { v=v.trim(); if(v.includes('gradient'))applyBgGrad(v); else applyBgSolid(v); }
+function triggerBgImage() { $('bg-img-upload').click(); }
+function insertBgImage(inp) {
+  const f=inp.files?.[0]; if(!f) return;
+  const s=svg(); if(!s){toast('Generate first','err');return;}
+  push();
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const id='__bg-img'; let defs=s.querySelector('defs');
+    if(!defs){defs=document.createElementNS('http://www.w3.org/2000/svg','defs');s.insertBefore(defs,s.firstChild);}
+    const old=s.querySelector('#'+id); if(old)old.remove();
+    const img=document.createElementNS('http://www.w3.org/2000/svg','image');
+    img.setAttribute('id',id); img.setAttribute('x','0'); img.setAttribute('y','0');
+    img.setAttribute('width',W); img.setAttribute('height',H);
+    img.setAttribute('preserveAspectRatio','xMidYMid slice');
+    img.setAttributeNS('http://www.w3.org/1999/xlink','href',e.target.result);
+    const firstEl=s.querySelector(':not(defs)'); if(firstEl)s.insertBefore(img,firstEl); else s.appendChild(img);
+    buildLayers(); toast('Background image set ✓','ok');
+  };
+  reader.readAsDataURL(f);
+  inp.value='';
+}
+
+// ════════════════════════════════════════════
+// ADD ELEMENTS
+// ════════════════════════════════════════════
+const FONTS=['Inter','Playfair Display','Montserrat','Pacifico','Oswald','Raleway','Lato','Poppins','Dancing Script','Bebas Neue','Georgia','Arial','Verdana','Courier New','Impact'];
+function buildFontList() {
+  const fl=$('flist'); fl.innerHTML='';
+  FONTS.forEach(f=>{
+    const d=document.createElement('div'); d.className='fi'; d.style.fontFamily=f+', sans-serif'; d.textContent=f;
+    d.onclick=()=>{
+      if(sel&&['text','tspan'].includes(sel.tagName.toLowerCase())){push();sel.setAttribute('font-family',f+', sans-serif');fl.querySelectorAll('.fi').forEach(x=>x.classList.remove('on'));d.classList.add('on');}
+      else addTxt('h',f);
+    };
+    fl.appendChild(d);
+  });
+}
+buildFontList();
+buildTplGrid();
+
+function addTxt(type='h', fontOverride=null) {
+  const s=svg(); if(!s){toast('Generate first','err');return;}
+  push();
+  const vb=s.viewBox.baseVal;
+  const sizes={h:Math.round(vb.height*.09),s:Math.round(vb.height*.045),b:Math.round(vb.height*.028)};
+  const texts={h:'Your Heading',s:'Subheading text',b:'Body text — click to edit'};
+  const weights={h:'700',s:'600',b:'400'};
+  const el=document.createElementNS('http://www.w3.org/2000/svg','text');
+  el.setAttribute('x',Math.round(vb.width/2)); el.setAttribute('y',Math.round(vb.height/2));
+  el.setAttribute('font-family',(fontOverride||'Inter')+', sans-serif');
+  el.setAttribute('font-size',sizes[type]||60); el.setAttribute('font-weight',weights[type]||'400');
+  el.setAttribute('fill','#ffffff'); el.setAttribute('text-anchor','middle');
+  el.setAttribute('dominant-baseline','middle');
+  el.setAttribute('id','txt-'+Date.now());
+  el.textContent=texts[type]||'New Text';
+  s.appendChild(el);
+  if(view!=='edit') setV('edit'); else attachH();
+  setTimeout(()=>{selectEl(el);buildLayers();},50);
+  addHist('Added text');
+  toast('Double-click to edit text inline','ok');
+}
+function addTextDirect() { const s=svg(); if(!s){setPanel('gen');toast('Generate an image first','err');return;} setPanel('text'); addTxt('h'); }
+
+function addShape(type) {
+  const s=svg(); if(!s){toast('Generate first','err');return;}
+  push();
+  const vb=s.viewBox.baseVal;
+  const cx=Math.round(vb.width/2), cy=Math.round(vb.height/2);
+  const sz=Math.round(Math.min(vb.width,vb.height)*.2);
+  let el;
+  if(type==='triangle'){el=document.createElementNS('http://www.w3.org/2000/svg','polygon');el.setAttribute('points',`${cx},${cy-sz/2} ${cx-sz/2},${cy+sz/2} ${cx+sz/2},${cy+sz/2}`);el.setAttribute('fill','#34d399');el.setAttribute('opacity','0.9');}
+  else if(type==='star'){el=document.createElementNS('http://www.w3.org/2000/svg','path');const pts=starPath(cx,cy,sz/2,sz/4,5);el.setAttribute('d',pts);el.setAttribute('fill','#fbbf24');el.setAttribute('opacity','0.9');}
+  else if(type==='arrow'){el=document.createElementNS('http://www.w3.org/2000/svg','path');el.setAttribute('d',`M${cx-sz/2},${cy} L${cx+sz/4},${cy} M${cx+sz/4-sz*.18},${cy-sz*.1} L${cx+sz/4},${cy} L${cx+sz/4-sz*.18},${cy+sz*.1}`);el.setAttribute('stroke','#ffffff');el.setAttribute('stroke-width',Math.round(sz*.04));el.setAttribute('fill','none');el.setAttribute('stroke-linecap','round');}
+  if(el){el.setAttribute('id',type+'-'+Date.now());s.appendChild(el);if(view!=='edit')setV('edit');else attachH();setTimeout(()=>{selectEl(el);buildLayers();},50);addHist('Added '+type);}
+}
+function starPath(cx,cy,r1,r2,n){let d='';for(let i=0;i<n*2;i++){const r=i%2===0?r1:r2,a=Math.PI*i/n-Math.PI/2;d+=(i===0?'M':'L')+(cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1);}return d+'Z';}
+
+function triggerImageUpload(){$('img-upload').click();}
+function insertImage(inp){
+  const f=inp.files?.[0]; if(!f) return;
+  const s=svg(); if(!s){toast('Generate first','err');return;}
+  push();
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const vb=s.viewBox.baseVal, sz=Math.round(Math.min(vb.width,vb.height)*.35);
+    const img=document.createElementNS('http://www.w3.org/2000/svg','image');
+    img.setAttribute('x',Math.round((vb.width-sz)/2)); img.setAttribute('y',Math.round((vb.height-sz)/2));
+    img.setAttribute('width',sz); img.setAttribute('height',sz);
+    img.setAttribute('id','img-'+Date.now()); img.setAttribute('preserveAspectRatio','xMidYMid meet');
+    img.setAttributeNS('http://www.w3.org/1999/xlink','href',e.target.result);
+    s.appendChild(img); attachH(); setTimeout(()=>{selectEl(img);buildLayers();},50);
+    toast('Image added ✓','ok');
+  };
+  reader.readAsDataURL(f); inp.value='';
+}
+
+// ════════════════════════════════════════════
+// HELPERS — element geometry
+// ════════════════════════════════════════════
+function isLocked(el) { return el && locked.has(el); }
+function elBBoxStage(el) {
+  // bounding box of element in stage-local CSS px (accounts for zoom)
+  const r=el.getBoundingClientRect(), sr=$('stage').getBoundingClientRect();
+  return { left:r.left-sr.left, top:r.top-sr.top, width:r.width, height:r.height, right:r.left-sr.left+r.width, bottom:r.top-sr.top+r.height,
+           cx:r.left-sr.left+r.width/2, cy:r.top-sr.top+r.height/2 };
+}
+// Per-element transform state for shapes that use transform="" (g, path, polygon, polyline, line).
+// We track {tx,ty,sx,sy,rot,bx,by} and always REBUILD the transform string from this state,
+// rather than parsing/mutating the previous string — this guarantees resize+rotate always compose
+// correctly regardless of how many times each is applied.
+const xState = new WeakMap();
+function getXState(el) {
+  let st = xState.get(el);
+  if(!st) {
+    let bx=0, by=0;
+    try { const bb=el.getBBox(); bx=bb.x+bb.width/2; by=bb.y+bb.height/2; } catch {}
+    // if the element already has a transform (e.g. from AI generation), treat it as a baseline translate only
+    const t=el.getAttribute('transform')||'';
+    const tm=t.match(/translate\(([^)]+)\)/);
+    const tparts = tm ? tm[1].trim().split(/[\s,]+/).map(Number) : [0,0];
+    const rm=t.match(/rotate\(\s*([-\d.]+)/);
+    st = { tx: tparts[0]||0, ty: tparts[1]||0, sx:1, sy:1, rot: rm?parseFloat(rm[1])||0:0, bx, by };
+    xState.set(el, st);
+  }
+  return st;
+}
+function applyXState(el) {
+  const st = getXState(el);
+  el.setAttribute('transform',
+    `translate(${st.tx} ${st.ty}) rotate(${st.rot} ${st.bx} ${st.by}) translate(${st.bx} ${st.by}) scale(${st.sx} ${st.sy}) translate(${-st.bx} ${-st.by})`
+  );
+}
+function getRotation(el) {
+  const tag=el.tagName.toLowerCase();
+  if(['g','path','polygon','polyline','line'].includes(tag)) return getXState(el).rot;
+  const t=el.getAttribute('transform')||'';
+  const m=t.match(/rotate\(([-\d.]+)/);
+  return m?parseFloat(m[1]):0;
+}
+function setRotation(el,deg,cx,cy) {
+  const tag=el.tagName.toLowerCase();
+  if(['g','path','polygon','polyline','line'].includes(tag)) {
+    const st=getXState(el); st.rot=deg; applyXState(el); return;
+  }
+  let t=(el.getAttribute('transform')||'').replace(/rotate\([^)]*\)/,'').trim();
+  t=(t+` rotate(${deg} ${cx} ${cy})`).trim();
+  el.setAttribute('transform',t);
+}
+function elCenterSVG(el) {
+  const tag=el.tagName.toLowerCase();
+  if(tag==='circle'||tag==='ellipse') return [parseFloat(el.getAttribute('cx')||0), parseFloat(el.getAttribute('cy')||0)];
+  if(['g','path','polygon','polyline','line'].includes(tag)) { const st=getXState(el); return [st.bx+st.tx, st.by+st.ty]; }
+  try {
+    const bb=el.getBBox();
+    return [bb.x+bb.width/2, bb.y+bb.height/2];
+  } catch { return [0,0]; }
+}
+
+// ════════════════════════════════════════════
+// EDIT HANDLERS
+// ════════════════════════════════════════════
+function attachH() {
+  const s=svg(); if(!s) return;
+  s.querySelectorAll('text,tspan,rect,circle,ellipse,path,polygon,polyline,line,image,g').forEach(el=>{
+    el.removeEventListener('mousedown',onMD); el.removeEventListener('dblclick',onDbl);
+    el.addEventListener('mousedown',onMD); el.addEventListener('dblclick',onDbl);
+  });
+  s.removeEventListener('mousedown',onCanvasMD); s.addEventListener('mousedown',onCanvasMD);
+}
+function detachH() {
+  const s=svg(); if(!s) return;
+  s.querySelectorAll('*').forEach(el=>{ el.removeEventListener('mousedown',onMD); el.removeEventListener('dblclick',onDbl); });
+  s.removeEventListener('mousedown',onCanvasMD);
+}
+
+// Draw on canvas / marquee select
+function startDrawShape(e) {
+  e.stopPropagation(); e.preventDefault();
+  const s=svg(), sr=s.getBoundingClientRect(), sc=s.viewBox.baseVal.width/sr.width;
+  const sx=(e.clientX-sr.left)*sc, sy=(e.clientY-sr.top)*sc;
+  push();
+  let el;
+  if(tool==='rect'){el=document.createElementNS('http://www.w3.org/2000/svg','rect');el.setAttribute('x',sx);el.setAttribute('y',sy);el.setAttribute('width',2);el.setAttribute('height',2);el.setAttribute('rx','8');el.setAttribute('fill','#6c63ff');el.setAttribute('opacity','0.9');}
+  else if(tool==='circle'){el=document.createElementNS('http://www.w3.org/2000/svg','circle');el.setAttribute('cx',sx);el.setAttribute('cy',sy);el.setAttribute('r','2');el.setAttribute('fill','#a78bfa');el.setAttribute('opacity','0.9');}
+  else if(tool==='line'){el=document.createElementNS('http://www.w3.org/2000/svg','line');el.setAttribute('x1',sx);el.setAttribute('y1',sy);el.setAttribute('x2',sx);el.setAttribute('y2',sy);el.setAttribute('stroke','#ffffff');el.setAttribute('stroke-width','6');}
+  el.setAttribute('id',tool+'-'+Date.now()); s.appendChild(el);
+  draw={on:true,el,sx,sy,tool};
+}
+function onCanvasMD(e) {
+  if(['rect','circle','line'].includes(tool)) { startDrawShape(e); return; }
+  if(e.target!==svg()) return;
+  if(tool==='select' && view==='edit') {
+    // start marquee select
+    e.preventDefault();
+    const sr=$('stage').getBoundingClientRect();
+    marquee={on:true, sx:e.clientX-sr.left, sy:e.clientY-sr.top};
+    const m=$('marquee'); m.style.left=marquee.sx+'px'; m.style.top=marquee.sy+'px'; m.style.width='0px'; m.style.height='0px'; m.style.display='block';
+    if(!e.shiftKey) clearSel();
+  }
+}
+
+document.addEventListener('mousemove',e=>{
+  if(draw.on && draw.el){
+    const s=svg(); if(!s) return;
+    const sr=s.getBoundingClientRect(), sc=s.viewBox.baseVal.width/sr.width;
+    const cx=(e.clientX-sr.left)*sc, cy=(e.clientY-sr.top)*sc;
+    const dx=cx-draw.sx, dy=cy-draw.sy, el=draw.el;
+    if(draw.tool==='rect'){ el.setAttribute('x',Math.min(cx,draw.sx)); el.setAttribute('y',Math.min(cy,draw.sy)); el.setAttribute('width',Math.abs(dx)); el.setAttribute('height',Math.abs(dy)); }
+    else if(draw.tool==='circle'){ el.setAttribute('r',Math.round(Math.sqrt(dx*dx+dy*dy)/2)); }
+    else if(draw.tool==='line'){ el.setAttribute('x2',cx); el.setAttribute('y2',cy); }
+    return;
+  }
+  if(marquee.on) {
+    const sr=$('stage').getBoundingClientRect();
+    const cx=e.clientX-sr.left, cy=e.clientY-sr.top;
+    const x=Math.min(cx,marquee.sx), y=Math.min(cy,marquee.sy), w=Math.abs(cx-marquee.sx), h=Math.abs(cy-marquee.sy);
+    const m=$('marquee'); m.style.left=x+'px'; m.style.top=y+'px'; m.style.width=w+'px'; m.style.height=h+'px';
+    return;
+  }
+  if(rotateDrag.on) {
+    const ang = Math.atan2(e.clientY-rotateDrag.cy, e.clientX-rotateDrag.cx)*180/Math.PI;
+    let delta = ang - rotateDrag.startAngle;
+    let newRot = rotateDrag.startRot + delta;
+    if(e.shiftKey) newRot = Math.round(newRot/15)*15;
+    const [ecx,ecy]=elCenterSVG(rotateDrag.el);
+    pushD();
+    setRotation(rotateDrag.el, newRot, ecx, ecy);
+    updSel(rotateDrag.el); refreshRP(rotateDrag.el);
+    return;
+  }
+  if(resize.on && resize.el) {
+    doResize(e);
+    return;
+  }
+  if(!drag.on||!drag.el) return;
+  let dx=(e.clientX-drag.sx)/drag.sc, dy=(e.clientY-drag.sy)/drag.sc;
+  drag.moved = true;
+  pushD();
+  const moveBy=(el,tf,ax,ay,ox,oy,ddx,ddy)=>{
+    if(tf){ const st=getXState(el); st.tx=ox+ddx; st.ty=oy+ddy; applyXState(el); }
+    else { el.setAttribute(ax, ox+ddx); el.setAttribute(ay, oy+ddy); }
+  };
+  if(drag.group && drag.group.length) {
+    drag.group.forEach(g=> moveBy(g.el,drag.tf,g.ax,g.ay,g.ox,g.oy,dx,dy));
+    // snap based on the primary (first) element in the group, then apply the same correction to all
+    const corr = snapCorrect(drag.el, !e.altKey);
+    if(corr.cdx||corr.cdy) drag.group.forEach(g=> moveBy(g.el,drag.tf,g.ax,g.ay,g.ox,g.oy,dx+corr.cdx,dy+corr.cdy));
+    drawGuides(corr.vx, corr.hy);
+    updMultiSel();
+  } else {
+    const el=drag.el;
+    moveBy(el,drag.tf,drag.ax,drag.ay,drag.ox,drag.oy,dx,dy);
+    const corr = snapCorrect(el, !e.altKey);
+    if(corr.cdx||corr.cdy) moveBy(el,drag.tf,drag.ax,drag.ay,drag.ox,drag.oy,dx+corr.cdx,dy+corr.cdy);
+    drawGuides(corr.vx, corr.hy);
+    updSel(el); refreshRP(el);
+  }
+});
+
+document.addEventListener('mouseup',e=>{
+  if(draw.on){
+    const el=draw.el; draw={on:false,el:null,sx:0,sy:0,tool:''};
+    if(el){ attachH(); setTimeout(()=>{selectEl(el);buildLayers();},30); }
+    setTool('select'); return;
+  }
+  if(marquee.on) {
+    finishMarquee(e);
+    marquee.on=false; $('marquee').style.display='none';
+    return;
+  }
+  if(rotateDrag.on){ rotateDrag.on=false; rotateDrag.el=null; addHist('Rotated'); }
+  if(resize.on){ resize.on=false; resize.el=null; addHist('Resized'); }
+  if(drag.on){ if(drag.moved) addHist(drag.group&&drag.group.length?'Moved selection':'Moved element'); drag.on=false; drag.el=null; drag.group=null; }
+  hideGuides();
+});
+
+function onMD(e) {
+  if(view!=='edit') return;
+  if(['rect','circle','line'].includes(tool)) { startDrawShape(e); return; }
+  if(tool!=='select') return;
+  e.stopPropagation(); e.preventDefault();
+  let el=e.currentTarget;
+  if(el.tagName.toLowerCase()==='tspan') el = el.closest('text') || el; // select/drag the whole text block, not just one line
+  if(isLocked(el)) return;
+
+  if(e.shiftKey) { toggleMultiSel(el); return; }
+
+  // if clicking an element already part of multi-selection, drag the whole group
+  if(multiSel.length>1 && multiSel.includes(el)) {
+    startGroupDrag(e);
+    return;
+  }
+  // single select
+  if(multiSel.length) clearMultiSel();
+  selectEl(el);
+  startSingleDrag(e, el);
+}
+
+function startSingleDrag(e, el) {
+  const s=svg(), sc=s.getBoundingClientRect().width/s.viewBox.baseVal.width;
+  const tag=el.tagName.toLowerCase();
+  const noXY=['g','path','polygon','polyline','line'];
+  const tf=noXY.includes(tag)||(!el.hasAttribute('x')&&tag!=='circle'&&tag!=='ellipse');
+  const ax=(tag==='circle'||tag==='ellipse')?'cx':'x';
+  const ay=(tag==='circle'||tag==='ellipse')?'cy':'y';
+  let ox, oy;
+  if(tf) { const st=getXState(el); ox=st.tx; oy=st.ty; }
+  else { ox=parseFloat(el.getAttribute(ax)||0)||0; oy=parseFloat(el.getAttribute(ay)||0)||0; }
+  drag={on:true,el,sx:e.clientX,sy:e.clientY,ox,oy,sc,tf,ax,ay,moved:false,group:null};
+}
+
+function startGroupDrag(e) {
+  const s=svg(), sc=s.getBoundingClientRect().width/s.viewBox.baseVal.width;
+  const group = multiSel.map(el=>{
+    const tag=el.tagName.toLowerCase();
+    const noXY=['g','path','polygon','polyline','line'];
+    const tf=noXY.includes(tag)||(!el.hasAttribute('x')&&tag!=='circle'&&tag!=='ellipse');
+    const ax=(tag==='circle'||tag==='ellipse')?'cx':'x';
+    const ay=(tag==='circle'||tag==='ellipse')?'cy':'y';
+    let ox, oy;
+    if(tf) { const st=getXState(el); ox=st.tx; oy=st.ty; }
+    else { ox=parseFloat(el.getAttribute(ax)||0)||0; oy=parseFloat(el.getAttribute(ay)||0)||0; }
+    return {el,tf,ax,ay,ox,oy};
+  });
+  drag={on:true,el:multiSel[0],sx:e.clientX,sy:e.clientY,ox:group[0].ox,oy:group[0].oy,sc,tf:group[0].tf,ax:group[0].ax,ay:group[0].ay,moved:false,group};
+}
+
+// ════════════════════════════════════════════
+// RESIZE
+// ════════════════════════════════════════════
+function startResize(e, handle) {
+  if(!sel || isLocked(sel)) return;
+  e.stopPropagation(); e.preventDefault();
+  const s=svg(), sc=s.getBoundingClientRect().width/s.viewBox.baseVal.width;
+  const box = elSvgBox(sel);
+  resize = { on:true, el:sel, handle, sx:e.clientX, sy:e.clientY, sc, box, aspectLock:e.shiftKey };
+}
+function elSvgBox(el) {
+  // returns {x,y,w,h} in SVG user-space for common shapes; falls back to getBBox
+  const tag=el.tagName.toLowerCase();
+  if(tag==='rect'){ return {x:+el.getAttribute('x')||0,y:+el.getAttribute('y')||0,w:+el.getAttribute('width')||0,h:+el.getAttribute('height')||0}; }
+  if(tag==='circle'){ const r=+el.getAttribute('r')||0,cx=+el.getAttribute('cx')||0,cy=+el.getAttribute('cy')||0; return {x:cx-r,y:cy-r,w:r*2,h:r*2,isCircle:true,cx,cy,r}; }
+  if(tag==='ellipse'){ const rx=+el.getAttribute('rx')||0,ry=+el.getAttribute('ry')||0,cx=+el.getAttribute('cx')||0,cy=+el.getAttribute('cy')||0; return {x:cx-rx,y:cy-ry,w:rx*2,h:ry*2,isEllipse:true,cx,cy,rx,ry}; }
+  if(tag==='image'){ return {x:+el.getAttribute('x')||0,y:+el.getAttribute('y')||0,w:+el.getAttribute('width')||0,h:+el.getAttribute('height')||0}; }
+  if(tag==='text'){
+    try { const bb=el.getBBox(); return {x:bb.x,y:bb.y,w:bb.width,h:bb.height,isText:true,fontSize:+el.getAttribute('font-size')||16}; }
+    catch { return {x:0,y:0,w:100,h:30,isText:true,fontSize:16}; }
+  }
+  if(['g','path','polygon','polyline','line'].includes(tag)) {
+    // use the ORIGINAL local-space bbox (before any scale/rotate state), cached once, so repeated
+    // resizes always measure from the same baseline rather than a moving target
+    let st = xState.get(el);
+    if(!st) { getXState(el); st = xState.get(el); } // ensures bx/by are cached
+    if(st.localBox) return {...st.localBox, isGeneric:true};
+    let bb; try { bb = el.getBBox(); } catch { bb = {x:0,y:0,width:100,height:100}; }
+    // getBBox() reflects the CURRENT transform's local coords (pre-transform-attribute), which is stable
+    // as long as we always rebuild transform from state rather than mutating attributes directly elsewhere
+    st.localBox = { x:bb.x, y:bb.y, w:bb.width, h:bb.height };
+    return {...st.localBox, isGeneric:true};
+  }
+  try { const bb=el.getBBox(); return {x:bb.x,y:bb.y,w:bb.width,h:bb.height,isGeneric:true}; }
+  catch { return {x:0,y:0,w:100,h:100,isGeneric:true}; }
+}
+function doResize(e) {
+  const s=svg(); if(!s) return;
+  const sc = resize.sc;
+  const dx=(e.clientX-resize.sx)/sc, dy=(e.clientY-resize.sy)/sc;
+  const b=resize.box, el=resize.el, h=resize.handle;
+  pushD();
+  let nx=b.x, ny=b.y, nw=b.w, nh=b.h;
+  const lockAR = resize.aspectLock || el.tagName.toLowerCase()==='image';
+  const ar = b.w / (b.h||1);
+
+  if(h.includes('r')) nw = Math.max(4, b.w+dx);
+  if(h.includes('l')) { nw = Math.max(4, b.w-dx); nx = b.x+dx; if(nw===4) nx = b.x+b.w-4; }
+  if(h.includes('b')) nh = Math.max(4, b.h+dy);
+  if(h.includes('t')) { nh = Math.max(4, b.h-dy); ny = b.y+dy; if(nh===4) ny = b.y+b.h-4; }
+
+  if(lockAR && (h==='tl'||h==='tr'||h==='bl'||h==='br')) {
+    // keep aspect ratio on corner handles
+    if(Math.abs(dx) > Math.abs(dy)) { nh = nw/ar; if(h.includes('t')) ny = b.y+b.h-nh; }
+    else { nw = nh*ar; if(h.includes('l')) nx = b.x+b.w-nw; }
+  }
+
+  if(b.isCircle) {
+    const r = Math.max(2, (nw+nh)/4);
+    const ncx = b.x + b.w/2 + (h.includes('l')?-(nw-b.w)/2:h.includes('r')?(nw-b.w)/2:0);
+    const ncy = b.y + b.h/2 + (h.includes('t')?-(nh-b.h)/2:h.includes('b')?(nh-b.h)/2:0);
+    el.setAttribute('r', r); el.setAttribute('cx', ncx); el.setAttribute('cy', ncy);
+  } else if(b.isEllipse) {
+    el.setAttribute('rx', Math.max(2,nw/2)); el.setAttribute('ry', Math.max(2,nh/2));
+    el.setAttribute('cx', nx+nw/2); el.setAttribute('cy', ny+nh/2);
+  } else if(b.isText) {
+    const scaleFactor = nh / b.h;
+    const newSize = Math.max(4, Math.round(b.fontSize * scaleFactor));
+    el.setAttribute('font-size', newSize);
+  } else if(b.isGeneric) {
+    // Compute the scale needed so the LOCAL box (b.x,b.y,b.w,b.h) maps to the new box (nx,ny,nw,nh),
+    // then derive the translate so the scaled+rotated shape lands there. Rotation is preserved automatically
+    // since applyXState always rebuilds the full transform from state (tx,ty,sx,sy,rot,bx,by).
+    const st = getXState(el);
+    const sx = nw/b.w, sy = nh/b.h;
+    const fsx = lockAR?Math.min(sx,sy):sx, fsy = lockAR?Math.min(sx,sy):sy;
+    st.sx = fsx; st.sy = fsy;
+    // after scaling around (bx,by), the local box's top-left moves to: bx - (bx-b.x)*fsx, by - (by-b.y)*fsy
+    const scaledX = st.bx - (st.bx - b.x)*fsx, scaledY = st.by - (st.by - b.y)*fsy;
+    st.tx = nx - scaledX; st.ty = ny - scaledY;
+    applyXState(el);
+  } else {
+    el.setAttribute('x', nx); el.setAttribute('y', ny);
+    el.setAttribute('width', nw); el.setAttribute('height', nh);
+  }
+  updSel(el); refreshRP(el);
+}
+
+// ════════════════════════════════════════════
+// ROTATE
+// ════════════════════════════════════════════
+function startRotate(e) {
+  if(!sel || isLocked(sel)) return;
+  e.stopPropagation(); e.preventDefault();
+  const box = elBBoxStage(sel);
+  const startAngle = Math.atan2(e.clientY-box.cy, e.clientX-box.cx)*180/Math.PI;
+  rotateDrag = { on:true, el:sel, cx:box.cx, cy:box.cy, startAngle, startRot:getRotation(sel) };
+}
+
+// ════════════════════════════════════════════
+// SNAPPING & ALIGNMENT GUIDES
+// ════════════════════════════════════════════
+const SNAP_THRESHOLD = 6; // px in stage CSS space
+function snapCorrect(el, enabled) {
+  const result = { cdx:0, cdy:0, vx:null, hy:null };
+  if(!enabled) return result;
+  const s = svg(); if(!s) return result;
+  const sr = $('stage').getBoundingClientRect();
+  const cssScale = sr.width / s.viewBox.baseVal.width;
+  const curBox = elBBoxStage(el);
+
+  const vTargets = [0, sr.width/2, sr.width];
+  const hTargets = [0, sr.height/2, sr.height];
+  [...s.children].forEach(o=>{
+    if(o===el || o.id==='bg-rect' || multiSel.includes(o)) return;
+    if(['defs','style'].includes(o.tagName.toLowerCase())) return;
+    try {
+      const ob = elBBoxStage(o);
+      vTargets.push(ob.left, ob.cx, ob.right);
+      hTargets.push(ob.top, ob.cy, ob.bottom);
+    } catch {}
+  });
+
+  let bestVDist=SNAP_THRESHOLD, bestV=null, bestVProbe=null;
+  [['left',curBox.left],['cx',curBox.cx],['right',curBox.right]].forEach(([,probe])=>{
+    vTargets.forEach(t=>{ const d=Math.abs(probe-t); if(d<bestVDist){ bestVDist=d; bestV=t; bestVProbe=probe; } });
+  });
+  let bestHDist=SNAP_THRESHOLD, bestH=null, bestHProbe=null;
+  [['top',curBox.top],['cy',curBox.cy],['bottom',curBox.bottom]].forEach(([,probe])=>{
+    hTargets.forEach(t=>{ const d=Math.abs(probe-t); if(d<bestHDist){ bestHDist=d; bestH=t; bestHProbe=probe; } });
+  });
+
+  if(bestV!==null){ result.vx=bestV; result.cdx=(bestV-bestVProbe)/cssScale; }
+  if(bestH!==null){ result.hy=bestH; result.cdy=(bestH-bestHProbe)/cssScale; }
+  return result;
+}
+function drawGuides(vx, hy) {
+  const gv=$('gv'), gh=$('gh');
+  if(vx!==null && vx!==undefined){ gv.style.left=vx+'px'; gv.style.display='block'; } else gv.style.display='none';
+  if(hy!==null && hy!==undefined){ gh.style.top=hy+'px'; gh.style.display='block'; } else gh.style.display='none';
+}
+function hideGuides() { $('gv').style.display='none'; $('gh').style.display='none'; }
+
+// ════════════════════════════════════════════
+// MULTI-SELECT
+// ════════════════════════════════════════════
+function toggleMultiSel(el) {
+  if(sel && !multiSel.length) { multiSel=[sel]; sel.removeAttribute('data-s'); sel=null; clearRP(); }
+  const i = multiSel.indexOf(el);
+  if(i>=0) { multiSel.splice(i,1); el.removeAttribute('data-ms'); }
+  else { multiSel.push(el); el.setAttribute('data-ms','1'); }
+  if(multiSel.length===0){ clearSel(); return; }
+  if(multiSel.length===1){ const only=multiSel[0]; multiSel=[]; only.removeAttribute('data-ms'); selectEl(only); return; }
+  $('sel').classList.remove('on');
+  updMultiSel();
+  showCtxMulti();
+  showLLActions(true);
+}
+function clearMultiSel() {
+  multiSel.forEach(el=>el.removeAttribute('data-ms'));
+  multiSel=[];
+  showLLActions(false);
+}
+function updMultiSel() {
+  if(!multiSel.length) return;
+  let minL=Infinity,minT=Infinity,maxR=-Infinity,maxB=-Infinity;
+  multiSel.forEach(el=>{ const b=elBBoxStage(el); minL=Math.min(minL,b.left); minT=Math.min(minT,b.top); maxR=Math.max(maxR,b.right); maxB=Math.max(maxB,b.bottom); });
+  const b=$('sel');
+  b.style.left=(minL-2)+'px'; b.style.top=(minT-2)+'px'; b.style.width=(maxR-minL+4)+'px'; b.style.height=(maxB-minT+4)+'px';
+  b.classList.add('on','multi');
+  b.querySelectorAll('.hdl,.rot').forEach(h=>h.style.display='none'); // no resize handles for multi-select box (grouping recommended)
+}
+function finishMarquee(e) {
+  const sr=$('stage').getBoundingClientRect();
+  const cx=e.clientX-sr.left, cy=e.clientY-sr.top;
+  const x1=Math.min(cx,marquee.sx), y1=Math.min(cy,marquee.sy), x2=Math.max(cx,marquee.sx), y2=Math.max(cy,marquee.sy);
+  if(Math.abs(x2-x1)<4 && Math.abs(y2-y1)<4) return; // treat as click, not drag
+  const s=svg(); if(!s) return;
+  const found=[];
+  [...s.children].forEach(el=>{
+    if(['defs','style'].includes(el.tagName.toLowerCase())||el.id==='bg-rect'||isLocked(el)) return;
+    const b=elBBoxStage(el);
+    if(b.left>=x1 && b.right<=x2 && b.top>=y1 && b.bottom<=y2) found.push(el);
+  });
+  if(!found.length) return;
+  if(found.length===1) { selectEl(found[0]); return; }
+  clearMultiSel();
+  found.forEach(el=>{ multiSel.push(el); el.setAttribute('data-ms','1'); });
+  if(sel){ sel.removeAttribute('data-s'); sel=null; }
+  clearRP();
+  $('sel').classList.remove('on');
+  updMultiSel();
+  showCtxMulti();
+  showLLActions(true);
+}
+function showLLActions(show) { const a=$('ll-actions'); if(a) a.style.display = show ? 'flex' : 'none'; }
+
+// ════════════════════════════════════════════
+// SELECTION (single)
+// ════════════════════════════════════════════
+function selectEl(el) {
+  clearMultiSel();
+  const s=svg(); if(s) s.querySelectorAll('[data-s]').forEach(e=>e.removeAttribute('data-s'));
+  sel=el; el.setAttribute('data-s','1');
+  $('sel').classList.remove('multi');
+  $('sel').querySelectorAll('.hdl,.rot').forEach(h=>h.style.display='');
+  updSel(el); showRP(el); hilightLayer(el); showCtx(el);
+}
+function clearSel() {
+  const s=svg(); if(s) s.querySelectorAll('[data-s]').forEach(e=>e.removeAttribute('data-s'));
+  sel=null; $('sel').classList.remove('on','multi'); clearRP(); $('ctx').classList.remove('on');
+  clearMultiSel();
+}
+function updSel(el) {
+  try {
+    const r=el.getBoundingClientRect(), sr=$('stage').getBoundingClientRect();
+    const b=$('sel');
+    b.style.left=(r.left-sr.left-2)+'px'; b.style.top=(r.top-sr.top-2)+'px';
+    b.style.width=(r.width+4)+'px'; b.style.height=(r.height+4)+'px';
+    b.classList.add('on');
+  } catch{}
+}
+$('cs').addEventListener('mousedown',e=>{ if(e.target===$('cs')||e.target.id==='stage'||e.target.id==='svc')clearSel(); });
+
+// wire up resize handles & rotate knob (delegated, since #sel persists in DOM)
+$('sel').querySelectorAll('.hdl').forEach(h=>{
+  h.addEventListener('mousedown', e=> startResize(e, h.dataset.h));
+});
+$('sel').querySelector('.rot').addEventListener('mousedown', e=> startRotate(e));
+
+// ════════════════════════════════════════════
+// CONTEXT TOOLBAR
+// ════════════════════════════════════════════
+function showCtx(el) {
+  const ctx=$('ctx');
+  if(!el||view!=='edit'){ctx.classList.remove('on');return;}
+  const tag=el.tagName.toLowerCase();
+  const isText=tag==='text'||tag==='tspan';
+  const cxt=$('ctx-txt'), cxs=$('ctx-shp'), cxo=$('ctx-op'), cxc=$('ctx-com');
+  cxt.style.display=isText?'flex':'none';
+  cxs.style.display=(!isText&&tag!=='g'&&tag!=='image')?'flex':'none';
+  cxo.style.display='flex'; cxc.style.display='flex';
+  $('ctx-group').style.display='none';
+  if(isText){
+    const ff=(el.getAttribute('font-family')||'Inter').split(',')[0].trim();
+    try{$('ctx-font').value=ff;}catch{}
+    $('ctx-sz').value=el.getAttribute('font-size')||60;
+    $('ctx-b').classList.toggle('on',el.getAttribute('font-weight')==='bold');
+    $('ctx-i').classList.toggle('on',el.getAttribute('font-style')==='italic');
+    const fc=el.getAttribute('fill')||'#ffffff'; if(/^#[0-9a-f]{3,6}$/i.test(fc))$('ctx-tc').value=fc;
+  } else if(tag!=='g'&&tag!=='image'){
+    const fill=el.getAttribute('fill')||'#6c63ff'; if(/^#[0-9a-f]{3,6}$/i.test(fill))$('ctx-fill').value=fill;
+    const stk=el.getAttribute('stroke')||'#ffffff'; if(/^#[0-9a-f]{3,6}$/i.test(stk))$('ctx-stroke').value=stk;
+    $('ctx-sw').value=el.getAttribute('stroke-width')||0;
+    $('ctx-rx').value=el.getAttribute('rx')||0;
+  }
+  const op=parseFloat(el.getAttribute('opacity')||1);
+  $('ctx-opr').value=op; $('ctx-opn').value=Math.round(op*100);
+  ctx.classList.add('on');
+}
+function showCtxMulti() {
+  const ctx=$('ctx');
+  $('ctx-txt').style.display='none'; $('ctx-shp').style.display='none';
+  $('ctx-op').style.display='none'; $('ctx-com').style.display='flex';
+  $('ctx-group').style.display='inline-flex';
+  ctx.classList.add('on');
+}
+
+function ap(k,v){
+  if(multiSel.length) { pushD(); multiSel.forEach(el=>el.setAttribute(k,v)); updMultiSel(); return; }
+  if(!sel) return; pushD(); sel.setAttribute(k,v); showCtx(sel); refreshRP(sel);
+  if(ite.on && ite.el===sel) positionIte();
+}
+function tog(k,on,off){ if(!sel) return; pushD(); const c=sel.getAttribute(k)||off; sel.setAttribute(k,c===on?off:on); showCtx(sel); if(ite.on && ite.el===sel) positionIte(); }
+function togDeco(v){ if(!sel) return; pushD(); const c=sel.getAttribute('text-decoration')||''; sel.setAttribute('text-decoration',c===v?'none':v); }
+
+// ════════════════════════════════════════════
+// Double-click inline text edit
+// ════════════════════════════════════════════
+// Multi-line text is stored as one <tspan> per line (each with the same x and text-anchor as the
+// parent <text>, stepped down by a fixed line-height in dy). textToLines/linesToText convert between
+// that and a plain '\n'-joined string for the <textarea>.
+function textLines(el) {
+  const tspans = el.querySelectorAll(':scope > tspan');
+  if(tspans.length) return [...tspans].map(t=>t.textContent);
+  return [el.textContent];
+}
+function writeTextLines(el, str) {
+  const lines = str.split('\n');
+  const x = el.getAttribute('x') || '0';
+  const fs = parseFloat(el.getAttribute('font-size')) || 16;
+  const lh = fs * 1.2;
+  el.textContent = '';
+  if(lines.length === 1) { el.textContent = lines[0]; return; }
+  // first line uses the text element's own y (dominant-baseline already applied there);
+  // subsequent lines step down by line-height via dy on each tspan. tspans inherit text-anchor from
+  // the parent <text> automatically, so no need to set it per-line.
+  // If vertically centered (dominant-baseline middle/central), dy-stacking would otherwise grow the
+  // block only downward from y — compensate by shifting the first line up by half the extra height
+  // so a multi-line block stays centered on the same y a single line would have used.
+  const baseline = el.getAttribute('dominant-baseline') || '';
+  const isCentered = baseline==='middle' || baseline==='central';
+  const firstLineShift = isCentered ? -((lines.length-1) * lh) / 2 : 0;
+  lines.forEach((line, i)=>{
+    const ts = document.createElementNS('http://www.w3.org/2000/svg','tspan');
+    ts.setAttribute('x', x);
+    if(i===0 && firstLineShift) ts.setAttribute('dy', firstLineShift);
+    else if(i>0) ts.setAttribute('dy', lh);
+    ts.textContent = line.length ? line : '\u00A0'; // keep empty lines from collapsing
+    el.appendChild(ts);
+  });
+}
+function syncCtxToText(textEl) {
+  // While typing inline, keep `sel` pointing at the text element so toolbar actions (bold, color, size...)
+  // apply live, but skip the full selectEl() flow so resize/rotate handles don't appear over the textarea.
+  const s=svg(); if(s) s.querySelectorAll('[data-s]').forEach(e=>e.removeAttribute('data-s'));
+  sel = textEl; textEl.setAttribute('data-s','1');
+  $('sel').classList.remove('on');
+  showCtx(textEl);
+}
+function onDbl(e) {
+  if(view!=='edit') return; e.stopPropagation();
+  const el=e.currentTarget;
+  if(isLocked(el)) return;
+  const tag=el.tagName.toLowerCase();
+  const textEl = tag==='tspan' ? el.closest('text') : (tag==='text' ? el : null);
+  if(!textEl) return;
+  if(ite.on && ite.el===textEl) return; // already editing this one
+  commitIte();
+  push(); // snapshot before live edits begin, so the whole edit session is one undo step
+  ite.gen++;
+  const myGen = ite.gen;
+  ite = { on:true, el:textEl, gen:myGen, original: textLines(textEl).join('\n') };
+  // Hide the real SVG text while editing so it doesn't render underneath the (now-visible) textarea —
+  // style.visibility, not the visibility ATTRIBUTE, so this doesn't clash with the layer panel's own
+  // show/hide toggle. getBoundingClientRect()/getBBox() still report correct geometry while hidden this
+  // way, which positionIte() and liveSyncIte() depend on for sizing the textarea as you type.
+  textEl.style.visibility = 'hidden';
+  const inp=$('ite');
+  inp.value = ite.original;
+  inp.style.display='block';
+  positionIte();
+  syncCtxToText(textEl);
+  inp.focus(); inp.select();
+}
+function positionIte() {
+  if(!ite.on) return;
+  const inp=$('ite'), el=ite.el, hint=$('ite-hint');
+  const s=svg(); if(!s) return;
+  const sr=s.getBoundingClientRect(), er=el.getBoundingClientRect(), stagr=$('stage').getBoundingClientRect();
+  const cssScale = sr.width / s.viewBox.baseVal.width;
+  const fs=(parseFloat(el.getAttribute('font-size'))||16) * cssScale;
+  inp.style.left=(er.left-stagr.left-4)+'px'; inp.style.top=(er.top-stagr.top-4)+'px';
+  inp.style.width=Math.max(er.width+12,80)+'px'; inp.style.height=Math.max(er.height+10,fs*1.3)+'px';
+  inp.style.fontSize=fs+'px'; inp.style.fontFamily=el.getAttribute('font-family')||'Inter';
+  inp.style.color=el.getAttribute('fill')||'#fff'; inp.style.fontWeight=el.getAttribute('font-weight')||'400';
+  inp.style.fontStyle=el.getAttribute('font-style')||'normal';
+  inp.style.lineHeight = '1.2';
+  inp.style.textAlign=el.getAttribute('text-anchor')==='middle'?'center':el.getAttribute('text-anchor')==='end'?'right':'left';
+  const boxBottom = parseFloat(inp.style.top) + parseFloat(inp.style.height);
+  hint.style.left = inp.style.left;
+  hint.style.top = (boxBottom + 6) + 'px';
+  hint.classList.add('on');
+}
+function liveSyncIte() {
+  if(!ite.on) return;
+  writeTextLines(ite.el, $('ite').value);
+  positionIte(); // box grows/shrinks to match the now-updated text's real rendered size
+}
+$('ite').addEventListener('input', liveSyncIte);
+$('ite').addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); commitIte(); }
+  if(e.key==='Escape'){ e.preventDefault(); cancelIte(); }
+});
+$('ite').addEventListener('blur',()=>{
+  // capture which edit session this blur belongs to; if a dblclick on another text element starts a
+  // NEW session before this fires, ite.gen will have moved on and we skip committing the stale session
+  const blurGen = ite.gen;
+  setTimeout(()=>{ if(ite.on && ite.gen===blurGen) commitIte(); }, 80);
+});
+function commitIte(){
+  if(!ite.on) return;
+  writeTextLines(ite.el, $('ite').value);
+  ite.el.style.visibility = ''; // un-hide — this is the same element, not replaced, so it must be restored explicitly
+  $('ite').style.display='none';
+  $('ite-hint').classList.remove('on');
+  const editedEl = ite.el;
+  ite={on:false,el:null,gen:ite.gen,original:''};
+  attachH(); refreshRP(editedEl);
+}
+function cancelIte(){
+  if(!ite.on) return;
+  ite.el.style.visibility = ''; // safety net — undo() below normally handles this via a fresh re-render, but restore explicitly in case hist is empty
+  $('ite').style.display='none';
+  $('ite-hint').classList.remove('on');
+  ite={on:false,el:null,gen:ite.gen,original:''};
+  undo(); // throws away all live edits made since onDbl()'s pre-edit snapshot, including the toolbar state
+}
+
+// ════════════════════════════════════════════
+// ELEMENT ACTIONS
+// ════════════════════════════════════════════
+// Tracks the most recently deleted element(s) so the undo-toast's Undo button can restore them
+// precisely (same parent, same position) without forcing a full-canvas history rewind.
+let lastDeleted = null; // { items: [{el, parent, nextSibling}], label }
+let _utoastTimer = null;
+
+function delEl(){
+  if(multiSel.length){
+    push();
+    const items = multiSel.map(el=>({ el, parent: el.parentNode, nextSibling: el.nextElementSibling }));
+    items.forEach(it=>it.el.remove());
+    const n = items.length;
+    clearMultiSel(); buildLayers();
+    showUndoToast(items, n+' element'+(n>1?'s':'')+' deleted');
+    return;
+  }
+  if(!sel) return;
+  push();
+  const items=[{ el:sel, parent:sel.parentNode, nextSibling:sel.nextElementSibling }];
+  sel.remove(); clearSel(); buildLayers();
+  showUndoToast(items, 'Deleted');
+}
+function showUndoToast(items, label) {
+  lastDeleted = { items, label };
+  clearTimeout(_utoastTimer);
+  $('utoast-msg').textContent = label;
+  $('utoast').classList.add('on');
+  _utoastTimer = setTimeout(()=>{ $('utoast').classList.remove('on'); lastDeleted=null; }, 5000);
+}
+function undoLastDelete() {
+  if(!lastDeleted) return;
+  clearTimeout(_utoastTimer);
+  $('utoast').classList.remove('on');
+  // restore each item to its exact original parent + position
+  lastDeleted.items.forEach(it=>{
+    if(it.nextSibling && it.nextSibling.parentNode===it.parent) it.parent.insertBefore(it.el, it.nextSibling);
+    else it.parent.appendChild(it.el);
+  });
+  // delEl() called push() right before deleting, recording a snapshot that's now identical to the
+  // restored DOM — pop it so a later Cmd+Z doesn't land on a redundant no-op step
+  if(hist.length) hist.pop();
+  attachH(); buildLayers();
+  const restored = lastDeleted.items.map(it=>it.el);
+  lastDeleted = null;
+  if(restored.length===1){ selectEl(restored[0]); }
+  else { clearMultiSel(); restored.forEach(el=>{ multiSel.push(el); el.setAttribute('data-ms','1'); }); updMultiSel(); showCtxMulti(); showLLActions(true); }
+  toast('Restored ✓','ok');
+}
+function dup(){
+  if(multiSel.length){
+    push();
+    const clones=multiSel.map(el=>{
+      const cl=el.cloneNode(true); cl.setAttribute('id',(cl.id||'el')+'-'+Date.now()+Math.floor(Math.random()*999));
+      offsetClone(cl); svg().appendChild(cl); return cl;
+    });
+    attachH(); buildLayers();
+    clearMultiSel(); clones.forEach(c=>{ multiSel.push(c); c.setAttribute('data-ms','1'); });
+    updMultiSel(); showCtxMulti(); showLLActions(true);
+    addHist('Duplicated selection');
+    return;
+  }
+  if(!sel) return; push();
+  const cl=sel.cloneNode(true); cl.setAttribute('id',(cl.id||'el')+'-'+Date.now());
+  offsetClone(cl);
+  svg().appendChild(cl); attachH(); setTimeout(()=>{selectEl(cl);buildLayers();},30); addHist('Duplicated');
+}
+function offsetClone(cl) {
+  const tag=cl.tagName.toLowerCase();
+  if(tag==='rect'||tag==='text'||tag==='image'){ cl.setAttribute('x',+(cl.getAttribute('x')||0)+28); cl.setAttribute('y',+(cl.getAttribute('y')||0)+28); }
+  else if(tag==='circle'||tag==='ellipse'){ cl.setAttribute('cx',+(cl.getAttribute('cx')||0)+28); cl.setAttribute('cy',+(cl.getAttribute('cy')||0)+28); }
+  else{ cl.setAttribute('transform',(cl.getAttribute('transform')||'')+' translate(28,28)'); }
+}
+function bringFwd(){
+  if(multiSel.length){ push(); multiSel.forEach(el=>{ const n=el.nextElementSibling; if(n)el.parentNode.insertBefore(n,el); }); buildLayers(); return; }
+  if(!sel) return; push(); const p=sel.parentNode,n=sel.nextElementSibling; if(n)p.insertBefore(n,sel); buildLayers();
+}
+function sendBwd(){
+  if(multiSel.length){ push(); multiSel.forEach(el=>{ const pr=el.previousElementSibling; if(pr)el.parentNode.insertBefore(el,pr); }); buildLayers(); return; }
+  if(!sel) return; push(); const p=sel.parentNode,pr=sel.previousElementSibling; if(pr)p.insertBefore(sel,pr); buildLayers();
+}
+
+// ════════════════════════════════════════════
+// GROUP / UNGROUP
+// ════════════════════════════════════════════
+function groupSel() {
+  if(multiSel.length<2){ toast('Select 2+ elements to group','err'); return; }
+  push();
+  const s=svg();
+  const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+  g.setAttribute('id','group-'+Date.now());
+  // preserve order: insert group where the topmost (last in DOM) selected element was
+  const ordered=[...s.children].filter(c=>multiSel.includes(c));
+  const refNode=ordered[ordered.length-1];
+  s.insertBefore(g, refNode);
+  ordered.forEach(el=>g.appendChild(el));
+  clearMultiSel();
+  attachH(); buildLayers();
+  setTimeout(()=>{selectEl(g);},30);
+  addHist('Grouped '+ordered.length+' elements');
+  toast('Grouped ✓','ok');
+}
+function ungroupSel() {
+  const target = sel && sel.tagName.toLowerCase()==='g' ? sel : null;
+  if(!target){ toast('Select a group to ungroup','err'); return; }
+  push();
+  const parent=target.parentNode;
+  const children=[...target.children];
+  children.forEach(c=>parent.insertBefore(c,target));
+  target.remove();
+  clearSel();
+  attachH(); buildLayers();
+  clearMultiSel();
+  children.forEach(c=>{ multiSel.push(c); c.setAttribute('data-ms','1'); });
+  if(multiSel.length){ updMultiSel(); showCtxMulti(); showLLActions(true); }
+  addHist('Ungrouped');
+  toast('Ungrouped ✓','ok');
+}
+
+// ════════════════════════════════════════════
+// CLIPBOARD (copy / paste)
+// ════════════════════════════════════════════
+function copySel() {
+  const items = multiSel.length ? multiSel : (sel ? [sel] : []);
+  if(!items.length){ return; }
+  clipboard = items.map(el=>el.cloneNode(true));
+  toast('Copied '+items.length+' element'+(items.length>1?'s':''),'ok');
+}
+function pasteSel() {
+  const s=svg(); if(!s || !clipboard.length){ return; }
+  push();
+  const pasted=clipboard.map(node=>{
+    const cl=node.cloneNode(true); cl.setAttribute('id',(cl.id||'el')+'-'+Date.now()+Math.floor(Math.random()*999));
+    offsetClone(cl); s.appendChild(cl); return cl;
+  });
+  attachH(); buildLayers();
+  clearSel(); clearMultiSel();
+  if(pasted.length===1){ selectEl(pasted[0]); }
+  else { pasted.forEach(c=>{ multiSel.push(c); c.setAttribute('data-ms','1'); }); updMultiSel(); showCtxMulti(); showLLActions(true); }
+  addHist('Pasted '+pasted.length+' element'+(pasted.length>1?'s':''));
+  toast('Pasted ✓','ok');
+}
+function selectAll() {
+  const s=svg(); if(!s) return;
+  const all=[...s.children].filter(el=>!['defs','style'].includes(el.tagName.toLowerCase()) && el.id!=='bg-rect' && !isLocked(el));
+  if(!all.length) return;
+  clearSel();
+  clearMultiSel();
+  if(all.length===1){ selectEl(all[0]); return; }
+  all.forEach(el=>{ multiSel.push(el); el.setAttribute('data-ms','1'); });
+  updMultiSel(); showCtxMulti(); showLLActions(true);
+}
+
+// ════════════════════════════════════════════
+// RIGHT PANEL (Properties)
+// ════════════════════════════════════════════
+function setRP(t){ ['p','l'].forEach(x=>{ $('rpt-'+x).classList.toggle('on',x===t); $('rpp-'+x).classList.toggle('on',x===t); }); }
+function clearRP(){ $('rp-empty').style.display='flex'; $('rpf').style.display='none'; $('rp-fields').innerHTML=''; }
+function refreshRP(el){ if(el&&$('rpf').style.display!=='none') showRP(el); }
+
+function showRP(el) {
+  $('rp-empty').style.display='none'; $('rpf').style.display='block';
+  const f=$('rp-fields'); f.innerHTML='';
+  const tag=el.tagName.toLowerCase();
+  f.innerHTML=`<div class="el-chip">&lt;${tag}&gt;${el.id?' #'+el.id:''}</div>`;
+
+  function add(lbl,val,key,type='text'){
+    const g=document.createElement('div'); g.className='rf';
+    g.innerHTML=`<label>${lbl}</label>`;
+    if(type==='color'){
+      const safe=/^#[0-9a-f]{3,8}$/i.test(val)?val:'#888888';
+      g.innerHTML+=`<div class="rfc"><input type="color" value="${safe}" oninput="this.nextElementSibling.value=this.value;window._a('${key}',this.value)"><input type="text" value="${val||''}" oninput="if(/^#[0-9a-f]{6}$/i.test(this.value))this.previousElementSibling.value=this.value;window._a('${key}',this.value)"></div>`;
+    } else if(type==='range'){
+      g.innerHTML+=`<div class="op-row"><input type="range" min="0" max="1" step="0.02" value="${val||1}" oninput="window._a('${key}',this.value);this.nextElementSibling.value=Math.round(this.value*100)"><input type="number" value="${Math.round((val||1)*100)}" min="0" max="100" style="width:46px" onchange="window._a('${key}',this.value/100);this.previousElementSibling.value=this.value/100"></div>`;
+    } else {
+      g.innerHTML+=`<input type="${type}" value="${val||''}" placeholder="${val||''}" oninput="window._a('${key}',this.value)">`;
+    }
+    f.appendChild(g);
+  }
+  function row(fields){ const r=document.createElement('div'); r.className='rfrow'; fields.forEach(([l,v,k,t='number'])=>{const g=document.createElement('div');g.className='rf';g.innerHTML=`<label>${l}</label><input type="${t}" value="${v||''}" oninput="window._a('${k}',this.value)">`;r.appendChild(g);}); f.appendChild(r); }
+  function div(){ const d=document.createElement('div'); d.className='rp-divider'; f.appendChild(d); }
+
+  if(tag==='text'||tag==='tspan'){
+    const g=document.createElement('div');g.className='rf';
+    g.innerHTML=`<label>Content</label><textarea rows="2" oninput="window._t(this.value)" style="font-size:var(--fs-base)">${el.textContent||''}</textarea>`;
+    f.appendChild(g); div();
+    row([['Size',el.getAttribute('font-size'),'font-size'],['X',el.getAttribute('x'),'x'],['Y',el.getAttribute('y'),'y']]);
+    add('Font family',el.getAttribute('font-family'),'font-family');
+    div(); add('Fill',el.getAttribute('fill')||'','fill','color');
+    add('Anchor',el.getAttribute('text-anchor'),'text-anchor');
+  } else if(tag==='rect'){
+    row([['X',el.getAttribute('x'),'x'],['Y',el.getAttribute('y'),'y']]);
+    row([['W',el.getAttribute('width'),'width'],['H',el.getAttribute('height'),'height']]);
+    row([['RX',el.getAttribute('rx')||'0','rx'],['RY',el.getAttribute('ry')||'0','ry']]);
+    div(); add('Fill',el.getAttribute('fill')||'','fill','color');
+    add('Stroke',el.getAttribute('stroke')||'','stroke','color');
+    add('Stroke W',el.getAttribute('stroke-width')||'','stroke-width');
+  } else if(tag==='circle'){
+    row([['CX',el.getAttribute('cx'),'cx'],['CY',el.getAttribute('cy'),'cy']]);
+    add('Radius',el.getAttribute('r'),'r','number'); div();
+    add('Fill',el.getAttribute('fill')||'','fill','color');
+    add('Stroke',el.getAttribute('stroke')||'','stroke','color');
+  } else if(tag==='ellipse'){
+    row([['CX',el.getAttribute('cx'),'cx'],['CY',el.getAttribute('cy'),'cy']]);
+    row([['RX',el.getAttribute('rx'),'rx'],['RY',el.getAttribute('ry'),'ry']]);
+    div(); add('Fill',el.getAttribute('fill')||'','fill','color');
+  } else if(tag==='line'){
+    row([['X1',el.getAttribute('x1'),'x1'],['Y1',el.getAttribute('y1'),'y1']]);
+    row([['X2',el.getAttribute('x2'),'x2'],['Y2',el.getAttribute('y2'),'y2']]);
+    div(); add('Stroke',el.getAttribute('stroke')||'','stroke','color');
+    add('Stroke W',el.getAttribute('stroke-width')||'2','stroke-width');
+  } else if(tag==='image'){
+    row([['X',el.getAttribute('x'),'x'],['Y',el.getAttribute('y'),'y']]);
+    row([['W',el.getAttribute('width'),'width'],['H',el.getAttribute('height'),'height']]);
+  } else {
+    add('Fill',el.getAttribute('fill')||'','fill','color');
+    add('Stroke',el.getAttribute('stroke')||'','stroke','color');
+  }
+  div(); add('Opacity',el.getAttribute('opacity')||'1','opacity','range');
+  if(el.getAttribute('transform'))add('Transform',el.getAttribute('transform'),'transform');
+}
+window._a=(k,v)=>{ if(!sel) return; pushD(); sel.setAttribute(k,v); updSel(sel); };
+window._t=v=>{ if(!sel) return; pushD(); sel.textContent=v; };
+
+// ════════════════════════════════════════════
+// LAYERS
+// ════════════════════════════════════════════
+function buildLayers(){
+  const s=svg(), ll=$('ll'), le=$('rp-le');
+  if(!s){le.style.display='flex';ll.style.display='none';return;}
+  le.style.display='none'; ll.style.display='flex'; ll.innerHTML='';
+  [...s.children].reverse().forEach(el=>addLI(el,ll,0));
+}
+const ICONS={text:'T',rect:'▭',circle:'◯',ellipse:'⬬',path:'⌇',g:'▤',line:'╱',polygon:'⬡',image:'🖼'};
+function addLI(el,cont,depth){
+  const tag=el.tagName.toLowerCase();
+  if(['defs','style','title','desc'].includes(tag)) return;
+  const item=document.createElement('div'); item.className='li'; item.style.paddingLeft=(6+depth*12)+'px';
+  const name=el.id?'#'+el.id:tag;
+  const isLockedEl=isLocked(el);
+  item.innerHTML=`<span class="li-ic">${ICONS[tag]||'·'}</span><span class="li-nm" title="${name}">${name}</span><span class="li-lock${isLockedEl?' active':''}" title="Lock/unlock">${isLockedEl?'🔒':'🔓'}</span><span class="li-eye" title="Toggle visibility">👁</span>`;
+  item._el=el; item.querySelector('.li-eye')._el=el;
+  item.querySelector('.li-eye').addEventListener('click',e=>{ e.stopPropagation(); const h=el.getAttribute('visibility')==='hidden'; el.setAttribute('visibility',h?'visible':'hidden'); item.style.opacity=h?'1':'0.4'; });
+  item.querySelector('.li-lock').addEventListener('click',e=>{
+    e.stopPropagation();
+    if(locked.has(el)){ locked.delete(el); el.removeAttribute('data-locked'); } else { locked.add(el); el.setAttribute('data-locked','1'); if(sel===el)clearSel(); if(multiSel.includes(el)) toggleMultiSel(el); }
+    buildLayers();
+  });
+  item.addEventListener('click',e=>{ if(e.target.classList.contains('li-eye')||e.target.classList.contains('li-lock')) return; if(view==='edit'){ if(e.shiftKey) toggleMultiSel(el); else selectEl(el); } else{setV('edit');setTimeout(()=>selectEl(el),60);} });
+  cont.appendChild(item);
+  if(tag==='g')[...el.children].reverse().forEach(c=>addLI(c,cont,depth+1));
+}
+function hilightLayer(el){ document.querySelectorAll('.li').forEach(i=>i.classList.toggle('on',i._el===el)); }
+
+// ════════════════════════════════════════════
+// HISTORY / UNDO / REDO
+// ════════════════════════════════════════════
+let _dt=null;
+function pushD(){ clearTimeout(_dt); _dt=setTimeout(push,350); }
+function push(){ const s=svg(); if(s)hist.push(s.outerHTML); if(hist.length>50)hist.shift(); redoStack=[]; }
+function undo(){
+  if(!hist.length){toast('Nothing to undo');return;}
+  const s=svg(); if(s) redoStack.push(s.outerHTML);
+  renderSVG(hist.pop()); clearSel(); buildLayers();
+  if(view==='edit')attachH(); if(view==='code')syncCode(); toast('Undone ✓');
+}
+function redo(){
+  if(!redoStack.length){toast('Nothing to redo');return;}
+  const s=svg(); if(s) hist.push(s.outerHTML);
+  renderSVG(redoStack.pop()); clearSel(); buildLayers();
+  if(view==='edit')attachH(); if(view==='code')syncCode(); toast('Redone ✓');
+}
+function resetAll(){
+  if(!origSVG)return;
+  renderSVG(origSVG); hist=[]; redoStack=[];
+  clearSel(); buildLayers();
+  if(view==='edit')attachH(); if(view==='code')syncCode(); toast('Reset to original ✓');
+}
+function addHist(lbl){
+  const h=$('hist');
+  if(h.firstChild&&!h.firstChild.classList?.contains('hi'))h.innerHTML='';
+  const d=document.createElement('div'); d.className='hi';
+  d.innerHTML=`<span class="hd2"></span><span>${lbl}</span>`;
+  h.insertBefore(d,h.firstChild);
+}
+
+// ════════════════════════════════════════════
+// CODE EDITOR
+// ════════════════════════════════════════════
+function syncCode(){ const s=svg(); if(!s) return; $('code-ta').value=fmtSVG(s.outerHTML); updCSZ(); }
+function fmtSVG(c){ let i=0,r=''; for(const raw of c.replace(/></g,'>\n<').split('\n')){ const l=raw.trim(); if(!l)continue; if(l.startsWith('</'))i=Math.max(0,i-1); r+='  '.repeat(i)+l+'\n'; if(!l.startsWith('</')&&!l.endsWith('/>')&&l.startsWith('<')&&!l.includes('</'))i++; } return r.trim(); }
+function applyCode(){ const c=$('code-ta').value.trim(); if(!c.includes('<svg')){toast('Invalid SVG','err');return;} push(); renderSVG(c); buildLayers(); clearSel(); addHist('Code edit'); toast('Applied ✓','ok'); }
+function fmtCode(){ $('code-ta').value=fmtSVG($('code-ta').value); updCSZ(); }
+function cpCode(){ navigator.clipboard.writeText($('code-ta').value).then(()=>toast('Copied ✓','ok')); }
+function updCSZ(){ const v=$('code-ta').value; $('csz').textContent=v?v.length.toLocaleString()+' chars':''; }
+$('code-ta').addEventListener('input',updCSZ);
+
+// ════════════════════════════════════════════
+// SAVE
+// ════════════════════════════════════════════
+function saveSVG(){ const s=svg(); if(!s)return; const b=new Blob([s.outerHTML],{type:'image/svg+xml'}); const u=URL.createObjectURL(b),a=document.createElement('a'); a.href=u; a.download='imagecraft.svg'; a.click(); URL.revokeObjectURL(u); toast('SVG saved ✓','ok'); }
+function savePNG(){
+  const s=svg(); if(!s)return;
+  const vb=s.viewBox.baseVal;
+  const xml=new XMLSerializer().serializeToString(s);
+  const b=new Blob([xml],{type:'image/svg+xml'}); const u=URL.createObjectURL(b);
+  const img=new Image();
+  img.onload=()=>{
+    const cv=document.createElement('canvas'); cv.width=vb.width; cv.height=vb.height;
+    cv.getContext('2d').drawImage(img,0,0); URL.revokeObjectURL(u);
+    cv.toBlob(b2=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(b2); a.download='imagecraft.png'; a.click(); });
+    toast('PNG saved ✓','ok');
+  };
+  img.src=u;
+}
+
+// ════════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ════════════════════════════════════════════
+document.addEventListener('keydown',e=>{
+  if($('uc-veil').classList.contains('on')) { if(e.key==='Escape'){ e.preventDefault(); ucCancel(); } return; }
+  const notInput=!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName);
+  if((e.metaKey||e.ctrlKey)&&e.key==='z'&&!e.shiftKey){e.preventDefault();undo();return;}
+  if((e.metaKey||e.ctrlKey)&&(e.key==='y'||(e.key==='z'&&e.shiftKey))){e.preventDefault();redo();return;}
+  if((e.metaKey||e.ctrlKey)&&e.key==='d'&&(sel||multiSel.length)){e.preventDefault();dup();return;}
+  if((e.metaKey||e.ctrlKey)&&e.key==='g'&&notInput){e.preventDefault();if(multiSel.length>=2)groupSel();else if(sel&&sel.tagName.toLowerCase()==='g')ungroupSel();return;}
+  if((e.metaKey||e.ctrlKey)&&e.key==='c'&&notInput){e.preventDefault();copySel();return;}
+  if((e.metaKey||e.ctrlKey)&&e.key==='v'&&notInput){e.preventDefault();pasteSel();return;}
+  if((e.metaKey||e.ctrlKey)&&e.key==='a'&&notInput&&view==='edit'){e.preventDefault();selectAll();return;}
+  if(e.key==='Escape'){clearSel();if(ite.on)commitIte();return;}
+  if((e.key==='Delete'||e.key==='Backspace')&&(sel||multiSel.length)&&view==='edit'&&!ite.on&&notInput){e.preventDefault();delEl();return;}
+  if(notInput){
+    if(e.key==='v')setTool('select');
+    if(e.key==='t'){if(svg())addTxt('h'); else setPanel('gen');}
+    if(e.key==='r')setTool('rect');
+    if(e.key==='c'&&!e.metaKey&&!e.ctrlKey)setTool('circle');
+    if(e.key==='l')setTool('line');
+  }
+  // arrow nudge
+  if((sel||multiSel.length)&&view==='edit'&&notInput&&['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)){
+    e.preventDefault(); const d=e.shiftKey?10:1;
+    const targets = multiSel.length ? multiSel : [sel];
+    push();
+    targets.forEach(t=>{
+      const tag=t.tagName.toLowerCase();
+      if(tag==='circle'||tag==='ellipse'){ if(e.key==='ArrowLeft')t.setAttribute('cx',+(t.getAttribute('cx')||0)-d); if(e.key==='ArrowRight')t.setAttribute('cx',+(t.getAttribute('cx')||0)+d); if(e.key==='ArrowUp')t.setAttribute('cy',+(t.getAttribute('cy')||0)-d); if(e.key==='ArrowDown')t.setAttribute('cy',+(t.getAttribute('cy')||0)+d); }
+      else if(['g','path','polygon','polyline','line'].includes(tag)){
+        const st=getXState(t);
+        if(e.key==='ArrowLeft')st.tx-=d; if(e.key==='ArrowRight')st.tx+=d; if(e.key==='ArrowUp')st.ty-=d; if(e.key==='ArrowDown')st.ty+=d;
+        applyXState(t);
+      }
+      else{ if(e.key==='ArrowLeft')t.setAttribute('x',+(t.getAttribute('x')||0)-d); if(e.key==='ArrowRight')t.setAttribute('x',+(t.getAttribute('x')||0)+d); if(e.key==='ArrowUp')t.setAttribute('y',+(t.getAttribute('y')||0)-d); if(e.key==='ArrowDown')t.setAttribute('y',+(t.getAttribute('y')||0)+d); }
+    });
+    if(multiSel.length) updMultiSel(); else if(sel) updSel(sel);
+  }
+});
+$('prompt').addEventListener('keydown',e=>{ if((e.metaKey||e.ctrlKey)&&e.key==='Enter')gen(); });
+
+// init panels
+setPanel('gen');
+</script>
+</body>
+</html>
