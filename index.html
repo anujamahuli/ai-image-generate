@@ -41,7 +41,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;displ
 
 /* -- HEADER -- */
 .hdr{height:50px;background:var(--s1);border-bottom:1px solid var(--border);border-top:3px solid var(--accent);display:flex;align-items:center;padding:0 14px;gap:10px;flex-shrink:0;z-index:200}
-.logo{font-family:'Syne',sans-serif;font-size:var(--fs-lg);font-weight:800;letter-spacing:-.02em;color:var(--text);white-space:nowrap;display:flex;align-items:baseline;gap:7px}
+.logo{font-family:'Syne',sans-serif;font-size:var(--fs-lg);font-weight:800;letter-spacing:-.02em;color:var(--text);white-space:nowrap;display:flex;align-items:center;gap:9px}
 .logo b{color:var(--accent);font-weight:800}
 .hdiv{width:1px;height:20px;background:var(--border);flex-shrink:0}
 .vtabs{display:flex;background:var(--s2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
@@ -297,6 +297,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .em svg{cursor:default}
 .em svg>:not(defs):not(style){cursor:move}
 .em svg text,.em svg tspan{cursor:text}
+.em svg [data-photo="1"]{cursor:pointer}
 .em svg [data-locked]{cursor:not-allowed!important}
 .em svg>:not(defs):not(style):not([data-s]):not([data-ms]):hover{outline:1.5px dashed var(--accent3);outline-offset:2px}
 [data-s]{outline:2px solid var(--accent)!important;outline-offset:2px}
@@ -349,7 +350,27 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 
 <!-- -- HEADER -- -->
 <div class="hdr">
-  <div class="logo">intel<b>isa</b> <span style="font-size:var(--fs-2xs);font-weight:500;color:var(--text3);letter-spacing:.06em;font-family:'Inter',sans-serif">IMAGE STUDIO</span></div>
+  <div class="logo"><svg width="30" height="30" viewBox="0 0 984 984" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+<g transform="translate(52.74, 376.74)">
+
+<path d="M409.43 121.016L388.266 130.843C380.41 134.43 379.929 135.805 383.723 142.783L385.006 145.239C387.304 149.317 389.068 149.858 390.618 149.858C391.954 149.858 393.557 149.416 395.748 148.384C398.848 146.959 401.52 145.681 404.139 144.453L405.742 143.667C411.621 140.866 417.714 137.967 423.86 135.56C432.357 132.17 437.595 127.6 439.412 121.802C441.015 116.545 439.626 110.403 435.35 104.212C435.083 103.77 434.816 103.328 434.602 102.885L434.174 102.099C424.501 84.7549 405.635 73.9453 384.953 73.9453C376.455 73.9453 368.225 75.7141 360.475 79.2518C333.486 91.5354 322.477 121.95 335.945 147.057C345.992 165.827 356.414 184.743 367.049 204.053C373.997 216.582 387.144 224.395 401.413 224.395C404.834 224.395 408.201 223.953 411.568 223.068C413.866 222.479 416.003 221.692 418.034 220.808C431.769 214.568 439.091 201.4 437.702 185.579L437.381 181.844C436.953 177.57 435.831 175.064 431.342 175.064C430.594 175.064 429.738 175.113 428.723 175.211C424.929 175.457 421.187 175.801 419.263 176.685C417.5 177.471 416.859 179.142 417.446 186.954L417.5 187.79C417.553 188.281 417.553 188.723 417.607 189.215C417.82 196.879 413.278 202.972 405.635 205.085C404.192 205.478 402.696 205.724 401.146 205.724C395.053 205.724 389.335 202.53 386.609 197.617L381.318 188.035C371.912 171.133 362.186 153.69 353.314 136.149C346.046 121.95 352.779 104.605 368.545 96.6945L369.775 96.1049C374.478 93.9921 379.715 92.862 384.953 92.862C396.336 92.862 406.971 97.972 413.385 106.472C415.309 108.978 417.233 111.926 416.431 114.923C415.629 117.97 412.369 119.64 409.43 121.016Z" fill="#D8262E"/>
+<path d="M14.6939 77.7822H8.49439C7.63929 77.7822 6.89108 77.8805 6.24976 77.9296H18.4884C17.4195 77.8314 16.1903 77.7822 14.6939 77.7822Z" fill="#9BD9D9"/>
+<path d="M18.4362 77.9248H6.251C3.09782 78.2687 2.08239 79.3006 1.4945 80.3324C0.960067 81.3642 0.692848 82.8382 0.639404 84.9019V88.6361V215.648V219.383C0.692848 221.397 0.960067 222.871 1.4945 223.952C2.18927 225.23 3.52537 226.458 8.49563 226.507H14.6951C23.2461 226.507 24.315 225.524 24.315 217.466V86.8181C24.315 80.1359 23.5133 78.3179 18.4362 77.9248Z" fill="#9BD9D9"/>
+<path d="M187.534 102.25C185.022 95.5189 181.655 90.065 177.326 85.8886C173.051 81.7121 167.974 78.7149 162.148 76.7987C156.323 74.9316 150.07 73.998 143.443 73.998C137.831 73.998 132.647 74.6368 127.891 75.8651C123.134 77.1426 118.752 78.8623 114.797 81.1225C110.842 83.3827 107.208 85.9868 104.001 88.9349C100.795 91.883 97.8554 95.0767 95.2367 98.5161C95.7177 92.7674 95.5574 86.8221 95.5574 86.8221C95.5039 80.3855 94.7557 78.4693 90.1595 77.9779V77.9288H89.6251C88.5562 77.8305 87.3805 77.7814 85.884 77.7814H79.6846C78.8295 77.7814 78.0813 77.8797 77.4399 77.9288C74.2868 78.2727 73.2179 79.3046 72.6834 80.3364C72.0956 81.4173 71.8283 82.9896 71.7749 85.2007V219.043C71.7749 221.303 72.0421 222.826 72.6834 223.907C73.3782 225.184 74.7143 226.413 79.6846 226.462H85.884C94.1144 226.462 95.397 225.479 95.5039 218.207C95.5039 217.962 95.5039 217.716 95.5039 217.421V120.921C101.009 112.765 107.582 106.378 115.225 101.759C122.867 97.1403 130.777 94.7819 138.954 94.7819C148.253 94.7819 155.307 97.5825 160.171 103.233C165.034 108.883 167.439 118.121 167.439 130.945V215.652C167.439 216.783 167.439 217.863 167.439 219.043C167.439 219.19 167.439 219.239 167.439 219.387C167.493 221.401 167.76 222.875 168.294 223.956C168.989 225.234 170.325 226.462 175.295 226.511H181.495C190.046 226.511 191.115 225.528 191.115 217.47V127.063C191.275 117.236 190.046 108.982 187.534 102.25Z" fill="#9BD9D9"/>
+<path d="M23.729 25.3529C23.729 25.1072 23.729 24.9598 23.729 24.7633C23.6221 17.2949 22.3929 16.263 14.1091 16.3122H7.90967C2.88596 16.3613 1.54987 17.5897 0.8551 18.8672C0.320662 19.899 0.0534437 21.4221 0 23.5841C0 23.6332 0 23.6823 0 23.7315C0 24.2228 0 24.6159 0 25.1072V34.541C0 34.9832 0 35.3763 0 35.8676C0 35.9168 0 35.9659 0 36.015C0 38.177 0.267219 39.7001 0.8551 40.7811C1.54987 42.0094 2.88596 43.2378 7.90967 43.3361H14.1091C22.3929 43.3361 23.6221 42.3534 23.729 34.885C23.729 34.6884 23.729 34.541 23.729 34.2953V25.3529V25.3529Z" fill="#9BD9D9"/>
+<path d="M473.188 7.47132C473.188 7.96266 473.188 8.35573 473.188 8.84708V7.37305C473.237 7.37305 473.188 7.42218 473.188 7.47132Z" fill="#9BD9D9"/>
+<path d="M473.188 219.04C473.188 219.089 473.188 219.138 473.188 219.187V217.713C473.237 218.155 473.188 218.548 473.188 219.04Z" fill="#9BD9D9"/>
+<path d="M487.353 0H481.153C476.13 0.0982687 474.847 1.32663 474.099 2.55499C473.511 3.63594 473.244 5.15911 473.244 7.32102V8.79505V217.665V219.188C473.244 221.35 473.511 222.873 474.099 223.954C474.793 225.232 476.13 226.46 481.153 226.509H487.353C495.637 226.509 496.866 225.527 496.973 218.058V217.469V9.08986V8.50025C496.866 0.982688 495.637 0 487.353 0Z" fill="#9BD9D9"/>
+<path d="M569.975 87.2611C569.975 87.0646 569.975 86.868 569.975 86.6715C569.868 79.2031 568.639 78.1712 560.355 78.2204H554.156C549.185 78.3186 547.849 79.547 547.154 80.8245C546.567 81.9054 546.299 83.4286 546.299 85.5905C546.299 85.6397 546.299 85.6888 546.299 85.7379C546.299 86.2293 546.299 86.6223 546.299 87.1137V180.272C546.299 180.715 546.299 181.157 546.299 181.648C546.299 181.697 546.299 181.746 546.299 181.796C546.299 183.958 546.567 185.481 547.154 186.562C547.849 187.839 549.185 189.067 554.156 189.166H560.355C568.639 189.166 569.868 188.183 569.975 180.715C569.975 180.518 569.975 180.371 569.975 180.125V87.2611Z" fill="#9BD9D9"/>
+<path d="M324.028 216.73L322.638 211.571C321.409 207.443 319.912 206.608 318.523 206.313C317.401 206.117 315.904 206.215 313.98 206.608V206.461C311.041 207.296 307.781 207.984 304.253 208.475C300.726 209.016 297.359 209.261 294.206 209.261C289.61 209.261 285.655 208.672 282.395 207.443C279.135 206.215 276.463 204.594 274.378 202.432C272.294 200.319 270.744 197.764 269.782 194.865C268.82 191.966 268.339 188.772 268.339 185.333V98.7091H302.116C302.169 98.7582 302.223 98.8565 302.223 98.8565C303.666 98.8565 304.841 98.8074 305.857 98.7091C310.827 98.2669 311.629 96.5963 311.629 90.3563V84.8532C311.522 80.4803 310.293 79.301 308.957 78.6623C307.834 78.1218 306.177 77.9253 303.879 77.8761H268.286V11.8396H268.232C268.179 3.78152 267.11 2.79883 258.613 2.79883H252.413C247.389 2.8971 246.053 4.07632 245.358 5.40295C244.824 6.3365 244.61 7.71226 244.557 9.4811C244.557 9.77591 244.503 9.97245 244.503 10.2673C244.503 12.5274 244.557 14.4928 244.557 16.4582V77.9253H224.729V77.9744C217.675 78.1218 216.713 79.3993 216.713 86.4255V91.8794C216.82 96.2524 218.049 97.4807 219.385 98.0704C220.08 98.4143 221.095 98.5617 222.217 98.7091C222.912 98.7582 223.607 98.8565 224.515 98.8565C227.882 98.8565 230.715 98.8074 233.547 98.7582L235.258 98.7091H235.311H244.557V189.116C244.557 195.356 245.465 201.056 247.282 206.166C249.1 211.276 251.932 215.649 255.62 219.236C259.361 222.823 264.01 225.574 269.622 227.539C275.234 229.456 281.861 230.438 289.556 230.438C292.763 230.389 295.649 230.193 298.321 229.996C298.321 229.996 298.428 229.996 298.588 229.947C300.726 229.75 302.704 229.505 304.521 229.21C306.498 228.866 308.208 228.522 309.705 228.129C312.003 227.687 314.515 227.195 316.973 226.606C316.973 226.606 317.027 226.655 317.08 226.704L320.607 225.869C321.142 225.672 321.569 225.525 321.997 225.328C325.364 223.903 325.471 221.938 324.028 216.73Z" fill="#9BD9D9"/>
+<path d="M569.655 25.3529C569.655 25.1072 569.655 24.9598 569.655 24.7633C569.548 17.2949 568.319 16.263 560.035 16.3122H553.836C548.866 16.4104 547.53 17.5897 546.835 18.9163C546.247 19.9972 545.98 21.5204 545.98 23.6823C545.98 23.7315 545.98 23.7806 545.98 23.8297C545.98 24.3211 545.98 24.7141 545.98 25.2055V34.6393C545.98 35.1306 545.98 35.5237 545.98 36.015C545.98 36.0642 545.98 36.1133 545.98 36.1624C546.033 38.3244 546.247 39.8475 546.835 40.9285C547.53 42.206 548.866 43.4343 553.836 43.5326H560.035C568.319 43.5326 569.548 42.5499 569.655 35.0815C569.655 34.885 569.655 34.7376 569.655 34.4919V25.3529Z" fill="#9BD9D9"/>
+<path d="M750.029 99.8398C750.029 99.8398 754.789 101.314 750.029 99.8398Z" fill="#9BD9D9"/>
+<path d="M730.572 163.86C728.006 158.701 724.693 154.623 720.524 151.576C716.409 148.579 711.866 146.27 707.003 144.796C702.086 143.273 696.902 141.897 691.451 140.669C687.443 139.833 683.595 138.9 679.854 137.868C676.113 136.836 672.799 135.509 669.967 133.888C667.134 132.267 664.836 130.154 663.179 127.55C661.469 124.946 660.614 121.604 660.614 117.526C660.614 114.185 661.202 111.139 662.324 108.387C663.446 105.636 665.264 103.228 667.775 101.214C670.287 99.1992 673.44 97.5777 677.342 96.4476C681.243 95.2684 685.893 94.7279 691.398 94.7279C697.864 94.8262 704.171 95.6615 710.317 97.1355C716.195 98.6095 714.218 97.5777 719.455 99.6414V99.6905L719.99 99.887C724.746 101.41 726.831 101.508 728.487 99.3465C729.236 98.3639 729.877 96.9881 730.679 95.0227L732.549 90.2076C733.992 86.2768 733.244 84.9011 732.335 83.9675C731.534 83.1813 730.198 82.4935 728.274 81.8547L726.884 81.4125C724.479 80.6264 722.288 79.9385 720.15 79.2997L718.6 78.8084C718.494 78.7593 718.387 78.8084 718.333 78.8084C715.608 77.9731 712.775 77.187 709.782 76.4991C702.888 74.9268 695.406 74.1406 687.336 74.1406C680.388 74.1406 673.815 75.0742 667.562 76.9413C661.362 78.8084 655.857 81.6582 651.154 85.3924C646.451 89.1757 642.71 93.8926 639.985 99.6414C637.259 105.39 635.87 112.171 635.87 119.983C635.87 127.599 637.206 133.839 639.878 138.654C642.55 143.518 646.024 147.351 650.353 150.151C654.682 152.952 659.438 155.163 664.676 156.735C669.967 158.308 675.151 159.634 680.228 160.814C684.129 161.747 687.87 162.779 691.451 163.958C695.032 165.088 698.131 166.562 700.857 168.331C703.583 170.1 705.72 172.36 707.324 175.063C708.927 177.765 709.729 181.204 709.729 185.381C709.729 189.459 708.874 192.997 707.11 196.092C705.346 199.188 702.834 201.743 699.574 203.757C696.314 205.772 692.413 207.344 687.924 208.376C683.434 209.408 678.357 209.948 672.746 209.948C665.638 209.948 659.118 209.211 653.185 207.737C649.284 206.754 645.382 205.526 641.481 204.101C641.481 204.052 641.481 204.003 641.481 204.003L640.947 203.757C639.13 202.971 637.74 202.48 636.564 202.283C636.137 202.185 635.709 202.185 635.282 202.185C633.197 202.283 631.915 203.855 630.044 207.491L627.693 212.012C625.876 215.648 626.41 217.072 627.212 218.055C627.906 218.89 629.082 219.677 630.953 220.512L632.235 221.052C634.48 222.035 636.511 222.919 638.542 223.755L639.985 224.344C640.092 224.394 640.198 224.344 640.252 224.394C640.573 224.492 640.84 224.639 641.16 224.787C643.512 225.72 646.344 226.654 649.658 227.538C652.971 228.423 656.819 229.16 661.148 229.749C665.477 230.29 670.287 230.584 675.632 230.584C684.29 230.584 692.253 229.553 699.521 227.538C706.789 225.524 712.989 222.526 718.226 218.596C723.41 214.665 727.472 209.85 730.305 204.052C733.191 198.254 734.58 191.621 734.58 184.103C734.366 175.75 733.084 169.019 730.572 163.86Z" fill="#9BD9D9"/>
+<path d="M877.011 114.141C876.369 110.112 875.247 106.427 873.697 103.135C869.582 94.3888 862.902 87.3135 853.549 82.0069C844.196 76.7004 832.171 73.998 817.474 73.998C813.413 73.998 809.297 74.1946 805.236 74.6368C801.655 74.9807 798.235 75.5212 794.975 76.16V76.1108C794.868 76.16 794.761 76.16 794.6 76.2091C794.28 76.2582 793.906 76.3074 793.585 76.4056C789.897 77.1918 786.423 78.1253 783.11 79.2063C782.148 79.5011 781.293 79.845 780.384 80.189C778.567 80.7295 777.071 81.1717 776.002 81.5156L775.468 81.663C775.2 81.7613 774.987 81.8104 774.773 81.9087L774.238 82.0561C768.52 83.9723 768.092 85.4955 770.284 91.6373L771.994 96.5999C772.849 98.8109 773.65 99.9901 774.506 100.629C775.147 101.12 775.788 101.317 776.376 101.415C777.498 101.562 778.941 101.366 780.865 100.825C780.972 100.776 781.026 100.776 781.079 100.776L782.469 100.334C784.125 99.8427 785.675 99.3514 787.172 98.86C789.416 98.2213 791.608 97.6317 793.852 97.1403C800.319 95.7154 807.267 95.0276 814.588 95.0276C824.475 95.0276 832.332 96.649 838.157 99.941C843.982 103.233 848.204 107.36 850.877 112.372C852.106 114.78 852.961 117.531 853.495 120.676C854.03 123.82 854.297 127.407 854.297 131.485V141.803H853.656C848.632 139.936 842.914 138.364 836.5 137.136C830.034 135.907 823.086 135.219 815.497 135.121C807.534 135.121 800.265 136.202 793.692 138.413C787.118 140.624 781.453 143.72 776.75 147.798C772.047 151.876 768.413 156.839 765.794 162.636C763.175 168.483 761.893 175.117 761.893 182.487C761.893 190.004 763.069 196.736 765.42 202.681C767.772 208.626 771.032 213.638 775.307 217.765C779.529 221.892 784.606 224.988 790.485 227.15C796.364 229.312 802.831 230.344 809.885 230.344C815.069 230.344 819.986 229.754 824.582 228.624C829.178 227.494 833.401 225.922 837.302 224.005C841.203 222.089 844.624 219.878 847.563 217.421C850.556 214.965 852.961 212.508 854.938 210.002H855.58L856.809 217.913C856.862 220.222 857.076 222.04 857.664 223.465C858.305 224.939 859.428 225.922 861.245 226.462C862.367 226.757 863.703 226.953 865.413 226.953H870.971C872.682 226.904 873.857 226.757 874.819 226.462C876.316 226.02 876.904 225.332 877.278 224.595C877.812 223.612 878.026 222.236 878.026 220.32V127.358C878.026 122.543 877.705 118.121 877.011 114.141ZM854.297 191.036C853.175 192.166 851.411 193.788 849.06 195.9C846.655 197.964 843.769 200.077 840.348 202.14C836.928 204.204 833.026 206.022 828.697 207.545C824.315 209.068 819.612 209.805 814.535 209.805C810.687 209.805 807.053 209.265 803.632 208.184C800.212 207.103 797.273 205.432 794.814 203.172C792.356 200.912 790.378 198.062 788.935 194.623C787.492 191.184 786.798 187.154 786.798 182.585C786.798 173.495 789.63 166.764 795.349 162.391C801.014 158.018 808.923 155.807 818.971 155.807C826.186 155.905 832.813 156.544 838.798 157.674C844.784 158.804 849.968 160.032 854.35 161.261V191.036H854.297Z" fill="#9BD9D9"/>
+<path d="M594.398 220.513V214.814C594.291 210.195 593.008 208.967 591.565 208.328C590.39 207.788 588.733 207.542 586.381 207.542H584.725H482.807H481.204C478.853 207.591 477.196 207.788 476.02 208.328C474.63 208.967 473.294 210.195 473.188 214.814V220.513C473.188 228.129 474.256 229.259 482.38 229.358H483.021H584.511H585.152C593.329 229.259 594.398 228.129 594.398 220.513Z" fill="#9BD9D9"/>
+
+</g>
+</svg><span style="font-size:var(--fs-2xs);font-weight:500;color:var(--text3);letter-spacing:.06em;font-family:'Inter',sans-serif">IMAGE STUDIO</span></div>
   <div class="hdiv"></div>
   <div class="vtabs">
     <button class="vt on" id="vt-gen" onclick="setV('gen')">✦ Generate</button>
@@ -402,6 +423,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
     <span class="itool-tip">Upload Image</span>
   </button>
   <input type="file" id="img-upload" accept="image/*" style="display:none" onchange="insertImage(this)">
+  <input type="file" id="photo-replace-upload" accept="image/*" style="display:none" onchange="doPhotoReplace(this)">
   <div class="itool-sep"></div>
   <button class="itool" id="it-ai" onclick="setPanel('gen')">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -757,9 +779,20 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 // --------------------------------------------
 // API
 // --------------------------------------------
-const API_KEY_URL = 'https://login.intelisa.in/api/getAPIKeyForImageGeneration';
-const API_URL     = 'https://api.anthropic.com/v1/messages';
-const MODEL       = 'claude-sonnet-4-5-20250929';
+const API_KEY_URL = 'https://login.intelisa.in/api/getAPIKeyForImageGeneration'; // must now return the OpenRouter key (sk-or-v1-...)
+const API_URL     = 'https://openrouter.ai/api/v1/chat/completions';
+
+// ---- Models (OpenRouter ids, see https://openrouter.ai/models) ----------------
+// Generate: Sonnet 5.5 gives the best design quality for the price ($2 in / $10 out per million tokens).
+//   For maximum quality regardless of cost, use 'anthropic/claude-opus-5.5' ($4 / $20, about 2x the cost).
+const MODEL       = 'anthropic/claude-sonnet-5.5';
+// AI Edit: edits return small change lists, so the cheaper Haiku 4.5 ($1 / $5) handles them at half the price.
+// If Haiku's answer can't be used (unreadable, or matches nothing), the edit is retried once on MODEL automatically,
+// so quality never drops below Sonnet's. Set EDIT_MODEL = MODEL to always use Sonnet.
+const EDIT_MODEL  = 'anthropic/claude-haiku-4.5';
+// USD per million tokens [input, output], used for the console cost line when OpenRouter doesn't report a cost.
+const PRICES = { 'anthropic/claude-sonnet-5.5':[2,10], 'anthropic/claude-haiku-4.5':[1,5], 'anthropic/claude-opus-5.5':[4,20] };
+const REQUEST_TIMEOUT_MS = 180000;
 let cachedKey     = null;
 
 async function getKey() {
@@ -767,22 +800,52 @@ async function getKey() {
   const r = await fetch(API_KEY_URL);
   if (!r.ok) throw new Error('Key fetch failed: ' + r.status);
   const t = await r.text();
-  try { const d = JSON.parse(t); cachedKey = d.apiKey || d.api_key || d.key || d; }
+  try { const d = JSON.parse(t); cachedKey = d.openrouterKey || d.apiKey || d.api_key || d.key || d; }
   catch { cachedKey = t.trim(); }
+  cachedKey = String(cachedKey).trim();
+  if (!cachedKey.startsWith('sk-or-')) console.warn('[AI] The key from the key endpoint does not look like an OpenRouter key (sk-or-...).');
   return cachedKey;
 }
-async function claude(system, user) {
+class ModelUnavailableError extends Error {}
+// max_tokens is only a ceiling: you pay for tokens actually produced, so a high cap costs nothing extra.
+async function claude(system, user, opts = {}) {
   const key = await getKey();
-  const r = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': String(key).trim(),
-      'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-    body: JSON.stringify({ model: MODEL, max_tokens: 8000, system, messages: [{ role: 'user', content: user }] })
-  });
+  const model = opts.model || MODEL;
+  const ctl = new AbortController(); const tm = setTimeout(() => ctl.abort(), REQUEST_TIMEOUT_MS);
+  let r;
+  try {
+    r = await fetch(API_URL, {
+      method: 'POST', signal: ctl.signal,
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key,
+        'HTTP-Referer': location.origin && location.origin !== 'null' ? location.origin : 'https://intelisa.in',
+        'X-Title': 'Intelisa Image Studio' },
+      body: JSON.stringify({
+        model, max_tokens: opts.maxTokens || 16000,
+        messages: [{ role: 'system', content: system }, { role: 'user', content: user }]
+      })
+    });
+  } catch (e) { throw new Error(e.name === 'AbortError' ? 'The AI took too long to respond. Please try again.' : 'Network error: ' + e.message); }
+  finally { clearTimeout(tm); }
   const raw = await r.text();
   let d; try { d = JSON.parse(raw); } catch { console.error('raw:', raw.slice(0,300)); throw new Error('Non-JSON (HTTP '+r.status+')'); }
-  if (d.error) throw new Error(d.error.message || JSON.stringify(d.error));
-  return d.content?.[0]?.text || '';
+  if (d.error) {
+    const msg = d.error.message || JSON.stringify(d.error);
+    const code = Number(d.error.code) || r.status;
+    if (code === 401) throw new Error('OpenRouter rejected the API key. Check the key returned by the key endpoint.');
+    if (code === 402) throw new Error('OpenRouter credits are used up. Add credits in OpenRouter → Settings → Credits.');
+    if (code === 404 || /model/i.test(msg) && code === 400) throw new ModelUnavailableError(msg);
+    throw new Error(msg);
+  }
+  const c = d.choices?.[0];
+  if (!c) throw new Error('Empty response from the AI. Please try again.');
+  if (d.usage) {
+    const [pi, po] = PRICES[model] || [0,0];
+    const inT = d.usage.prompt_tokens || 0, outT = d.usage.completion_tokens || 0;
+    const usd = typeof d.usage.cost === 'number' ? d.usage.cost : (inT*pi + outT*po) / 1e6;
+    console.log(`[AI cost] ${opts.label||'call'} · ${model} · in ${inT} / out ${outT} tokens · ≈ $${usd.toFixed(4)}`);
+  }
+  if (c.finish_reason === 'length') throw new Error('The design was too large and the response got cut off. Try a simpler prompt.');
+  return c.message?.content || '';
 }
 
 // --------------------------------------------
@@ -1008,21 +1071,17 @@ async function doGen(p) {
   $('stage').style.display='none';
   const pbar=$('gen-progress-bar'), ppct=$('gen-progress-pct');
   const progIv = startFakeProgress(pbar, ppct);
-  const sys=`You are a senior brand/graphic designer producing a polished, professional SVG design — not generic AI clip-art. Output ONLY raw SVG. Start with <svg, end with </svg>. No markdown fences, no commentary before or after.
+  const sys=`Output ONLY raw SVG. Start with <svg, end with </svg>. No markdown fences.
 viewBox="0 0 ${W} ${H}" width="${W}" height="${H}".
-
-Follow these design rules strictly:
-- COLOR: use one base color plus at most 2 accent colors (or a single tasteful gradient). No rainbow palettes, no neon-on-neon, no clashing hues fighting for attention.
-- TYPOGRAPHY: one strong display font for the headline, one clean font for supporting text. Apply exactly ONE text treatment per element — a flat fill, or a single soft shadow, or a single thin outline. Never stack multiple outlines + shadows + glows on the same text; that reads as amateur, not premium.
-- DECORATION: skip scattered confetti, sparkles, dingbats, or stock "party clipart" shapes littering the background. If a handful of accent shapes genuinely fit the theme, use 2–4 of them, consistently sized and styled, placed with intent — never dozens of random polygons/dots/triangles.
-- COMPOSITION: one clear focal point, generous margins, aligned grid, real visual hierarchy (headline > supporting text > fine print). Nothing floating at random angles for "energy."
-- BACKGROUND: a single flat color or one smooth gradient reads more premium than a busy pattern layered under a gradient layered under shapes.
-- Give all major elements meaningful id attributes (e.g. id="tpl-headline", id="tpl-sub", id="tpl-cta").
-- Fill the canvas edge-to-edge, but keep all content inside sensible margins — nothing should crowd or bleed past the edges awkwardly.
-
-When in doubt: fewer elements, better chosen, more restraint. That is what makes a design look professional rather than AI-generated.`;
+Use rich layered design: gradients, patterns, decorative elements. Give all major elements meaningful id attributes.
+Fill the entire canvas. Use a beautiful harmonious color palette. Make it visually stunning.
+Make all text clearly legible: strong contrast against its background, a clear size hierarchy (headline, subheads, body),
+and comfortable margins so nothing touches the canvas edges. Keep text as real <text> elements, never paths.
+Write compact markup (this does not change how it looks): no comments, no indentation or blank lines,
+round coordinates to at most 1 decimal place, define each gradient/pattern once in <defs> and reuse it,
+and use <use> for repeated identical elements.`;
   try {
-    let code = await claude(sys, 'Create a high-quality SVG design: ' + p);
+    let code = await claude(sys, 'Create a high-quality SVG design: ' + p, {label:'generate'});
     finishFakeProgress(progIv, pbar, ppct);
     code = code.replace(/```svg|```xml|```/g,'').trim();
     if(!code.startsWith('<svg')){ const i=code.indexOf('<svg'); if(i>=0)code=code.slice(i); else throw new Error('No SVG found in response'); }
@@ -1051,6 +1110,125 @@ function renderSVG(code) {
 // --------------------------------------------
 // AI EDIT
 // --------------------------------------------
+// Cost strategy: instead of sending the SVG and getting the WHOLE SVG back (output tokens cost 5x input),
+// the model returns a short JSON list of changes, which we apply locally. Embedded photos (base64 data URIs,
+// often 100k+ tokens each) are swapped for short placeholders before sending and restored afterwards.
+const AI_EDIT_SYS = `You edit an SVG design. Reply with ONLY a JSON array of change operations, no prose, no markdown.
+Every element you may need has an id. Operations:
+{"op":"set","id":"<id>","attrs":{"<attr>":"<value>"}}   change/add attributes (value null removes the attribute)
+{"op":"text","id":"<id>","text":"<new text>"}           replace a text element's content (use \\n for line breaks)
+{"op":"remove","id":"<id>"}                              delete an element
+{"op":"add","parent":"<id or root>","before":"<optional sibling id>","svg":"<svg fragment>"}  insert new elements
+{"op":"replace","id":"<id>","svg":"<svg fragment>"}      swap an element for new markup
+Use the fewest operations that achieve the request. Keep the same canvas size.
+Background color usually lives on #bg-rect; gradient colors live on <stop> elements.
+Only if the request needs most of the design rebuilt, reply instead with the complete new SVG starting with <svg.
+Image hrefs like "embedded:N" are placeholders for photos: keep them exactly as they are.`;
+
+const EDIT_ID_TAGS = 'text,tspan,rect,circle,ellipse,path,polygon,polyline,line,image,g,use,stop,linearGradient,radialGradient,pattern';
+const HREF_ATTRS = ['href','xlink:href'];
+
+// Gives every editable element an id the model can reference, then builds a slim copy for the request.
+function buildEditPayload(s) {
+  let n = 0;
+  s.querySelectorAll(EDIT_ID_TAGS).forEach(el => {
+    if(el.id) return;
+    do { n++; } while(s.querySelector('#ae'+n)); // short ids keep the request small
+    el.setAttribute('id', 'ae'+n);
+  });
+  const clone = s.cloneNode(true);
+  const images = []; // index -> original href
+  clone.querySelectorAll('image').forEach(img => {
+    const href = img.getAttribute('href') || img.getAttributeNS('http://www.w3.org/1999/xlink','href') || '';
+    if(href.startsWith('data:')) {
+      const token = 'embedded:' + images.length;
+      images.push(href);
+      img.removeAttribute('href');
+      img.setAttributeNS('http://www.w3.org/1999/xlink','xlink:href', token);
+    }
+  });
+  clone.querySelectorAll('[data-s],[data-ms],[data-locked]').forEach(el => {
+    el.removeAttribute('data-s'); el.removeAttribute('data-ms'); el.removeAttribute('data-locked');
+  });
+  clone.removeAttribute('style');
+  // drop formatting whitespace between tags: it costs tokens and carries no meaning
+  const markup = clone.outerHTML.replace(/>\s+</g, '><');
+  return { markup, images };
+}
+function restoreEmbedded(str, images) {
+  return str.replace(/embedded:(\d+)/g, (m, i) => images[+i] ?? m);
+}
+function parseFragment(markup, images) {
+  const doc = new DOMParser().parseFromString(
+    `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">${restoreEmbedded(markup, images)}</svg>`,
+    'image/svg+xml');
+  if(doc.querySelector('parsererror')) throw new Error('Bad SVG fragment');
+  return [...doc.documentElement.childNodes].map(nd => document.importNode(nd, true));
+}
+function setAttrSafe(el, k, v) {
+  if(v === null || v === undefined) {
+    if(k === 'xlink:href') el.removeAttributeNS('http://www.w3.org/1999/xlink','href'); else el.removeAttribute(k);
+    return;
+  }
+  if(k === 'xlink:href') el.setAttributeNS('http://www.w3.org/1999/xlink','xlink:href', String(v));
+  else el.setAttribute(k, String(v));
+}
+// Applies the model's change list to the live SVG. Returns {applied, skipped}.
+function applyEditOps(s, ops, images) {
+  const byId = id => id && s.querySelector('#'+CSS.escape(id));
+  let applied = 0, skipped = 0;
+  for(const op of ops) {
+    try {
+      if(op.op === 'set') {
+        const el = byId(op.id); if(!el) { skipped++; continue; }
+        Object.entries(op.attrs || {}).forEach(([k,v]) =>
+          setAttrSafe(el, k, typeof v === 'string' && HREF_ATTRS.includes(k) ? restoreEmbedded(v, images) : v));
+        xState.delete(el); // attributes changed underneath any cached drag/resize state
+        applied++;
+      } else if(op.op === 'text') {
+        const el = byId(op.id); if(!el) { skipped++; continue; }
+        if(el.tagName.toLowerCase() === 'text') writeTextLines(el, String(op.text ?? ''));
+        else el.textContent = String(op.text ?? '');
+        applied++;
+      } else if(op.op === 'remove') {
+        const el = byId(op.id); if(!el || el === s) { skipped++; continue; }
+        el.remove(); applied++;
+      } else if(op.op === 'add') {
+        const parent = (!op.parent || op.parent === 'root') ? s : byId(op.parent);
+        if(!parent) { skipped++; continue; }
+        const before = byId(op.before);
+        parseFragment(op.svg || '', images).forEach(nd =>
+          before && before.parentNode === parent ? parent.insertBefore(nd, before) : parent.appendChild(nd));
+        applied++;
+      } else if(op.op === 'replace') {
+        const el = byId(op.id); if(!el || el === s) { skipped++; continue; }
+        el.replaceWith(...parseFragment(op.svg || '', images));
+        applied++;
+      } else skipped++;
+    } catch(err) { console.warn('AI edit op failed', op, err); skipped++; }
+  }
+  return { applied, skipped };
+}
+
+class EditUnusableError extends Error {}
+// Applies the model's reply: either a JSON change list (normal) or a full SVG (large redesigns).
+function applyAiEditResponse(out, images) {
+  out = out.replace(/```(json|svg|xml)?/g,'').trim();
+  const svgAt = out.indexOf('<svg');
+  if(svgAt === 0 || (svgAt > 0 && !out.trimStart().startsWith('['))) {
+    push(); renderSVG(restoreEmbedded(out.slice(svgAt), images));
+    return;
+  }
+  const start = out.indexOf('['), end = out.lastIndexOf(']');
+  if(start < 0 || end < start) throw new EditUnusableError('Could not read the AI response — try rephrasing the edit');
+  let ops; try { ops = JSON.parse(out.slice(start, end+1)); } catch { throw new EditUnusableError('Could not read the AI response — try rephrasing the edit'); }
+  if(!Array.isArray(ops) || !ops.length) throw new EditUnusableError('The AI made no changes — try being more specific');
+  push();
+  const { applied, skipped } = applyEditOps(svg(), ops, images);
+  if(!applied) { hist.pop(); throw new EditUnusableError('No matching elements found — try naming the element differently'); }
+  if(skipped) console.warn(`[AI edit] ${skipped} change(s) skipped`);
+}
+
 async function aiEdit() {
   const ep=$('ep').value.trim();
   if(!ep) { toast('Describe what to edit','err'); return; }
@@ -1072,11 +1250,26 @@ async function aiEdit() {
   const pct=$('ae-progress-pct');
   const progIv = startFakeProgress(bar, pct, {duration:7000});
   try {
-    let code=await claude('Output ONLY the complete modified SVG, no markdown. Preserve all structure and IDs not mentioned. Keep same viewBox dimensions. Apply only the requested change — do not add extra decoration, extra text effects, or extra shapes beyond what was asked. Keep the design restrained and professional: one text treatment per element (not stacked shadows/outlines/glows), a limited color palette, and no scattered confetti-style clutter unless explicitly requested.',`Edit: ${ep}\n\nSVG:\n${s.outerHTML}`);
+    if(ite.on) commitIte();
+    const { markup, images } = buildEditPayload(s);
+    const request = `Edit request: ${ep}\n\nSVG:\n${markup}`;
+    // Try the cheaper edit model first; if its answer is unusable, retry once on the main model.
+    const models = EDIT_MODEL === MODEL ? [MODEL] : [EDIT_MODEL, MODEL];
+    let lastErr;
+    for (const model of models) {
+      try {
+        const out = await claude(AI_EDIT_SYS, request, {model, label: model === EDIT_MODEL ? 'ai-edit' : 'ai-edit retry'});
+        applyAiEditResponse(out, images);
+        lastErr = null; break;
+      } catch (e) {
+        lastErr = e;
+        const retryable = e instanceof EditUnusableError || e instanceof ModelUnavailableError;
+        if (!retryable || model === models[models.length-1]) break;
+        console.warn(`[AI edit] ${model} answer not usable (${e.message}); retrying with ${MODEL}`);
+      }
+    }
+    if (lastErr) throw lastErr;
     finishFakeProgress(progIv, bar, pct);
-    code=code.replace(/```svg|```xml|```/g,'').trim();
-    if(!code.startsWith('<svg')){ const i=code.indexOf('<svg'); if(i>=0)code=code.slice(i); else throw new Error('No SVG'); }
-    push(); renderSVG(code);
     if(view==='edit')attachH();
     buildLayers(); clearSel();
     addHist('AI: '+ep.slice(0,32)+(ep.length>32?'':''));
@@ -1093,139 +1286,6 @@ async function aiEdit() {
 // TEMPLATES
 // --------------------------------------------
 const TEMPLATES = [
-  { name:"Today's Specials Board", orient:'landscape', w:1920, h:1080, svg:(W,H)=>{
-    const cream='#f3ead9', cream2='#ede0c8', dark='#2c1608', darkText='#241206', accent='#c17a35', accent2='#a86020', paperBorder='#c9955c';
-
-    // ---- corner picture-frame brackets ----
-    const bracket=(cx,cy,flipX,flipY)=>{
-      const sx=flipX?-1:1, sy=flipY?-1:1, bw=W*0.11, bh=H*0.012, r=W*0.012;
-      return `
-      <g>
-        <circle cx="${cx}" cy="${cy}" r="${r}" fill="${accent}"/>
-        <rect x="${cx+(flipX?-bw:0)}" y="${cy-bh/2}" width="${bw}" height="${bh}" rx="${bh/2}" fill="${accent}"/>
-        <rect x="${cx-bh/2}" y="${cy+(flipY?-bw:0)}" width="${bh}" height="${bw}" rx="${bh/2}" fill="${accent}"/>
-        <path d="M${cx+sx*W*0.03} ${cy+sy*H*0.075} Q${cx+sx*W*0.03} ${cy+sy*H*0.04} ${cx+sx*W*0.058} ${cy+sy*H*0.04}" fill="none" stroke="${accent}" stroke-width="${H*0.006}" opacity="0.75"/>
-      </g>`;
-    };
-
-    // ---- decorative flourish icon (replaces the crude circle+bars icon) ----
-    const flourishIcon=(cx,cy,s)=>`
-      <g stroke="${accent}" fill="none" stroke-width="${s*0.045}" stroke-linecap="round">
-        <circle cx="${cx}" cy="${cy}" r="${s*0.62}" stroke-width="${s*0.03}" opacity="0.55"/>
-        <path d="M${cx-s*0.32} ${cy} C ${cx-s*0.16} ${cy-s*0.28} ${cx-s*0.05} ${cy-s*0.05} ${cx} ${cy}
-                 C ${cx+s*0.05} ${cy+s*0.05} ${cx+s*0.16} ${cy+s*0.28} ${cx+s*0.32} ${cy}"/>
-        <circle cx="${cx-s*0.32}" cy="${cy}" r="${s*0.045}" fill="${accent}" stroke="none"/>
-        <circle cx="${cx+s*0.32}" cy="${cy}" r="${s*0.045}" fill="${accent}" stroke="none"/>
-        <circle cx="${cx}" cy="${cy}" r="${s*0.05}" fill="${accent}" stroke="none"/>
-      </g>`;
-
-    // ---- crafted coffee cup icon (replaces the flat grey mug) ----
-    const coffeeIcon=(cx,cy,s)=>`
-      <g>
-        <ellipse cx="${cx}" cy="${cy+s*0.66}" rx="${s*0.66}" ry="${s*0.1}" fill="${accent}" opacity="0.18"/>
-        <ellipse cx="${cx}" cy="${cy+s*0.6}" rx="${s*0.58}" ry="${s*0.09}" fill="#fffaf1" stroke="${accent2}" stroke-width="${s*0.02}"/>
-        <path d="M${cx-s*0.36} ${cy-s*0.14} L${cx-s*0.31} ${cy+s*0.36} Q${cx} ${cy+s*0.52} ${cx+s*0.31} ${cy+s*0.36} L${cx+s*0.36} ${cy-s*0.14} Z"
-              fill="#fffaf1" stroke="${accent2}" stroke-width="${s*0.025}"/>
-        <path d="M${cx+s*0.36} ${cy-s*0.02} C ${cx+s*0.66} ${cy-s*0.06} ${cx+s*0.66} ${cy+s*0.3} ${cx+s*0.35} ${cy+s*0.24}"
-              fill="none" stroke="${accent2}" stroke-width="${s*0.09}" stroke-linecap="round"/>
-        <ellipse cx="${cx}" cy="${cy-s*0.14}" rx="${s*0.34}" ry="${s*0.075}" fill="#7a4a25"/>
-        <ellipse cx="${cx-s*0.08}" cy="${cy-s*0.16}" rx="${s*0.11}" ry="${s*0.03}" fill="#c98d52" opacity="0.7"/>
-        <g stroke="${accent}" stroke-width="${s*0.035}" fill="none" stroke-linecap="round" opacity="0.55">
-          <path d="M${cx-s*0.1} ${cy-s*0.26} C ${cx-s*0.2} ${cy-s*0.42} ${cx} ${cy-s*0.48} ${cx-s*0.08} ${cy-s*0.66}"/>
-          <path d="M${cx+s*0.12} ${cy-s*0.26} C ${cx+s*0.02} ${cy-s*0.42} ${cx+s*0.22} ${cy-s*0.48} ${cx+s*0.14} ${cy-s*0.66}"/>
-        </g>
-      </g>`;
-
-    // ---- menu column builder ----
-    const colW=W*0.216, colGap=W*0.024;
-    const col1x=W*0.161, col2x=col1x+colW+colGap, col3x=col2x+colW+colGap;
-    const colTopY=H*0.315, colBottomY=H*0.895, colH=colBottomY-colTopY;
-    const headerH=H*0.058;
-
-    const column=(x, title, items)=>{
-      const padX=colW*0.07;
-      const baseFS=H*0.026, minFS=H*0.0155, priceReserve=W*0.045, charW=0.6;
-      const maxNameW=colW-2*padX-priceReserve;
-      let rows='';
-      const rowGap=(colH-headerH-H*0.06-H*0.08)/Math.max(items.length,1);
-      items.forEach((it,i)=>{
-        const yy=colTopY+headerH+H*0.075+i*rowGap;
-        const plainLen = it[0].replace(/&amp;/g,'&').length;
-        let nameFS = baseFS;
-        if(plainLen*charW*baseFS > maxNameW) nameFS = Math.max(minFS, maxNameW/(plainLen*charW));
-        rows+=`
-        <text x="${x+padX}" y="${yy}" font-family="Playfair Display, serif" font-size="${nameFS}" font-weight="700" fill="${darkText}">${it[0]}</text>
-        <text x="${x+colW-padX}" y="${yy}" font-family="Playfair Display, serif" font-size="${baseFS}" font-weight="700" fill="${accent2}" text-anchor="end">${it[2]}</text>
-        <text x="${x+padX}" y="${yy+H*0.028}" font-family="Playfair Display, serif" font-style="italic" font-size="${H*0.017}" fill="#6b5c48">${it[1]}</text>
-        ${i<items.length-1?`<line x1="${x+padX}" y1="${yy+H*0.045}" x2="${x+colW-padX}" y2="${yy+H*0.045}" stroke="${accent}" stroke-width="1" stroke-dasharray="1 5" opacity="0.5"/>`:''}`;
-      });
-      return `
-        <rect x="${x}" y="${colTopY}" width="${colW}" height="${colH}" fill="#f8f1e2" opacity="0.65"/>
-        <rect x="${x+colW*0.05}" y="${colTopY+H*0.012}" width="${colW*0.9}" height="${headerH}" rx="${H*0.008}" fill="${accent2}"/>
-        <text x="${x+colW/2}" y="${colTopY+H*0.012+headerH*0.66}" font-family="Playfair Display, serif" font-size="${H*0.032}" font-weight="700" fill="#fff8ec" text-anchor="middle">${title}</text>
-        ${rows}`;
-    };
-
-    const appetisers=[
-      ["Roasted Butternut Soup","with sage croutons &amp; truffle oil","$12"],
-      ["Seared Scallops","cauliflower purée &amp; crispy pancetta","$18"],
-      ["Burrata &amp; Tomatoes","basil pesto, aged balsamic","$14"],
-      ["Duck Confit Rolls","plum sauce &amp; pickled vegetables","$16"],
-      ["Grilled Octopus","chickpea purée, paprika oil","$19"]
-    ];
-    const mains=[
-      ["Pan-Seared Salmon","lemon beurre blanc, asparagus","$32"],
-      ["Braised Short Rib","red wine jus, horseradish mash","$38"],
-      ["Wild Mushroom Risotto","parmesan, white truffle essence","$28"],
-      ["Herb-Crusted Lamb Rack","rosemary jus, roasted vegetables","$42"],
-      ["Seared Duck Breast","cherry gastrique, duck fat potatoes","$36"]
-    ];
-    const desserts=[
-      ["Chocolate Fondant","salted caramel, vanilla ice cream","$14"],
-      ["Lemon Tart","Italian meringue, berry coulis","$12"],
-      ["Tiramisu","espresso-soaked, mascarpone cream","$11"]
-    ];
-
-    return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="specialsBg" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#3d2213"/>
-          <stop offset="55%" stop-color="#241207"/>
-          <stop offset="100%" stop-color="#180b04"/>
-        </linearGradient>
-        <linearGradient id="specialsCard" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="${cream}"/>
-          <stop offset="100%" stop-color="${cream2}"/>
-        </linearGradient>
-      </defs>
-      <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="url(#specialsBg)"/>
-
-      ${bracket(W*0.03,H*0.05,false,false)}
-      ${bracket(W*0.97,H*0.05,true,false)}
-      ${bracket(W*0.03,H*0.95,false,true)}
-      ${bracket(W*0.97,H*0.95,true,true)}
-
-      <!-- paper card -->
-      <rect x="${W*0.105}" y="${H*0.075}" width="${W*0.79}" height="${H*0.865}" rx="${H*0.012}" fill="url(#specialsCard)" stroke="${accent}" stroke-width="2"/>
-      <rect x="${W*0.115}" y="${H*0.085}" width="${W*0.77}" height="${H*0.845}" rx="${H*0.008}" fill="none" stroke="${accent}" stroke-width="1" opacity="0.5"/>
-
-      <!-- header band -->
-      <rect x="${W*0.15}" y="${H*0.135}" width="${W*0.7}" height="${H*0.15}" fill="#ede0c8" opacity="0.7"/>
-      <text id="tpl-headline" x="${W*0.5}" y="${H*0.225}" font-family="Playfair Display, serif" font-size="${H*0.09}" font-weight="700" fill="${dark}" text-anchor="middle">Today's Specials</text>
-      <text id="tpl-sub" x="${W*0.5}" y="${H*0.262}" font-family="Playfair Display, serif" font-style="italic" font-size="${H*0.028}" fill="${accent2}" text-anchor="middle">Crafted with passion, served with love</text>
-      <path d="M${W*0.44} ${H*0.272} Q${W*0.5} ${H*0.286} ${W*0.56} ${H*0.272}" fill="none" stroke="${accent}" stroke-width="1.5"/>
-      <circle cx="${W*0.44}" cy="${H*0.272}" r="3" fill="${accent}"/>
-      <circle cx="${W*0.56}" cy="${H*0.272}" r="3" fill="${accent}"/>
-
-      ${column(col1x,'Appetisers',appetisers)}
-      ${column(col2x,'Main Courses',mains)}
-      ${column(col3x,'Desserts',desserts)}
-
-      ${flourishIcon(col1x+colW/2, colBottomY-H*0.05, H*0.045)}
-      ${coffeeIcon(col2x+colW/2, colBottomY-H*0.09, H*0.075)}
-      <text x="${col2x+colW/2}" y="${colBottomY+H*0.005}" font-family="Playfair Display, serif" font-style="italic" font-size="${H*0.017}" fill="#6b5c48" text-anchor="middle">Freshly Brewed</text>
-    </svg>`;
-  } },
   { name:'Borcelle Restaurant Menu', orient:'landscape', w:1920, h:1280, svg:(W,H)=>{
     const x1=W*0.0667, x2=W*0.524, col1W=W*0.4313, col2W=W*0.4354;
     const y1=H*0.0641, row1H=H*0.4609, y2=H*0.5578, row2H=H*0.3781;
@@ -1342,79 +1402,7 @@ const TEMPLATES = [
       ${recSVG}
     </svg>`;
   } },
-  // -- LANDSCAPE (10) --
-  { name:'Sale Banner', orient:'landscape', w:1200, h:630, svg: (W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-    <defs><linearGradient id="tplgL1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff4d6d"/><stop offset="100%" stop-color="#c9184a"/></linearGradient></defs>
-    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="url(#tplgL1)"/>
-    <circle cx="${W*0.85}" cy="${H*0.15}" r="${H*0.3}" fill="#ffffff" opacity="0.08"/>
-    <circle cx="${W*0.1}" cy="${H*0.9}" r="${H*0.22}" fill="#ffffff" opacity="0.07"/>
-    <text id="tpl-eyebrow" x="${W/2}" y="${H*0.28}" font-family="Poppins, sans-serif" font-size="${H*0.05}" font-weight="700" fill="#ffe5ea" text-anchor="middle" letter-spacing="4">LIMITED TIME OFFER</text>
-    <text id="tpl-headline" x="${W/2}" y="${H*0.52}" font-family="Syne, sans-serif" font-size="${H*0.22}" font-weight="800" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">50% OFF</text>
-    <text id="tpl-sub" x="${W/2}" y="${H*0.72}" font-family="Inter, sans-serif" font-size="${H*0.06}" font-weight="600" fill="#ffffff" text-anchor="middle">Everything must go  this weekend only</text>
-    <rect id="tpl-cta-bg" x="${W/2-W*0.12}" y="${H*0.82}" width="${W*0.24}" height="${H*0.1}" rx="${H*0.05}" fill="#ffffff"/>
-    <text id="tpl-cta" x="${W/2}" y="${H*0.87}" font-family="Inter, sans-serif" font-size="${H*0.04}" font-weight="700" fill="#c9184a" text-anchor="middle" dominant-baseline="middle">SHOP NOW</text>
-  </svg>` },
-  { name:'Case Study Title', orient:'landscape', w:1920, h:1080, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="#0f172a"/>
-    <line x1="${W*0.08}" y1="${H*0.5}" x2="${W*0.16}" y2="${H*0.5}" stroke="#38bdf8" stroke-width="4"/>
-    <text id="tpl-eyebrow" x="${W*0.08}" y="${H*0.38}" font-family="Inter, sans-serif" font-size="${H*0.03}" font-weight="600" fill="#38bdf8" letter-spacing="3">CASE STUDY</text>
-    <text id="tpl-headline" x="${W*0.08}" y="${H*0.62}" font-family="Syne, sans-serif" font-size="${H*0.11}" font-weight="800" fill="#f8fafc">Designing for\nClarity</text>
-    <text id="tpl-sub" x="${W*0.08}" y="${H*0.82}" font-family="Inter, sans-serif" font-size="${H*0.032}" fill="#94a3b8">How a simple layout doubled engagement</text>
-  </svg>` },
-  { name:'YouTube Thumbnail', orient:'landscape', w:1280, h:720, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-    <defs><linearGradient id="tplgL3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f9d423"/><stop offset="100%" stop-color="#ff4e50"/></linearGradient></defs>
-    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="url(#tplgL3)"/>
-    <circle cx="${W*0.88}" cy="${H*0.5}" r="${H*0.42}" fill="#1c1c2e" opacity="0.85"/>
-    <path d="M ${W*0.83} ${H*0.38} L ${W*0.83} ${H*0.62} L ${W*0.95} ${H*0.5} Z" fill="#ffffff"/>
-    <text id="tpl-eyebrow" x="${W*0.06}" y="${H*0.22}" font-family="Poppins, sans-serif" font-size="${H*0.045}" font-weight="700" fill="#1c1c2e" letter-spacing="3">NEW VIDEO</text>
-    <text id="tpl-headline" x="${W*0.06}" y="${H*0.55}" font-family="Syne, sans-serif" font-size="${H*0.14}" font-weight="800" fill="#1c1c2e">HOW TO WIN\nAT EVERYTHING</text>
-  </svg>` },
-  { name:'Digital Signage Promo', orient:'landscape', w:1920, h:1080, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-    <defs><linearGradient id="tplgL4" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1D9E75"/><stop offset="100%" stop-color="#66CBC9"/></linearGradient></defs>
-    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="url(#tplgL4)"/>
-    <circle cx="${W*0.12}" cy="${H*0.85}" r="${H*0.35}" fill="#ffffff" opacity="0.08"/>
-    <text id="tpl-eyebrow" x="${W*0.5}" y="${H*0.32}" font-family="Inter, sans-serif" font-size="${H*0.032}" font-weight="700" fill="#eafff8" text-anchor="middle" letter-spacing="4">NOW SHOWING</text>
-    <text id="tpl-headline" x="${W*0.5}" y="${H*0.52}" font-family="Syne, sans-serif" font-size="${H*0.1}" font-weight="800" fill="#ffffff" text-anchor="middle">Welcome to\nthe Lobby</text>
-    <text id="tpl-sub" x="${W*0.5}" y="${H*0.72}" font-family="Inter, sans-serif" font-size="${H*0.03}" fill="#eafff8" text-anchor="middle">Today's schedule and announcements below</text>
-  </svg>` },
-  { name:'Blog Header', orient:'landscape', w:1600, h:900, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-    <defs><linearGradient id="tplgL5" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#fbc2eb"/><stop offset="100%" stop-color="#a6c1ee"/></linearGradient></defs>
-    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="url(#tplgL5)"/>
-    <rect x="${W*0.06}" y="${H*0.62}" width="${W*0.5}" height="${H*0.28}" rx="12" fill="#ffffff" opacity="0.85"/>
-    <text id="tpl-eyebrow" x="${W*0.1}" y="${H*0.72}" font-family="Inter, sans-serif" font-size="${H*0.028}" font-weight="700" fill="#7c3aed" letter-spacing="3">DESIGN  JULY 2026</text>
-    <text id="tpl-headline" x="${W*0.1}" y="${H*0.85}" font-family="Syne, sans-serif" font-size="${H*0.06}" font-weight="800" fill="#1c1c2e">5 Layout Tricks Every Designer Should Know</text>
-  </svg>` },
-  { name:'LinkedIn Banner', orient:'landscape', w:1584, h:396, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="#0a2540"/>
-    <line x1="${W*0.62}" y1="0" x2="${W*0.62}" y2="${H}" stroke="#38bdf8" stroke-width="2" opacity="0.4"/>
-    <text id="tpl-eyebrow" x="${W*0.06}" y="${H*0.32}" font-family="Inter, sans-serif" font-size="${H*0.11}" font-weight="600" fill="#38bdf8" letter-spacing="3">AVAILABLE FOR WORK</text>
-    <text id="tpl-headline" x="${W*0.06}" y="${H*0.62}" font-family="Syne, sans-serif" font-size="${H*0.2}" font-weight="800" fill="#ffffff">Product Designer &amp; Brand Strategist</text>
-    <text id="tpl-sub" x="${W*0.06}" y="${H*0.85}" font-family="Inter, sans-serif" font-size="${H*0.09}" fill="#94a3b8">Helping startups build memorable products</text>
-  </svg>` },
-  { name:'Webinar Title Card', orient:'landscape', w:1920, h:1080, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-    <defs><linearGradient id="tplgL7" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4338ca"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient></defs>
-    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="url(#tplgL7)"/>
-    <circle cx="${W*0.9}" cy="${H*0.85}" r="${H*0.4}" fill="#ffffff" opacity="0.06"/>
-    <text id="tpl-eyebrow" x="${W*0.08}" y="${H*0.28}" font-family="Inter, sans-serif" font-size="${H*0.03}" font-weight="700" fill="#c4b5fd" letter-spacing="4">LIVE WEBINAR</text>
-    <text id="tpl-headline" x="${W*0.08}" y="${H*0.52}" font-family="Syne, sans-serif" font-size="${H*0.09}" font-weight="800" fill="#ffffff">Scaling Your Business\nwith AI Automation</text>
-    <text id="tpl-sub" x="${W*0.08}" y="${H*0.68}" font-family="Inter, sans-serif" font-size="${H*0.028}" fill="#e0d7fd">Thursday, July 9  4:00 PM IST</text>
-    <text id="tpl-cta" x="${W*0.08}" y="${H*0.86}" font-family="Inter, sans-serif" font-size="${H*0.026}" font-weight="700" fill="#ffffff" letter-spacing="1">REGISTER FREE →</text>
-  </svg>` },
-  { name:'Product Feature Banner', orient:'landscape', w:1440, h:600, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="#fdf6ec"/>
-    <circle cx="${W*0.82}" cy="${H*0.5}" r="${H*0.32}" fill="#ffe8d6"/>
-    <text id="tpl-eyebrow" x="${W*0.07}" y="${H*0.28}" font-family="Inter, sans-serif" font-size="${H*0.045}" font-weight="700" fill="#d97706" letter-spacing="3">NEW ARRIVAL</text>
-    <text id="tpl-headline" x="${W*0.07}" y="${H*0.5}" font-family="Syne, sans-serif" font-size="${H*0.09}" font-weight="800" fill="#1c1c2e">Aura Wireless\nHeadphones</text>
-    <rect id="tpl-cta-bg" x="${W*0.07}" y="${H*0.72}" width="${W*0.22}" height="${H*0.14}" rx="${H*0.07}" fill="#1c1c2e"/>
-    <text id="tpl-cta" x="${W*0.18}" y="${H*0.79}" font-family="Inter, sans-serif" font-size="${H*0.045}" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">SHOP $129</text>
-  </svg>` },
-  { name:'Quote Landscape', orient:'landscape', w:1920, h:1080, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="#1a1a2e"/>
-    <text x="${W*0.08}" y="${H*0.4}" font-family="Georgia, serif" font-size="${H*0.18}" fill="#e94560" opacity="0.5">"</text>
-    <text id="tpl-headline" x="${W/2}" y="${H*0.48}" font-family="Playfair Display, serif" font-size="${H*0.065}" font-weight="700" fill="#ffffff" text-anchor="middle">Simplicity is the ultimate sophistication.</text>
-    <line x1="${W*0.44}" y1="${H*0.64}" x2="${W*0.56}" y2="${H*0.64}" stroke="#e94560" stroke-width="1.5"/>
-    <text id="tpl-sub" x="${W/2}" y="${H*0.7}" font-family="Inter, sans-serif" font-size="${H*0.026}" font-weight="600" fill="#cbd5e1" text-anchor="middle" letter-spacing="2">LEONARDO DA VINCI</text>
-  </svg>` },
+  // -- LANDSCAPE (6) --
   { name:'Menu Board Landscape', orient:'landscape', w:1600, h:900, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
     <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="#2b1d14"/>
     <rect x="${W*0.04}" y="${H*0.08}" width="${W*0.92}" height="${H*0.84}" fill="none" stroke="#d4a574" stroke-width="2" stroke-dasharray="6 4"/>
@@ -1428,70 +1416,94 @@ const TEMPLATES = [
     <text x="${W*0.88}" y="${H*0.72}" font-family="Montserrat, sans-serif" font-size="${H*0.04}" fill="#f5e6d3" text-anchor="end">$9.50</text>
     <text id="tpl-sub" x="${W/2}" y="${H*0.9}" font-family="Inter, sans-serif" font-size="${H*0.03}" fill="#9c8369" text-anchor="middle">Open daily 7am  6pm</text>
   </svg>` },
-  // -- PORTRAIT (10) --
-  { name:'Event Poster', orient:'portrait', w:1080, h:1350, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-    <defs><linearGradient id="tplgP1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#1a1a2e"/><stop offset="100%" stop-color="#16213e"/></linearGradient></defs>
-    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="url(#tplgP1)"/>
-    <rect x="${W*0.08}" y="${H*0.06}" width="${W*0.84}" height="${H*0.88}" fill="none" stroke="#e94560" stroke-width="3"/>
-    <text id="tpl-eyebrow" x="${W/2}" y="${H*0.18}" font-family="Oswald, sans-serif" font-size="${H*0.035}" font-weight="700" fill="#e94560" text-anchor="middle" letter-spacing="6">YOU'RE INVITED</text>
-    <text id="tpl-headline" x="${W/2}" y="${H*0.38}" font-family="Playfair Display, serif" font-size="${H*0.09}" font-weight="700" fill="#ffffff" text-anchor="middle">Summer\nFestival</text>
-    <line x1="${W*0.32}" y1="${H*0.46}" x2="${W*0.68}" y2="${H*0.46}" stroke="#e94560" stroke-width="2"/>
-    <text id="tpl-date" x="${W/2}" y="${H*0.54}" font-family="Inter, sans-serif" font-size="${H*0.03}" font-weight="600" fill="#cbd5e1" text-anchor="middle" letter-spacing="2">JULY 14  4PM  MIDNIGHT</text>
-    <text id="tpl-loc" x="${W/2}" y="${H*0.6}" font-family="Inter, sans-serif" font-size="${H*0.025}" fill="#94a3b8" text-anchor="middle">Riverside Park  Free Entry</text>
-    <rect id="tpl-cta-bg" x="${W/2-W*0.14}" y="${H*0.82}" width="${W*0.28}" height="${H*0.06}" rx="4" fill="#e94560"/>
-    <text id="tpl-cta" x="${W/2}" y="${H*0.855}" font-family="Inter, sans-serif" font-size="${H*0.024}" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">RSVP TODAY</text>
+  { name:'Employee Spotlight', orient:'landscape', w:1200, h:628, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="tplEsStripe" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#5CE1E6"/><stop offset="50%" stop-color="#3FCFDA"/><stop offset="100%" stop-color="#5CE1E6"/></linearGradient>
+    </defs>
+    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="url(#tplEsStripe)"/>
+    <path d="M0,${H*0.82} C${W*0.17},${H*0.7} ${W*0.33},${H*0.9} ${W*0.5},${H*0.8} C${W*0.67},${H*0.7} ${W*0.83},${H*0.85} ${W},${H*0.78} L${W},${H} L0,${H} Z" fill="#0E5F73"/>
+    <circle cx="${W*0.03}" cy="${H*0.33}" r="7" fill="#F5E642"/>
+    <circle cx="${W*0.41}" cy="${H*0.53}" r="15" fill="none" stroke="#F5E642" stroke-width="3"/>
+    <circle cx="${W*0.05}" cy="${H*0.1}" r="9" fill="none" stroke="#ffffff" stroke-width="3"/>
+    <rect x="${W*0.065}" y="${H*0.175}" width="${W*0.335}" height="${H*0.62}" fill="#ffffff" opacity="0.95" transform="rotate(-2 ${W*0.23} ${H*0.485})"/>
+    <rect id="tpl-photo" data-photo="1" x="${W*0.078}" y="${H*0.2}" width="${W*0.309}" height="${H*0.5}" fill="#c9d3d5" transform="rotate(-2 ${W*0.23} ${H*0.485})"/>
+    <text x="${W*0.16}" y="${H*0.46}" font-family="Inter, sans-serif" font-size="${H*0.06}" fill="#8b979a" text-anchor="middle" transform="rotate(-2 ${W*0.23} ${H*0.485})" pointer-events="none">&#128247;</text>
+    <text x="${W*0.16}" y="${H*0.5}" font-family="Inter, sans-serif" font-size="${H*0.025}" fill="#5f6c6f" text-anchor="middle" transform="rotate(-2 ${W*0.23} ${H*0.485})" pointer-events="none">Double-click to add photo</text>
+    <circle cx="${W*0.09}" cy="${H*0.185}" r="13" fill="#E53950"/>
+    <circle cx="${W*0.335}" cy="${H*0.16}" r="13" fill="#E53950"/>
+    <text id="tpl-eyebrow" x="${W*0.435}" y="${H*0.175}" font-family="Poppins, sans-serif" font-size="${H*0.045}" font-weight="800" fill="#0B3B4A" letter-spacing="1">EMPLOYEE SPOTLIGHT &#160;|&#160; <tspan font-weight="500" fill="#1c5f70">AUG 2026</tspan></text>
+    <text id="tpl-headline" x="${W*0.435}" y="${H*0.32}" font-family="Poppins, sans-serif" font-size="${H*0.12}" font-weight="800" fill="#0B3B4A"><tspan font-family="Dancing Script, cursive" font-weight="700" fill="#F5E642" font-size="${H*0.1}">Meet </tspan>KEVIN</text>
+    <line x1="${W*0.435}" y1="${H*0.4}" x2="${W*0.933}" y2="${H*0.4}" stroke="#0B3B4A" stroke-width="2" opacity="0.4"/>
+    <text id="tpl-sub" x="${W*0.435}" y="${H*0.46}" font-family="Poppins, sans-serif" font-size="${H*0.036}" fill="#0B3B4A">A day in the life of a</text>
+    <text x="${W*0.435}" y="${H*0.51}" font-family="Poppins, sans-serif" font-size="${H*0.04}" font-weight="800" fill="#0B3B4A" letter-spacing="0.5">HUMAN RESOURCES MANAGER</text>
+    <text x="${W*0.44}" y="${H*0.58}" font-family="Georgia, serif" font-size="${H*0.09}" fill="#0B4F61" opacity="0.5">&#8220;</text>
+    <text id="tpl-quote" x="${W*0.463}" y="${H*0.61}" font-family="Poppins, sans-serif" font-size="${H*0.033}" font-weight="600" fill="#0B3B4A"><tspan x="${W*0.463}" dy="0">Human resources managers direct the human</tspan><tspan x="${W*0.463}" dy="${H*0.048}">resources department. They oversee large teams</tspan><tspan x="${W*0.463}" dy="${H*0.048}">within the department, from a few staff members</tspan><tspan x="${W*0.463}" dy="${H*0.048}">to entire divisions in larger organizations.</tspan></text>
   </svg>` },
-  { name:'Social Quote', orient:'portrait', w:1080, h:1350, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-    <defs><linearGradient id="tplgP2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#667eea"/><stop offset="100%" stop-color="#764ba2"/></linearGradient></defs>
-    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="url(#tplgP2)"/>
-    <text x="${W*0.12}" y="${H*0.24}" font-family="Georgia, serif" font-size="${H*0.11}" fill="#ffffff" opacity="0.5">"</text>
-    <text id="tpl-headline" x="${W/2}" y="${H*0.42}" font-family="Playfair Display, serif" font-size="${H*0.042}" font-weight="700" fill="#ffffff" text-anchor="middle">The best way to\nget started is to\nquit talking and\nbegin doing.</text>
-    <line x1="${W*0.42}" y1="${H*0.6}" x2="${W*0.58}" y2="${H*0.6}" stroke="#ffffff" stroke-width="1.5" opacity="0.6"/>
-    <text id="tpl-sub" x="${W/2}" y="${H*0.65}" font-family="Inter, sans-serif" font-size="${H*0.021}" font-weight="600" fill="#e9e4ff" text-anchor="middle" letter-spacing="2">WALT DISNEY</text>
+  { name:'Fashion Collection Banner', orient:'landscape', w:1200, h:600, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
+    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="#F1EAE0"/>
+    <rect x="${W*0.558}" y="0" width="${W*0.442}" height="${H}" fill="#E7DED0"/>
+    <rect id="tpl-photo1" data-photo="1" x="${W*0.566}" y="${H*0.02}" width="${W*0.257}" height="${H*0.47}" fill="#DCCFB6"/>
+    <text x="${W*0.695}" y="${H*0.235}" font-family="Inter, sans-serif" font-size="${H*0.024}" fill="#8a7355" text-anchor="middle" pointer-events="none">&#128247; Double-click to add photo</text>
+    <rect id="tpl-photo2" data-photo="1" x="${W*0.566}" y="${H*0.51}" width="${W*0.257}" height="${H*0.47}" fill="#D3C4A6"/>
+    <text x="${W*0.695}" y="${H*0.745}" font-family="Inter, sans-serif" font-size="${H*0.024}" fill="#8a7355" text-anchor="middle" pointer-events="none">&#128247; Double-click to add photo</text>
+    <rect id="tpl-photo3" data-photo="1" x="${W*0.837}" y="${H*0.02}" width="${W*0.155}" height="${H*0.96}" fill="#C8B79A"/>
+    <text x="${W*0.914}" y="${H*0.5}" font-family="Inter, sans-serif" font-size="${H*0.024}" fill="#8a7355" text-anchor="middle" pointer-events="none">&#128247; Double-click to add photo</text>
+    <text x="${W*0.05}" y="${H*0.075}" font-family="Montserrat, sans-serif" font-size="${H*0.033}" font-weight="600" fill="#4A2E1E">&#127807; Signature Style</text>
+    <text id="tpl-headline" x="${W*0.038}" y="${H*0.24}" font-family="Playfair Display, serif" font-size="${H*0.13}" font-weight="700" fill="#4A2E1E">New</text>
+    <text x="${W*0.038}" y="${H*0.4}" font-family="Playfair Display, serif" font-size="${H*0.13}" font-weight="700" fill="#4A2E1E">Collection</text>
+    <text id="tpl-sub" x="${W*0.041}" y="${H*0.665}" font-family="Montserrat, sans-serif" font-size="${H*0.04}" font-weight="800" fill="#4A2E1E" letter-spacing="1">CASUAL &amp; MINIMALIST</text>
+    <text id="tpl-url" x="${W*0.041}" y="${H*0.783}" font-family="Montserrat, sans-serif" font-size="${H*0.043}" font-weight="600" fill="#7A4A2B">www.reallygreatsite.com</text>
+    <rect x="${W*0.041}" y="${H*0.883}" width="${W*0.094}" height="${H*0.107}" fill="#D8D3CA"/>
+    <rect x="${W*0.135}" y="${H*0.883}" width="${W*0.094}" height="${H*0.107}" fill="#5A3320"/>
+    <rect x="${W*0.229}" y="${H*0.883}" width="${W*0.094}" height="${H*0.107}" fill="#7A4A2B"/>
+    <text x="${W*0.41}" y="${H*0.09}" font-family="Montserrat, sans-serif" font-size="${H*0.021}" font-weight="700" letter-spacing="2" fill="#4A2E1E" text-anchor="middle">FASHION &#8226; FASHION &#8226; FASHION</text>
+    <polygon points="${W*0.4},${H*0.62} ${W*0.425},${H*0.638} ${W*0.451},${H*0.622} ${W*0.477},${H*0.645} ${W*0.505},${H*0.638} ${W*0.518},${H*0.675} ${W*0.505},${H*0.71} ${W*0.518},${H*0.745} ${W*0.477},${H*0.75} ${W*0.451},${H*0.778} ${W*0.425},${H*0.75} ${W*0.4},${H*0.767} ${W*0.388},${H*0.725} ${W*0.365},${H*0.69} ${W*0.388},${H*0.653}" fill="#4A2E1E"/>
+    <text id="tpl-off" x="${W*0.441}" y="${H*0.665}" font-family="Montserrat, sans-serif" font-size="${H*0.028}" font-weight="700" fill="#ffffff" text-anchor="middle">UP TO</text>
+    <text x="${W*0.441}" y="${H*0.72}" font-family="Playfair Display, serif" font-size="${H*0.08}" font-weight="800" fill="#ffffff" text-anchor="middle">50%</text>
+    <text x="${W*0.441}" y="${H*0.765}" font-family="Montserrat, sans-serif" font-size="${H*0.028}" font-weight="700" fill="#ffffff" text-anchor="middle">OFF</text>
   </svg>` },
-  { name:'Product Promo', orient:'portrait', w:1080, h:1350, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="#fdf6ec"/>
-    <circle cx="${W/2}" cy="${H*0.36}" r="${H*0.22}" fill="#ffe8d6"/>
-    <rect x="${W*0.38}" y="${H*0.24}" width="${W*0.24}" height="${H*0.24}" rx="14" fill="#2b2b2b"/>
-    <text id="tpl-eyebrow" x="${W/2}" y="${H*0.09}" font-family="Inter, sans-serif" font-size="${H*0.024}" font-weight="700" fill="#d97706" text-anchor="middle" letter-spacing="3">NEW ARRIVAL</text>
-    <text id="tpl-headline" x="${W/2}" y="${H*0.62}" font-family="Syne, sans-serif" font-size="${H*0.052}" font-weight="800" fill="#1c1c2e" text-anchor="middle">Aura Wireless\nHeadphones</text>
-    <text id="tpl-sub" x="${W/2}" y="${H*0.72}" font-family="Inter, sans-serif" font-size="${H*0.022}" fill="#52526e" text-anchor="middle">Studio sound. All-day comfort.</text>
-    <rect id="tpl-cta-bg" x="${W/2-W*0.14}" y="${H*0.78}" width="${W*0.28}" height="${H*0.056}" rx="${H*0.028}" fill="#1c1c2e"/>
-    <text id="tpl-cta" x="${W/2}" y="${H*0.808}" font-family="Inter, sans-serif" font-size="${H*0.021}" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">SHOP $129</text>
+  { name:'Ice Cream Summer Offers', orient:'landscape', w:1200, h:675, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
+    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="#E8207E"/>
+    <polygon points="0,0 ${W*0.433},0 ${W*0.65},${H*0.5} ${W*0.433},${H} 0,${H}" fill="#F6B9D6"/>
+    <text id="tpl-brand" x="${W*0.655}" y="${H*0.1}" font-family="Montserrat, sans-serif" font-size="${H*0.028}" font-weight="800" letter-spacing="2" fill="#3A1F1A">THE ICE CREAM HUB</text>
+    <text id="tpl-headline" x="${W*0.648}" y="${H*0.24}" font-family="Pacifico, cursive" font-size="${H*0.12}" fill="#3A1F1A" transform="rotate(-3 ${W*0.75} ${H*0.19})">Summer</text>
+    <text id="tpl-offers" x="${W*0.645}" y="${H*0.5}" font-family="Fredoka, sans-serif" font-size="${H*0.135}" font-weight="700" fill="#F9D3E7">OFFERS</text>
+    <text id="tpl-dates" x="${W*0.03}" y="${H*0.49}" font-family="Fredoka, sans-serif" font-size="${H*0.053}" font-weight="700" fill="#E8207E"><tspan x="${W*0.03}" dy="0">STARTING</tspan><tspan x="${W*0.03}" dy="${H*0.062}">8TH&#8211;22ND</tspan><tspan x="${W*0.03}" dy="${H*0.062}">JULY</tspan></text>
+    <polygon points="${W*0.29},${H*0.08} ${W*0.35},${H*0.1} ${W*0.32},${H*0.35}" fill="#E2A45C"/>
+    <ellipse cx="${W*0.32}" cy="${H*0.08}" rx="${W*0.03}" ry="${H*0.045}" fill="#F6B9D6"/>
+    <polygon points="${W*0.85},${H*0.48} ${W*0.91},${H*0.5} ${W*0.88},${H*0.72}" fill="#E2A45C"/>
+    <ellipse cx="${W*0.88}" cy="${H*0.48}" rx="${W*0.03}" ry="${H*0.045}" fill="#7B4A2C"/>
+    <rect x="${W*0.31}" y="${H*0.63}" width="${W*0.033}" height="${H*0.13}" rx="8" fill="#8B4A2B" transform="rotate(-12 ${W*0.327} ${H*0.7})"/>
+    <rect x="${W*0.8}" y="${H*0.65}" width="${W*0.033}" height="${H*0.13}" rx="8" fill="#E8748A" transform="rotate(10 ${W*0.817} ${H*0.72})"/>
+    <polygon points="${W*0.44},${H*0.55} ${W*0.585},${H*0.55} ${W*0.512},${H*0.98}" fill="#E2A45C"/>
+    <ellipse cx="${W*0.512}" cy="${H*0.53}" rx="${W*0.075}" ry="${H*0.09}" fill="#F9E1CE"/>
+    <ellipse cx="${W*0.512}" cy="${H*0.47}" rx="${W*0.06}" ry="${H*0.07}" fill="#F6B9D6"/>
+    <text id="tpl-discount" x="${W*0.85}" y="${H*0.615}" font-family="Playfair Display, serif" font-size="${H*0.075}" font-weight="800" fill="#3A1F1A" text-anchor="end">50% OFF</text>
+    <text x="${W*0.85}" y="${H*0.665}" font-family="Montserrat, sans-serif" font-size="${H*0.038}" font-weight="800" fill="#ffffff" text-anchor="end">SELECTED ITEMS</text>
+    <rect id="tpl-cta-bg" x="${W*0.8}" y="${H*0.87}" width="${W*0.17}" height="${H*0.08}" fill="#FCE0EE"/>
+    <text id="tpl-cta" x="${W*0.885}" y="${H*0.918}" font-family="Montserrat, sans-serif" font-size="${H*0.03}" font-weight="700" letter-spacing="2" fill="#3A1F1A" text-anchor="middle">ORDER TODAY</text>
+    <text id="tpl-phone" x="${W*0.03}" y="${H*0.93}" font-family="Montserrat, sans-serif" font-size="${H*0.024}" font-weight="700" fill="#3A1F1A"><tspan x="${W*0.03}" dy="0">FOR DELIVERIES CALL:</tspan><tspan x="${W*0.03}" dy="${H*0.032}" font-weight="500">+0 000 000 0000</tspan></text>
   </svg>` },
-  { name:'Instagram Story', orient:'portrait', w:1080, h:1920, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-    <defs><linearGradient id="tplgP4" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#ff9a9e"/><stop offset="100%" stop-color="#fecfef"/></linearGradient></defs>
-    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="url(#tplgP4)"/>
-    <circle cx="${W*0.5}" cy="${H*0.2}" r="${H*0.09}" fill="#ffffff" opacity="0.35"/>
-    <text id="tpl-eyebrow" x="${W/2}" y="${H*0.42}" font-family="Inter, sans-serif" font-size="${H*0.018}" font-weight="700" fill="#c2185b" text-anchor="middle" letter-spacing="4">SWIPE UP</text>
-    <text id="tpl-headline" x="${W/2}" y="${H*0.5}" font-family="Syne, sans-serif" font-size="${H*0.06}" font-weight="800" fill="#5c1a2e" text-anchor="middle">Weekend\nFlash Sale</text>
-    <rect id="tpl-cta-bg" x="${W/2-W*0.18}" y="${H*0.6}" width="${W*0.36}" height="${H*0.045}" rx="${H*0.0225}" fill="#5c1a2e"/>
-    <text id="tpl-cta" x="${W/2}" y="${H*0.623}" font-family="Inter, sans-serif" font-size="${H*0.017}" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">SHOP NOW</text>
+  { name:'Restaurant Cafe Banner', orient:'landscape', w:1200, h:628, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
+    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="#ffffff"/>
+    <polygon points="0,0 ${W*0.68},0 ${W*0.4},${H} 0,${H}" fill="#7A0C0C"/>
+    <circle id="tpl-plate1" data-photo="1" cx="${W*0.09}" cy="${H*0.135}" r="${H*0.115}" fill="#ffffff"/>
+    <text x="${W*0.09}" y="${H*0.12}" font-family="Inter, sans-serif" font-size="${H*0.03}" fill="#bbb" text-anchor="middle" pointer-events="none">&#128247;</text>
+    <text x="${W*0.09}" y="${H*0.15}" font-family="Inter, sans-serif" font-size="${H*0.014}" fill="#aaa" text-anchor="middle" pointer-events="none">Double-click to add</text>
+    <circle id="tpl-plate2" data-photo="1" cx="${W*0.082}" cy="${H*0.88}" r="${H*0.125}" fill="#ffffff"/>
+    <text x="${W*0.082}" y="${H*0.865}" font-family="Inter, sans-serif" font-size="${H*0.03}" fill="#bbb" text-anchor="middle" pointer-events="none">&#128247;</text>
+    <text x="${W*0.082}" y="${H*0.9}" font-family="Inter, sans-serif" font-size="${H*0.014}" fill="#aaa" text-anchor="middle" pointer-events="none">Double-click to add</text>
+    <circle id="tpl-bowl" data-photo="1" cx="${W*0.85}" cy="${H*0.97}" r="${H*0.37}" fill="#3c2414"/>
+    <text x="${W*0.85}" y="${H*0.65}" font-family="Inter, sans-serif" font-size="${H*0.03}" fill="#eee" text-anchor="middle" pointer-events="none">&#128247;</text>
+    <text x="${W*0.85}" y="${H*0.685}" font-family="Inter, sans-serif" font-size="${H*0.019}" fill="#eee" text-anchor="middle" pointer-events="none">Double-click to add main dish photo</text>
+    <text id="tpl-cafe" x="${W*0.275}" y="${H*0.34}" font-family="Dancing Script, cursive" font-size="${H*0.155}" font-weight="700" fill="#ffffff">Cafe</text>
+    <text id="tpl-headline" x="${W*0.045}" y="${H*0.545}" font-family="Oswald, sans-serif" font-size="${H*0.165}" font-weight="700" letter-spacing="2" fill="#F2E11D">RESTAURANT</text>
+    <polygon points="${W*0.667},${H*0.15} ${W*0.7},${H*0.175} ${W*0.737},${H*0.155} ${W*0.76},${H*0.185} ${W*0.8},${H*0.19} ${W*0.8},${H*0.225} ${W*0.83},${H*0.25} ${W*0.8},${H*0.28} ${W*0.8},${H*0.315} ${W*0.76},${H*0.32} ${W*0.737},${H*0.35} ${W*0.7},${H*0.33} ${W*0.667},${H*0.35} ${W*0.65},${H*0.315} ${W*0.617},${H*0.29} ${W*0.65},${H*0.25} ${W*0.617},${H*0.21} ${W*0.65},${H*0.185}" fill="#1230C7" transform="rotate(-4 ${W*0.72} ${H*0.25})"/>
+    <text id="tpl-brand" x="${W*0.72}" y="${H*0.26}" font-family="Montserrat, sans-serif" font-size="${H*0.035}" font-weight="800" fill="#ffffff" text-anchor="middle" transform="rotate(-4 ${W*0.72} ${H*0.25})">Savory's</text>
+    <text id="tpl-address" x="${W*0.045}" y="${H*0.63}" font-family="Montserrat, sans-serif" font-size="${H*0.027}" font-weight="700" letter-spacing="0.5" fill="#ffffff">&#128205; 234 WEST AVENUE ROAD NEW CITY</text>
+    <text id="tpl-phone" x="${W*0.045}" y="${H*0.71}" font-family="Montserrat, sans-serif" font-size="${H*0.041}" font-weight="800" fill="#ffffff">&#128222; +8882 9001 7662</text>
   </svg>` },
-  { name:'Pinterest Pin', orient:'portrait', w:1000, h:1500, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-    <defs><linearGradient id="tplgP5" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#d4fc79"/><stop offset="100%" stop-color="#96e6a1"/></linearGradient></defs>
-    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="url(#tplgP5)"/>
-    <rect x="${W*0.08}" y="${H*0.55}" width="${W*0.84}" height="${H*0.32}" rx="16" fill="#ffffff" opacity="0.9"/>
-    <text id="tpl-eyebrow" x="${W/2}" y="${H*0.63}" font-family="Inter, sans-serif" font-size="${H*0.02}" font-weight="700" fill="#2e7d32" text-anchor="middle" letter-spacing="3">10 EASY TIPS</text>
-    <text id="tpl-headline" x="${W/2}" y="${H*0.72}" font-family="Syne, sans-serif" font-size="${H*0.045}" font-weight="800" fill="#1b5e20" text-anchor="middle">Small-Space\nGarden Ideas</text>
-    <text id="tpl-sub" x="${W/2}" y="${H*0.8}" font-family="Inter, sans-serif" font-size="${H*0.017}" fill="#33691e" text-anchor="middle">Grow more in less room</text>
-  </svg>` },
-  { name:'Flyer', orient:'portrait', w:1080, h:1350, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-    <defs><linearGradient id="tplgP6" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff6a00"/><stop offset="100%" stop-color="#ee0979"/></linearGradient></defs>
-    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="url(#tplgP6)"/>
-    <circle cx="${W*0.15}" cy="${H*0.12}" r="${H*0.14}" fill="#ffffff" opacity="0.1"/>
-    <text id="tpl-eyebrow" x="${W/2}" y="${H*0.2}" font-family="Bebas Neue, sans-serif" font-size="${H*0.045}" fill="#ffffff" text-anchor="middle" letter-spacing="5">GRAND OPENING</text>
-    <text id="tpl-headline" x="${W/2}" y="${H*0.44}" font-family="Syne, sans-serif" font-size="${H*0.1}" font-weight="800" fill="#ffffff" text-anchor="middle">Fitness\nStudio</text>
-    <text id="tpl-sub" x="${W/2}" y="${H*0.58}" font-family="Inter, sans-serif" font-size="${H*0.026}" font-weight="600" fill="#ffe8ee" text-anchor="middle">First class free  New members only</text>
-    <rect id="tpl-cta-bg" x="${W/2-W*0.16}" y="${H*0.82}" width="${W*0.32}" height="${H*0.06}" rx="${H*0.03}" fill="#ffffff"/>
-    <text id="tpl-cta" x="${W/2}" y="${H*0.853}" font-family="Inter, sans-serif" font-size="${H*0.026}" font-weight="700" fill="#ee0979" text-anchor="middle" dominant-baseline="middle">JOIN TODAY</text>
-  </svg>` },
-  { name:'Mobile Wallpaper Quote', orient:'portrait', w:1080, h:1920, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="#0f172a"/>
-    <line x1="${W*0.44}" y1="${H*0.44}" x2="${W*0.56}" y2="${H*0.44}" stroke="#38bdf8" stroke-width="3"/>
-    <text id="tpl-headline" x="${W/2}" y="${H*0.5}" font-family="Playfair Display, serif" font-size="${H*0.036}" font-weight="700" fill="#f8fafc" text-anchor="middle">Do small things\nwith great love.</text>
-    <text id="tpl-sub" x="${W/2}" y="${H*0.56}" font-family="Inter, sans-serif" font-size="${H*0.015}" fill="#94a3b8" text-anchor="middle" letter-spacing="2">MOTHER TERESA</text>
-  </svg>` },
+  // -- PORTRAIT (3) --
   { name:'Wedding Invitation', orient:'portrait', w:1080, h:1350, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
     <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="#faf3f0"/>
     <rect x="${W*0.06}" y="${H*0.05}" width="${W*0.88}" height="${H*0.9}" fill="none" stroke="#c9a35f" stroke-width="1.5"/>
@@ -1500,17 +1512,6 @@ const TEMPLATES = [
     <line x1="${W*0.35}" y1="${H*0.5}" x2="${W*0.65}" y2="${H*0.5}" stroke="#c9a35f" stroke-width="1"/>
     <text id="tpl-date" x="${W/2}" y="${H*0.58}" font-family="Inter, sans-serif" font-size="${H*0.026}" fill="#5d4037" text-anchor="middle" letter-spacing="2">REQUEST THE PLEASURE OF YOUR COMPANY</text>
     <text id="tpl-loc" x="${W/2}" y="${H*0.66}" font-family="Inter, sans-serif" font-size="${H*0.03}" font-weight="600" fill="#3e2723" text-anchor="middle">DECEMBER 12  THE ROSEWOOD ESTATE</text>
-  </svg>` },
-  { name:'Sale Poster', orient:'portrait', w:1080, h:1350, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-    <defs><linearGradient id="tplgP9" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff4d6d"/><stop offset="100%" stop-color="#c9184a"/></linearGradient></defs>
-    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="url(#tplgP9)"/>
-    <circle cx="${W*0.85}" cy="${H*0.12}" r="${H*0.14}" fill="#ffffff" opacity="0.08"/>
-    <circle cx="${W*0.1}" cy="${H*0.9}" r="${H*0.12}" fill="#ffffff" opacity="0.07"/>
-    <text id="tpl-eyebrow" x="${W/2}" y="${H*0.24}" font-family="Poppins, sans-serif" font-size="${H*0.032}" font-weight="700" fill="#ffe5ea" text-anchor="middle" letter-spacing="4">LIMITED TIME OFFER</text>
-    <text id="tpl-headline" x="${W/2}" y="${H*0.44}" font-family="Syne, sans-serif" font-size="${H*0.15}" font-weight="800" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">50% OFF</text>
-    <text id="tpl-sub" x="${W/2}" y="${H*0.58}" font-family="Inter, sans-serif" font-size="${H*0.036}" font-weight="600" fill="#ffffff" text-anchor="middle">Everything must go</text>
-    <rect id="tpl-cta-bg" x="${W/2-W*0.14}" y="${H*0.7}" width="${W*0.28}" height="${H*0.07}" rx="${H*0.035}" fill="#ffffff"/>
-    <text id="tpl-cta" x="${W/2}" y="${H*0.735}" font-family="Inter, sans-serif" font-size="${H*0.028}" font-weight="700" fill="#c9184a" text-anchor="middle" dominant-baseline="middle">SHOP NOW</text>
   </svg>` },
   { name:'Menu Board Portrait', orient:'portrait', w:1080, h:1350, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
     <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="#2b1d14"/>
@@ -1526,6 +1527,23 @@ const TEMPLATES = [
     <text x="${W*0.15}" y="${H*0.59}" font-family="Montserrat, sans-serif" font-size="${H*0.028}" font-weight="600" fill="#d4a574">Fresh Orange Juice</text>
     <text x="${W*0.85}" y="${H*0.59}" font-family="Montserrat, sans-serif" font-size="${H*0.028}" fill="#f5e6d3" text-anchor="end">$5.00</text>
     <text id="tpl-sub" x="${W/2}" y="${H*0.88}" font-family="Inter, sans-serif" font-size="${H*0.021}" fill="#9c8369" text-anchor="middle">Open daily 7am  6pm</text>
+  </svg>` },
+  { name:'Grand Opening Ceremony', orient:'portrait', w:1080, h:1920, svg:(W,H)=>`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
+    <defs><radialGradient id="tplGoBg" cx="30%" cy="35%" r="75%"><stop offset="0%" stop-color="#ffffff"/><stop offset="45%" stop-color="#eef0f2"/><stop offset="100%" stop-color="#dfe2e5"/></radialGradient></defs>
+    <rect id="bg-rect" x="0" y="0" width="${W}" height="${H}" fill="url(#tplGoBg)"/>
+    <path d="M0,0 L${W*0.22},0 L${W*0.11},${H*0.15} L0,${H*0.08} Z" fill="#C8102E"/>
+    <path d="M${W},0 L${W*0.78},0 L${W*0.89},${H*0.15} L${W},${H*0.08} Z" fill="#C8102E"/>
+    <rect x="0" y="${H*0.895}" width="${W}" height="${H*0.006}" fill="#e8e8e8"/>
+    <path d="M0,${H*0.93} L${W},${H*0.87} L${W},${H} L0,${H} Z" fill="#a4111f"/>
+    <text id="tpl-logo" x="${W*0.073}" y="${H*0.075}" font-family="Montserrat, sans-serif" font-size="${H*0.02}" font-weight="800" fill="#161616"><tspan x="${W*0.073}" dy="0">LOGO</tspan><tspan x="${W*0.073}" dy="${H*0.021}">HERE</tspan></text>
+    <text id="tpl-top-text" x="${W*0.5}" y="${H*0.07}" font-family="Montserrat, sans-serif" font-size="${H*0.016}" fill="#161616" text-anchor="middle">Lorem ipsum dolor sit amet, consectetur adipiscing elit</text>
+    <path d="M${W*0.183},${H*0.19} C${W*0.15},${H*0.155} ${W*0.166},${H*0.095} ${W*0.267},${H*0.087} C${W*0.35},${H*0.08} ${W*0.4},${H*0.112} ${W*0.35},${H*0.14} C${W*0.317},${H*0.159} ${W*0.25},${H*0.145} ${W*0.267},${H*0.125} C${W*0.28},${H*0.112} ${W*0.317},${H*0.108} ${W*0.333},${H*0.12}" fill="none" stroke="#D4A017" stroke-width="7" stroke-linecap="round"/>
+    <text id="tpl-headline" x="${W/2}" y="${H*0.28}" font-family="Anton, sans-serif" font-size="${H*0.075}" fill="#C8102E" text-anchor="middle" letter-spacing="1">GRAND</text>
+    <text x="${W/2}" y="${H*0.35}" font-family="Anton, sans-serif" font-size="${H*0.052}" fill="#161616" text-anchor="middle" letter-spacing="1">OPENING</text>
+    <text id="tpl-ceremony" x="${W/2}" y="${H*0.405}" font-family="Dancing Script, cursive" font-size="${H*0.05}" font-weight="700" fill="#D4A017" text-anchor="middle">Ceremony</text>
+    <text id="tpl-sub" x="${W/2}" y="${H*0.615}" font-family="Montserrat, sans-serif" font-size="${H*0.016}" fill="#161616" text-anchor="middle">Lorem ipsum dolor sit amet, consectetur adipiscing elit</text>
+    <text id="tpl-date" x="${W/2}" y="${H*0.72}" font-family="Anton, sans-serif" font-size="${H*0.05}" fill="#C8102E" text-anchor="middle" letter-spacing="2">10.10.26</text>
+    <text id="tpl-loc" x="${W/2}" y="${H*0.79}" font-family="Montserrat, sans-serif" font-size="${H*0.017}" font-weight="800" letter-spacing="2" fill="#161616" text-anchor="middle">LOCATION - PIN - ADDRESS</text>
   </svg>` }
 ];
 
@@ -1769,6 +1787,67 @@ function insertImage(inp){
   };
   reader.readAsDataURL(f); inp.value='';
 }
+
+// --------------------------------------------
+// PHOTO PLACEHOLDERS — double-click a template photo area to open the local
+// file picker and drop a real photo directly into that exact spot, keeping
+// its position, size, and any rotation/shape it had (rect or circle).
+// --------------------------------------------
+let photoReplaceTarget = null;
+function triggerPhotoReplace(el) {
+  photoReplaceTarget = el;
+  $('photo-replace-upload').click();
+}
+function doPhotoReplace(inp) {
+  const f = inp.files?.[0]; const el = photoReplaceTarget;
+  photoReplaceTarget = null;
+  if(!f || !el || !el.isConnected) { inp.value=''; return; }
+  const s = svg(); if(!s) { inp.value=''; return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    push();
+    const tag = el.tagName.toLowerCase();
+    let x,y,w,h;
+    if(tag==='circle') {
+      const cx=+el.getAttribute('cx')||0, cy=+el.getAttribute('cy')||0, r=+el.getAttribute('r')||0;
+      x=cx-r; y=cy-r; w=r*2; h=r*2;
+    } else if(tag==='ellipse') {
+      const cx=+el.getAttribute('cx')||0, cy=+el.getAttribute('cy')||0, rx=+el.getAttribute('rx')||0, ry=+el.getAttribute('ry')||0;
+      x=cx-rx; y=cy-ry; w=rx*2; h=ry*2;
+    } else {
+      x=+el.getAttribute('x')||0; y=+el.getAttribute('y')||0;
+      w=+el.getAttribute('width')||0; h=+el.getAttribute('height')||0;
+    }
+    const img=document.createElementNS('http://www.w3.org/2000/svg','image');
+    img.setAttribute('x',x); img.setAttribute('y',y); img.setAttribute('width',w); img.setAttribute('height',h);
+    img.setAttribute('id', el.id || ('img-'+Date.now()));
+    img.setAttribute('preserveAspectRatio','xMidYMid slice');
+    const tr=el.getAttribute('transform'); if(tr) img.setAttribute('transform',tr);
+    // circular photo placeholders get a matching round clip so the uploaded photo keeps the same shape
+    if(tag==='circle' || tag==='ellipse') {
+      const clipId='clip-'+(el.id||Date.now());
+      let defs=s.querySelector('defs');
+      if(!defs){ defs=document.createElementNS('http://www.w3.org/2000/svg','defs'); s.insertBefore(defs,s.firstChild); }
+      const clip=document.createElementNS('http://www.w3.org/2000/svg','clipPath'); clip.setAttribute('id',clipId);
+      const clipShape=el.cloneNode(); clipShape.removeAttribute('id'); clipShape.removeAttribute('fill'); clipShape.removeAttribute('transform');
+      clip.appendChild(clipShape); defs.appendChild(clip);
+      img.setAttribute('clip-path',`url(#${clipId})`);
+    }
+    img.setAttributeNS('http://www.w3.org/1999/xlink','href',e.target.result);
+    // remove all adjacent placeholder label texts (icon + caption) rendered right after the shape in our templates
+    let next = el.nextElementSibling;
+    while(next && next.tagName.toLowerCase()==='text' && next.getAttribute('pointer-events')==='none') {
+      const toRemove = next;
+      next = next.nextElementSibling;
+      toRemove.remove();
+    }
+    el.replaceWith(img);
+    attachH(); setTimeout(()=>{selectEl(img);buildLayers();},50);
+    toast('Photo added ✓','ok');
+  };
+  reader.readAsDataURL(f); inp.value='';
+}
+
 
 // --------------------------------------------
 // HELPERS  element geometry
@@ -2326,6 +2405,10 @@ function onDbl(e) {
   const el=e.currentTarget;
   if(isLocked(el)) return;
   const tag=el.tagName.toLowerCase();
+  if(el.dataset && el.dataset.photo==='1' && ['rect','circle','ellipse'].includes(tag)) {
+    triggerPhotoReplace(el);
+    return;
+  }
   const textEl = tag==='tspan' ? el.closest('text') : (tag==='text' ? el : null);
   if(!textEl) return;
   if(ite.on && ite.el===textEl) return; // already editing this one
